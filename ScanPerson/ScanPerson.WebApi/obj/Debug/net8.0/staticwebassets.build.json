@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "a/VpumT78kQBHm8i+lG9W28mO6iEiOPFJk3nTWkdYyI=",
+  "Source": "ScanPerson.WebApi",
+  "BasePath": "_content/ScanPerson.WebApi",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
