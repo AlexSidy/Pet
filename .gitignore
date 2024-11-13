@@ -4,3 +4,7 @@
 
 /.vs
 /ScanPerson/.vs/ScanPerson
+
+# Игнорировать папки сборки
+bin/
+obj/
