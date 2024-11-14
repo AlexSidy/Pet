@@ -16,6 +16,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.Map("/test", appBuilder =>
+{
+    appBuilder.Run(async context => await context.Response.WriteAsync($"Hello, my master!"));
+});
+
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
