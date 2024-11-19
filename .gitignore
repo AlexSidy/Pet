@@ -4,6 +4,7 @@
 
 /.vs
 /ScanPerson/.vs/
+/ScanPerson/ScanPerson.WebApi/wwwroot
 
 # Игнорировать папки сборки
 bin/
