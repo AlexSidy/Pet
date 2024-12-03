@@ -1,6 +1,12 @@
-@ScanPerson.WebApi_HostAddress = http://localhost:5234
+@ScanPerson.WebApi_HostAddress = https://localhost:8081
 
-GET {{ScanPerson.WebApi_HostAddress}}/weatherforecast/
+GET {{ScanPerson.WebApi_HostAddress}}/api/WeatherForecast
 Accept: application/json
 
 ###
+
+GET {{ScanPerson.WebApi_HostAddress}}/api/Test
+Accept: application/json
+
+###
+
