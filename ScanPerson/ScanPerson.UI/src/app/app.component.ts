@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { ajax } from 'rxjs/ajax';
+import { Observable } from 'rxjs';
 
 import { Item } from './item';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -13,20 +14,27 @@ import { Item } from './item';
   templateUrl: './app.component.html',
   styleUrl: './app.component.sass'
 })
-export class AppComponent implements OnInit {
-  title = 'ScanPerson.UI111';
-  url = "http://localhost:8000/api/Test";
-  items: Item[] = [];
+export class AppComponent {
+  title = 'ScanPerson.UI1';
+  url = "/api/Test";
+  //url = "/test";
+  //url = "https://scanperson.webapi/api/Test";
+  //url = "https://localhost:8081/api/Test";
+  items: Item[] = [ new Item(1, "Test3") ];
+  httpClient: HttpClient;
 
-  constructor() {
+  constructor(httpClient: HttpClient) {
+    this.httpClient = httpClient;
   }
 
-  ngOnInit() {
+  load() {
     this.getItems().subscribe({
-      next: (res) => {
-        this.items = res.response as Item[];
+      next: (response) => {
+        debugger;
+        this.items = response;
       },
       error: (e) => {
+        debugger;
         console.log(e);
       },
       complete: () => {
@@ -34,7 +42,7 @@ export class AppComponent implements OnInit {
     });
   }
 
-  getItems() {
-      return ajax(this.url);
+  getItems(): Observable<Item[]> {
+      return this.httpClient.get(this.url) as  Observable<Item[]>;
   }
 }

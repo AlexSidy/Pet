@@ -1,6 +1,6 @@
 {
     "/api/*": {
-        "target": "https://localhost:7102",
+        "target": "https://scanperson.webapi:8081",
         "secure": false,
         "logLevel": "debug"
     }

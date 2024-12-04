@@ -23,8 +23,8 @@ namespace ScanPerson.WebApi.Controllers
         {
             return Enumerable.Range(1, 5).Select(index => new TestItem
             {
-                Id = index + 10,
-                Name = "Name" + index
+                Id = index + 10 + 15,
+                Name = "NameTest1111" + index
             })
             .ToArray();
         }

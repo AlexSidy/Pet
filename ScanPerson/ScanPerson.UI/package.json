@@ -1,14 +1,14 @@
 {
-  "name": "scan-person.ui",
+  "name": "scanpersonui",
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --proxy-config proxy.conf.json",
     "serve": "ng serve --proxy-config proxy.conf.json",
-    "build": "ng build --configuration production --output-path ../ScanPerson.WebApi/wwwroot",
+    "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:ScanPerson.UI": "node dist/scan-person.ui/server/server.mjs"
+    "serve:ssr:ScanPerson.UI": "node dist/scanpersonui/server/server.mjs"
   },
   "private": true,
   "dependencies": {
@@ -40,6 +40,8 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.5.2"
+    "typescript": "~5.5.2",
+    "ws": "^8.18.0",
+    "xmlhttprequest": "^1.8.0"
   }
 }

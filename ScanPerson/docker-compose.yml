@@ -1,0 +1,46 @@
+      
+services:
+  scanperson.ui:
+    container_name: scanpersonui
+    image: ${DOCKER_REGISTRY-}scanpersonui
+    build:
+      context: ./ScanPerson.UI
+      dockerfile: Dockerfile
+    depends_on:
+         - scanperson.webapi
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CHOKIDAR_USEPOLLING=true 
+    ports:
+      - 4200:4200
+    volumes:
+      - ./ScanPerson.UI:/app
+      - /app/node_modules
+    command: ng serve --host 0.0.0.0 --poll 2000 --proxy-config proxy.conf.json
+    networks:
+      - scanperson-network
+      
+  scanperson.webapi:
+    container_name: scanpersonwebapi
+    image: ${DOCKER_REGISTRY-}scanpersonwebapi
+    build:
+      context: ./ScanPerson.WebApi
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+    ports:
+      - 8080:8080
+      - 8081:8081
+    volumes:
+      - ./ScanPerson.WebApi:/app
+      - ~/.vsdbg:/remote_debugger:rw
+    networks:
+      - scanperson-network
+
+networks:
+  scanperson-network:
+    driver: bridge
+
+      
