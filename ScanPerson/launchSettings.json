@@ -8,7 +8,9 @@
       "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger/index.html",
       "serviceActions": {
         "scanperson.webapi": "StartDebugging",
-        "scanperson.ui": "StartWithoutDebugging"
+        "scanperson.ui": "StartWithoutDebugging",
+        "pgadmin": "StartWithoutDebugging",
+        "postgres": "StartWithoutDebugging"
       }
     }
   }
