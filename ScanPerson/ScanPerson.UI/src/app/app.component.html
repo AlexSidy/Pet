@@ -236,12 +236,14 @@
           <tr>
               <td>ID</td>
               <td>Name</td>
+              <td>Mail</td>
           </tr>
         </thead>
         <tbody>
             <tr *ngFor="let itemx of items">
                 <td>{{itemx?.id}}</td>
                 <td>{{itemx?.name}}<td>
+                  <td>{{itemx?.mail}}<td>
             </tr>
         </tbody>
     </table>

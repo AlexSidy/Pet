@@ -7,18 +7,19 @@ services:
       context: ./ScanPerson.UI
       dockerfile: Dockerfile
     depends_on:
-         - scanperson.webapi
+        - scanperson.webapi
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - CHOKIDAR_USEPOLLING=true 
+        - SCANPERSON_WEBAPI_DOMEN=scanperson.webapi
+        - ASPNETCORE_ENVIRONMENT=Development
+        - CHOKIDAR_USEPOLLING=true 
     ports:
-      - 4200:4200
+        - 4200:4200
     volumes:
-      - ./ScanPerson.UI:/app
-      - /app/node_modules
+        - ./ScanPerson.UI:/app
+        - /app/node_modules
     command: ng serve --host 0.0.0.0 --poll 2000 --proxy-config proxy.conf.json
     networks:
-      - scanperson-network
+        - scanperson-network
       
   scanperson.webapi:
     container_name: scanpersonwebapi
@@ -26,21 +27,60 @@ services:
     build:
       context: ./ScanPerson.WebApi
       dockerfile: Dockerfile
+    depends_on:
+        - postgres
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
+        - SCANPERSON_UI_DOMEN=scanperson.ui
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_HTTP_PORTS=8080
+        - ASPNETCORE_HTTPS_PORTS=8081
     ports:
-      - 8080:8080
-      - 8081:8081
+        - 8080:8080
+        - 8081:8081
     volumes:
-      - ./ScanPerson.WebApi:/app
-      - ~/.vsdbg:/remote_debugger:rw
+        - ./ScanPerson.WebApi:/app
+        - ~/.vsdbg:/remote_debugger:rw
     networks:
-      - scanperson-network
+        - scanperson-network
+
+  postgres:
+    container_name: postgres
+    image: postgres
+    environment:
+        POSTGRES_USER: postgres #${POSTGRES_USER}
+        POSTGRES_PASSWORD: postgres #${POSTGRES_PASSWORD}
+        PGDATA: /data/postgres
+    ports:
+        - 5433:5432
+    volumes:
+        - postgres:/data/postgres
+        - postgres:/var/lib/postgresql/data
+    networks:
+        - scanperson-network
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    depends_on:
+      - postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@mail.ru
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+        - postgres:/data/postgres
+        - pgadmin:/var/lib/pgadmin
+    ports:
+        - 8000:80
+    networks:
+        - scanperson-network
 
 networks:
   scanperson-network:
     driver: bridge
+
+volumes:
+    postgres:
+    pgadmin:
 
       

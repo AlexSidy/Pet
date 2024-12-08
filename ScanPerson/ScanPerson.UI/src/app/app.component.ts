@@ -4,7 +4,7 @@ import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 
-import { Item } from './item';
+import { Person } from './person';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -16,11 +16,8 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AppComponent {
   title = 'ScanPerson.UI1';
-  url = "/api/Test";
-  //url = "/test";
-  //url = "https://scanperson.webapi/api/Test";
-  //url = "https://localhost:8081/api/Test";
-  items: Item[] = [ new Item(1, "Test3") ];
+  url = "/api/Person";
+  items: Person[] = [ new Person(1, "Test3") ];
   httpClient: HttpClient;
 
   constructor(httpClient: HttpClient) {
@@ -42,7 +39,7 @@ export class AppComponent {
     });
   }
 
-  getItems(): Observable<Item[]> {
-      return this.httpClient.get(this.url) as  Observable<Item[]>;
+  getItems(): Observable<Person[]> {
+      return this.httpClient.get(this.url) as  Observable<Person[]>;
   }
 }
