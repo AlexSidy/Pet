@@ -10,7 +10,7 @@ namespace Scanperson.DAL.Initializers
 
 		public void Seed()
 		{
-			if (!_context!.Persons!.Any())
+			if (_context.Persons?.Any() != true)
 			{
 				var persons = new[]
 				{

@@ -1,6 +1,11 @@
 {
-    "/api/*": {
+    "/webApi/*": {
         "target": "https://scanperson.webapi:8081",
+        "secure": false,
+        "logLevel": "debug"
+    },
+    "/authApi/*": {
+        "target": "https://scanperson.auth.api:8091",
         "secure": false,
         "logLevel": "debug"
     }

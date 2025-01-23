@@ -12,19 +12,24 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["ScanPerson.WebApi.csproj", "."]
-RUN dotnet restore "ScanPerson.WebApi.csproj"
+COPY ["ScanPerson.WebApi/ScanPerson.WebApi.csproj", "ScanPerson.WebApi/"]
+COPY ["ScanPerson.Models/ScanPerson.Models.csproj", "ScanPerson.Models/"]
+COPY ["Scanperson.DAL/Scanperson.DAL.csproj", "Scanperson.DAL/"]
+COPY ["ScanPerson.BusinessLogic/ScanPerson.BusinessLogic.csproj", "ScanPerson.BusinessLogic/"]
+RUN dotnet restore "ScanPerson.WebApi/ScanPerson.WebApi.csproj"
 COPY . .
-WORKDIR "/src/."
+
+WORKDIR "/src/ScanPerson.WebApi"
 RUN dotnet build "ScanPerson.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "ScanPerson.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "ScanPerson.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=publish /app/publish ./
+#run 'dotnet dev-certs https --trust'
 ENTRYPOINT ["dotnet", "ScanPerson.WebApi.dll"]

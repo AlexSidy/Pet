@@ -6,22 +6,30 @@ using ScanPerson.Models.Items;
 namespace ScanPerson.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("webApi/[controller]")]
     public class PersonController : ControllerBase
     {
-        private readonly ILogger<TestController> _logger;
+        private readonly ILogger<PersonController> _logger;
 
-        public PersonController(ILogger<TestController> logger)
+        public PersonController(ILogger<PersonController> logger)
         {
             _logger = logger;
         }
 
-        [HttpGet(Name = nameof(Query))]
+		[HttpGet(Name = nameof(Query))]
         public IEnumerable<PersonItem>? Query(
             [FromQuery] PersonRequest request,
             [FromServices] IPersonService service)
 		{
             return service.Query(request);
         }
-    }
+
+		[HttpPost(Name = nameof(Post))]
+		public IEnumerable<PersonItem>? Post(
+			[FromBody] PersonRequest request,
+			[FromServices] IPersonService service)
+		{
+			return service.Query(request);
+		}
+	}
 }

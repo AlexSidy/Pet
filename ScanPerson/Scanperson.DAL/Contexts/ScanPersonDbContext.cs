@@ -4,8 +4,9 @@ using ScanPerson.Models.Entities;
 
 namespace Scanperson.DAL.Contexts
 {
-	public class ScanPersonDbContext : DbContext
+	public class ScanPersonDbContext: DbContext
 	{
+		public ScanPersonDbContext() { }
 		public ScanPersonDbContext(DbContextOptions<ScanPersonDbContext> options) : base(options)
 		{
 		}
@@ -14,7 +15,9 @@ namespace Scanperson.DAL.Contexts
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<PersonEntity>().ToTable(CreatePerson.Tablename, InitialSheme.WebAppSchema);
+			modelBuilder.HasDefaultSchema(InitialSheme.WebAppSchema);
+			base.OnModelCreating(modelBuilder);
+			modelBuilder.Entity<PersonEntity>().ToTable(CreatePerson.TableName);
 		}
 	}
 }

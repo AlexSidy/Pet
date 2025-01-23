@@ -4,7 +4,17 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { ACCES_TOKEN_KEY } from './models/constants/constants';
+
+export function tokenGetter() {
+  return sessionStorage.getItem(ACCES_TOKEN_KEY);
+}
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideClientHydration(), provideHttpClient(withFetch())]
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
+    provideClientHydration(),
+    provideHttpClient(withFetch())
+    ]
 };
