@@ -2,6 +2,9 @@
 
 namespace ScanPerson.Models.Requests.Auth
 {
+	/// <summary>
+	/// Register contract.
+	/// </summary>
 	public class RegisterRequest
 	{
 		/// <summary>

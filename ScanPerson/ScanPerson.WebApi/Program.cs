@@ -3,10 +3,14 @@ using ScanPerson.BusinessLogic;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ScanPerson.Models.Contracts.Auth;
+using ScanPerson.WebApi.Resources;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ScanPersonDb") ??
     throw new InvalidOperationException("Connection string 'ScanPersonDb' not found.");
+var jwtOptins = builder.Configuration.GetSection(JwtOptions.AppSettingsSection).Get<JwtOptions>()
+	?? throw new InvalidOperationException(string.Format(Messages.SectionNotFound, JwtOptions.AppSettingsSection));
 
 // Add services to the container.
 #region [Addition services]
@@ -34,11 +38,11 @@ builder.Services
 		options.TokenValidationParameters = new TokenValidationParameters
 		{
 			ValidateIssuer = true,
-			ValidIssuer = AuthOptions.ISSUER,
+			ValidIssuer = jwtOptins.Issuer,
 			ValidateAudience = true,
-			ValidAudience = AuthOptions.AUDIENCE,
+			ValidAudience = jwtOptins.Audience,
 			ValidateLifetime = true,
-			IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptins.SecretKey)),
 			ValidateIssuerSigningKey = true
 		};
 	});
@@ -70,13 +74,4 @@ app.Run();
 partial class Program
 {
 	public const string WebApi = "webApi";
-}
-
-public class AuthOptions
-{
-	public const string ISSUER = "MyAuthServer"; // издатель токена
-	public const string AUDIENCE = "MyAuthClient"; // потребитель токена
-	const string KEY = "mysupersecret_secretsecretsecretkey!123";   // ключ для шифрации
-	public static SymmetricSecurityKey GetSymmetricSecurityKey() =>
-		new SymmetricSecurityKey(Encoding.UTF8.GetBytes(KEY));
 }

@@ -7,7 +7,7 @@ namespace ScanPerson.Auth.Api.Controllers
 	[ApiController]
 	[Route(Program.AuthApi + "/[controller]")]
 	public class AuthController(
-		//TODO в задаче #24 добавить логирование
+		//TODO: in task #24 add logging
 		ILogger<AuthController> logger,
 		IUserService userService
 		) : AuthControllerBase

@@ -15,7 +15,15 @@ var jwtOptins = builder.Configuration.GetSection(JwtOptions.AppSettingsSection).
 #region [Addition services]
 builder.Services.AddSingleton(jwtOptins);
 builder.Services.AddScanPersonAuth(connectionString);
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("AllowLocalhost", builder =>
+	{
+		builder.WithOrigins(["http://localhost:4200", "https://localhost:4200", "http://scanperson.ui:4200", "https://scanperson.ui:4200"])
+			   .AllowAnyHeader() // Разрешаем любые заголовки
+			   .AllowAnyMethod(); // Разрешаем любые методы
+	});
+});
 builder.Services.AddControllers();
 
 builder.Services
@@ -52,7 +60,7 @@ if (app.Environment.IsDevelopment())
 	app.UseDeveloperExceptionPage();
 }
 
-app.UseCors(builder => builder.WithOrigins("http://localhost:4200"));
+app.UseCors("AllowLocalhost");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

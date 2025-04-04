@@ -3,8 +3,6 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { Observable, tap, catchError, of } from 'rxjs';
-
 import { ScanPersonResultResponse } from '../models/responses/scan.person.result.response';
 import { ACCESS_TOKEN_KEY, AuthApi } from '../constants/constants';
 import { LoginRequest } from '../models/requests/login.request';
@@ -24,18 +22,11 @@ export class AuthService {
     private jwtHelper: JwtHelperService) {}
 
   register(email: string, password: string) {
-    debugger;
     let request = new RegisterRequest(password, email);
-    //https://localhost:8091/authApi/Auth/RegisterAsync
-
-
-
-    let url = this.api + '/RegisterAsync';
     return this.httpClient
-      .post<ScanPersonResultResponse>(url, request)
+      .post<ScanPersonResultResponse>(this.api + '/RegisterAsync', request)
       .subscribe({
         next: (response) => {
-          debugger;
           if (response?.isSuccess) {
             alert('Register is success.');
           }
@@ -44,7 +35,6 @@ export class AuthService {
           }
         },
         error: (e) => {
-          debugger;
           console.log('Registration error:' + e.error);
           alert('Failed to register. Please try again later:' + e.error);
         },
@@ -53,13 +43,11 @@ export class AuthService {
   }  
 
   login(email: string, password: string) {
-    debugger;
     let request = new LoginRequest(password, email);
     return this.httpClient
       .post<ScanPersonResultResponse>(this.api + '/LoginAsync', request)
       .subscribe({
         next: (response) => {
-          debugger;
           if (response.isSuccess && this.isBrowser()) {
             sessionStorage.setItem(ACCESS_TOKEN_KEY, response.result);
             alert('Login is success.');
@@ -70,7 +58,6 @@ export class AuthService {
           }
         },
         error: (e) => {
-          debugger;
           console.log('Registration error:' + e.error);
           alert('Failed to register. Please try again later:' + e.error);
         },

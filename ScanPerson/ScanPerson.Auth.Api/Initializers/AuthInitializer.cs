@@ -76,7 +76,7 @@ internal class AuthInitializer(
 		}
 		catch (Exception ex)
 		{
-			//TODO : в задаче #24 добавить логирование
+			//TODO : in task #24 add logging
 			throw ex;
 		}
 	}

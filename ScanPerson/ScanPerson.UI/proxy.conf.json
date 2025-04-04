@@ -1,14 +1,14 @@
 {
-    "/authApi/*/*": {
-        "target": "https://scanperson.auth.api:8091",
-        "secure": false,
-        "changeOrigin": true,
-        "logLevel": "debug"
-    },
-    "/webApi/*/*": {
-        "target": "https://scanperson.webapi:8081",
-        "secure": false,
-        "changeOrigin": true,
-        "logLevel": "debug"
-    }
+  "/webApi/*/*": {
+    "target": "https://scanperson.webapi:8081",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/authApi/*/*": {
+    "target": "https://scanperson.auth.api:8091",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
 }

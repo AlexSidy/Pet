@@ -9,8 +9,8 @@ namespace ScanPerson.Auth.Api.Controllers
 		protected IResult GetResult(ScanPersonResponse response, IResult? succces = null, IResult? fail = null)
 		{
 			return response.IsSuccess
-				? succces == null ? Results.Ok(response) : succces
-				: fail == null ? Results.BadRequest(response.Error): fail;
+				? succces ?? Results.Ok(response)
+				: fail ?? Results.BadRequest(response.Error);
 		}
 	}
 }

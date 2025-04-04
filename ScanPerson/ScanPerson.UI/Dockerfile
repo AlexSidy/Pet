@@ -17,6 +17,7 @@ RUN npm install -g @angular/cli
 # Get all the code needed to run the app
 COPY . .
 
+#TODO протестировать данные измнеения в задаче #27
 # script for set enviroments
 #COPY ./src /app/src
 #RUN node generate-proxy.js
