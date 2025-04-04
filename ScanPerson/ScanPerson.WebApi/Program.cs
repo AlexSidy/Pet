@@ -12,7 +12,17 @@ var connectionString = builder.Configuration.GetConnectionString("ScanPersonDb")
 #region [Addition services]
 builder.Services.AddDalServices(connectionString);
 builder.Services.AddBusinessLogicServices();
-builder.Services.AddCors();
+
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("AllowLocalhost", builder =>
+	{
+		builder.WithOrigins(["http://localhost:4200", "https://localhost:4200",	"http://scanperson.ui:4200","https://scanperson.ui:4200"])
+			   .AllowAnyHeader() // Разрешаем любые заголовки
+			   .AllowAnyMethod(); // Разрешаем любые методы
+	});
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -39,24 +49,28 @@ var app = builder.Build();
 
 #region [Usage services]
 // Configure the HTTP request pipeline.
-if (true && app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseDeveloperExceptionPage();
 }
 
-app.UseCors(builder => builder.WithOrigins("http://localhost:4200"));
 app.UseHttpsRedirection();
+app.UseRouting();
+
+app.UseCors("AllowLocalhost");
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapGet("/Test", () => {
-	return "Hello World!";
-});
 app.MapControllers();
 #endregion [Use services]
 
 app.Run();
+
+partial class Program
+{
+	public const string WebApi = "webApi";
+}
 
 public class AuthOptions
 {

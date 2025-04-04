@@ -5,25 +5,21 @@ using ScanPerson.Auth.Api.Services.Interfaces;
 namespace ScanPerson.Auth.Api.Controllers
 {
 	[ApiController]
-	[Route("authApi/[controller]")]
+	[Route(Program.AuthApi + "/[controller]")]
 	public class AuthController(
 		//TODO в задаче #24 добавить логирование
 		ILogger<AuthController> logger,
 		IUserService userService
 		) : AuthControllerBase
 	{
-		[HttpPost]
-		[Route("register")]
+		[HttpPost(nameof(RegisterAsync))]
 		public async Task<IResult> RegisterAsync([FromBody] RegisterRequest request)
 		{
 			return GetResult(await userService.RegisterAsync(request));
 		}
 
-		[HttpPost]
-		[Route("login")]
-		public async Task<IResult> LoginAsync(
-			[FromBody] LoginRequest request,
-			[FromServices] ITokenProvider jwtProvider)
+		[HttpPost(nameof(LoginAsync))]
+		public async Task<IResult> LoginAsync([FromBody] LoginRequest request)
 		{
 			return GetResult(await userService.LoginAsync(request), null, Results.Unauthorized());
 		}

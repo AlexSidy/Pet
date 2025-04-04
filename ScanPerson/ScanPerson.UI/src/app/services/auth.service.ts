@@ -1,39 +1,99 @@
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
-import { ScanPersonResultResponse } from '../models/responses/scan.person.result.response';
-import { ACCES_TOKEN_KEY, AuthApi } from '../models/constants/constants';
+import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+
+import { Observable, tap, catchError, of } from 'rxjs';
+
+import { ScanPersonResultResponse } from '../models/responses/scan.person.result.response';
+import { ACCESS_TOKEN_KEY, AuthApi } from '../constants/constants';
 import { LoginRequest } from '../models/requests/login.request';
-import { JwtHelperService } from '@auth0/angular-jwt';
+import { RegisterRequest } from '../models/requests/register.request';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private api: string = AuthApi + '/Auth';
+  private api: string = "/" + AuthApi + '/Auth';
 
-  constructor(private httpClient: HttpClient, private router: Router, private jwtHelper: JwtHelperService) {}
+  constructor(
+    private httpClient: HttpClient,
+    private router: Router,
+    private jwtHelper: JwtHelperService) {}
 
-  login(email: string, password: string): Observable<ScanPersonResultResponse> {
-    var request = new LoginRequest(password, email);
+  register(email: string, password: string) {
+    debugger;
+    let request = new RegisterRequest(password, email);
+    //https://localhost:8091/authApi/Auth/RegisterAsync
+
+
+
+    let url = this.api + '/RegisterAsync';
     return this.httpClient
-      .post<ScanPersonResultResponse>(this.api + '/login', request)
-      .pipe(
-        tap(response => {
-          sessionStorage.setItem(ACCES_TOKEN_KEY, response.Result);
-        })
-      )
+      .post<ScanPersonResultResponse>(url, request)
+      .subscribe({
+        next: (response) => {
+          debugger;
+          if (response?.isSuccess) {
+            alert('Register is success.');
+          }
+          else {
+            alert(response?.error ?? 'An error occurred during registration');
+          }
+        },
+        error: (e) => {
+          debugger;
+          console.log('Registration error:' + e.error);
+          alert('Failed to register. Please try again later:' + e.error);
+        },
+        complete: () => {}
+      });
+  }  
+
+  login(email: string, password: string) {
+    debugger;
+    let request = new LoginRequest(password, email);
+    return this.httpClient
+      .post<ScanPersonResultResponse>(this.api + '/LoginAsync', request)
+      .subscribe({
+        next: (response) => {
+          debugger;
+          if (response.isSuccess && this.isBrowser()) {
+            sessionStorage.setItem(ACCESS_TOKEN_KEY, response.result);
+            alert('Login is success.');
+            this.router.navigate(['']);
+          } 
+          else {
+            alert(response.error ?? 'An error occurred during login');
+          }
+        },
+        error: (e) => {
+          debugger;
+          console.log('Registration error:' + e.error);
+          alert('Failed to register. Please try again later:' + e.error);
+        },
+        complete: () => {}
+      });
   }
 
   isAuthenticated(): boolean {
-    var token = sessionStorage.getItem(ACCES_TOKEN_KEY);
-    return token != null && !this.jwtHelper.isTokenExpired();
+    if (this.isBrowser()) {
+      const token = sessionStorage.getItem(ACCESS_TOKEN_KEY);
+      return !!token && token != 'undefined' && !this.jwtHelper.isTokenExpired(token);
+    }
+    return false;
   }
 
   logout(): void {
-    sessionStorage.removeItem(ACCES_TOKEN_KEY);
+    if (this.isBrowser()) {
+      sessionStorage.removeItem(ACCESS_TOKEN_KEY);
+    }
     this.router.navigate(['']);
+  }
+
+  private isBrowser(): boolean {
+    return typeof window !== 'undefined' && typeof window.sessionStorage !== 'undefined';
   }
 }

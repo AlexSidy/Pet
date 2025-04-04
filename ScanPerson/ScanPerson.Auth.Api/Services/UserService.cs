@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using ScanPerson.Auth.Api.Controllers;
 using ScanPerson.Auth.Api.Resources;
 using ScanPerson.Auth.Api.Services.Base;
 using ScanPerson.Auth.Api.Services.Interfaces;
@@ -10,7 +9,7 @@ namespace ScanPerson.Auth.Api.Services
 {
 	public class UserService(
 		//TODO в задаче #24 добавить логирование
-		ILogger<AuthController> logger,
+		ILogger<UserService> logger,
 		UserManager<User> userManager,
 		ITokenProvider jwtProvider) : OperationBase, IUserService
 	{
@@ -23,7 +22,7 @@ namespace ScanPerson.Auth.Api.Services
 				var createResult = await userManager.CreateAsync(newUser, request.Password);
 				if (createResult.Succeeded)
 				{
-					return GetSuccess();
+					return GetSuccess(new ScanPersonResultResponse<IdentityResult>(createResult));
 				}
 
 				return GetFail(string.Join(", ", createResult.Errors.Select(x => x.Description)));
@@ -37,18 +36,18 @@ namespace ScanPerson.Auth.Api.Services
 			var found = await userManager.FindByEmailAsync(request.Email);
 			if (found == null)
 			{
-				return GetFail();
+				return GetFail(Messages.LoginOrPasswordHasError);
 			}
 
 			var isVerify = await userManager.CheckPasswordAsync(found, request.Password);
-			if (!isVerify)
+			if (isVerify)
 			{
-				return GetFail();
+				var jwt = await jwtProvider.GenerateTokenAsync(found);
+
+				return GetSuccess(jwt);
 			}
 
-			var jwt = await jwtProvider.GenerateTokenAsync(found);
-
-			return GetSuccess(jwt);
+			return GetFail(Messages.LoginOrPasswordHasError);
 		}
 	}
 }

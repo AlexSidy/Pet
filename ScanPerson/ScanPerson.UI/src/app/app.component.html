@@ -1,27 +1,18 @@
-<label>Введите имя:</label>
-<input [(ngModel)]="title">
-<h2>Добро пожаловать {{title}}!</h2>
-<h1>Hello, {{ title }}</h1>
-<p>Congratulations! Your app is running. 🎉</p>
+<div class="container">
 
-<table>
-  <thead>
-    <tr>
-      <td>ID</td>
-      <td>Name</td>
-      <td>Mail</td>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let itemx of items">
-      <td>{{itemx?.id}}</td>
-      <td>{{itemx?.name}}
-      <td>
-      <td>{{itemx?.mail}}
-      <td>
-    </tr>
-  </tbody>
-</table>
-<button class="btn btn-sm btn-danger" (click)="load()">Load</button>
-<button class="btn btn-sm btn-danger" (click)="postLoad()">post Load</button>
-<router-outlet />
+  <!-- Навигационная панель -->
+  <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+    <div class="container-fluid">
+      <div class="navbar-nav d-flex justify-content-between w-100">
+        <a class="nav-link" [routerLink]="['']" routerLinkActive='active' [routerLinkActiveOptions]="{ exact: true }">Home</a>
+        <a class="nav-link" [routerLink]="['/person']" routerLinkActive='active' [routerLinkActiveOptions]="{ exact: true }" *ngIf="isLoggedIn">Person</a>
+        <a class="nav-link ms-auto" [routerLink]="['/auth']" routerLinkActive='active' [routerLinkActiveOptions]="{ exact: true }" *ngIf="!isLoggedIn">Login/Register</a>
+        <a class="nav-link ms-auto" [routerLink]="['']" routerLinkActive='active' [routerLinkActiveOptions]="{ exact: true }" (click)='logout()' *ngIf="isLoggedIn">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <!--Auth form-->
+
+  <router-outlet />
+</div>

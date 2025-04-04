@@ -15,17 +15,7 @@ var jwtOptins = builder.Configuration.GetSection(JwtOptions.AppSettingsSection).
 #region [Addition services]
 builder.Services.AddSingleton(jwtOptins);
 builder.Services.AddScanPersonAuth(connectionString);
-builder.Services.AddCors(options =>
-{
-	options.AddDefaultPolicy(
-		builder =>
-		{
-			builder
-				.AllowAnyOrigin()
-				.AllowAnyMethod()
-				.AllowAnyHeader();
-		});
-});
+builder.Services.AddCors();
 builder.Services.AddControllers();
 
 builder.Services
@@ -45,7 +35,7 @@ builder.Services
 			ValidAudience = jwtOptins.Audience,
 			ValidateLifetime = true,
 			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptins.SecretKey)),
-			ValidateIssuerSigningKey = true
+			ValidateIssuerSigningKey = true,
 		};
 	});
 
@@ -74,4 +64,5 @@ app.Run();
 partial class Program
 {
 	public const string DbSection = "AuthDb";
+	public const string AuthApi = "authApi";
 }

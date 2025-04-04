@@ -32,7 +32,8 @@
               }
             ],
             "styles": [
-              "src/styles.sass"
+              "src/styles.sass",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
             "scripts": [],
             "server": "src/main.server.ts",
@@ -75,7 +76,10 @@
               "buildTarget": "ScanPerson.UI:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n"
@@ -96,7 +100,8 @@
               }
             ],
             "styles": [
-              "src/styles.sass"
+              "src/styles.sass",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
             "scripts": []
           }

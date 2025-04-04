@@ -4,7 +4,7 @@
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "composeLaunchAction": "LaunchBrowser",
-      "composeLaunchServiceName": "scanperson.webapi",
+      "composeLaunchServiceName": "scanperson.auth.api",
       "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger",
       "composeProfile": {
         "includes": [

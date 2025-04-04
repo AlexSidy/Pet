@@ -31,7 +31,7 @@ namespace ScanPerson.Auth.Api
 		{
 			services.AddDefaultIdentity<User>(options =>
 				{
-					options.SignIn.RequireConfirmedAccount = true;
+					options.SignIn.RequireConfirmedAccount = false;
 					options.Lockout.MaxFailedAccessAttempts = 5;
 					options.SignIn.RequireConfirmedEmail = false;
 				})

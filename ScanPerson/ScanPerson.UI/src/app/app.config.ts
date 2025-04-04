@@ -1,13 +1,15 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
-
-import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { ACCES_TOKEN_KEY } from './models/constants/constants';
+import { JwtModule } from '@auth0/angular-jwt';
+
+import { routes } from './app.routes';
+import { ACCESS_TOKEN_KEY } from './constants/constants';
+import { environment } from '../enviroments/enviroments';
 
 export function tokenGetter() {
-  return sessionStorage.getItem(ACCES_TOKEN_KEY);
+  return sessionStorage.getItem(ACCESS_TOKEN_KEY);
 }
 
 export const appConfig: ApplicationConfig = {
@@ -15,6 +17,14 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(),
-    provideHttpClient(withFetch())
-    ]
+    provideHttpClient(withFetch()),
+    importProvidersFrom(
+      JwtModule.forRoot({
+          config: {
+              tokenGetter: tokenGetter,
+              allowedDomains: environment.tokenWhiteListDomains,
+              disallowedRoutes: [],
+          },
+      })),
+    ],
 };

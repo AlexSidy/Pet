@@ -61,6 +61,15 @@ namespace ScanPerson.Auth.Api.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Login or password has error..
+        /// </summary>
+        public static string LoginOrPasswordHasError {
+            get {
+                return ResourceManager.GetString("LoginOrPasswordHasError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Section {0} not found or have error..
         /// </summary>
         public static string SectionNotFound {

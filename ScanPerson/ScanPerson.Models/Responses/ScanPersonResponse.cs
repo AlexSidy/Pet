@@ -39,11 +39,6 @@ namespace ScanPerson.Models.Responses
 		public bool IsSuccess { get; set; }
 
 		/// <summary>
-		/// List of errors.
-		/// </summary>
-		private IEnumerable<string> Errors { get; set; }
-
-		/// <summary>
 		/// Aggregate errors
 		/// </summary>
 		public string Error
@@ -53,5 +48,10 @@ namespace ScanPerson.Models.Responses
 				return Errors == null ? null : string.Join(", ", Errors);
 			}
 		}
+
+		/// <summary>
+		/// List of errors.
+		/// </summary>
+		private IEnumerable<string> Errors { get; set; }
 	}
 }
