@@ -2,6 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>ScanPersonModelsSdk</PackageId>
+    <Version>1.0.3</Version>
+    <Authors>AlexSi</Authors>
+    <Company>Home</Company>
+    <Description>Scan person`s models</Description>
+    <PackageLicenseFile>LICENSE.TXT</PackageLicenseFile>
+    <PackageLicense>MIT</PackageLicense>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
-
+<ItemGroup>
+    <None Include="licenses\LICENSE.TXT" Pack="true" PackagePath="" />
+    <None Include="docs\README.md" Pack="true" PackagePath="\" />
+</ItemGroup>
+<ItemGroup>
+  <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+</ItemGroup>            
 </Project>

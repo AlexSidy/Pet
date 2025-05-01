@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>bin\Release\net9.0\publish\</_PublishTargetUrl>
+    <History>True|2024-12-13T04:38:00.0352116Z||;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="Resources/Messages.resx">
+      <publishTime>04/04/2025 18:54:22</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

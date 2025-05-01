@@ -5,12 +5,23 @@
       "commandVersion": "1.0",
       "composeLaunchAction": "LaunchBrowser",
       "composeLaunchServiceName": "scanperson.webapi",
-      "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger/index.html",
-      "serviceActions": {
-        "scanperson.webapi": "StartDebugging",
-        "scanperson.ui": "StartWithoutDebugging",
-        "pgadmin": "StartWithoutDebugging",
-        "postgres": "StartWithoutDebugging"
+      "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger",
+      "composeProfile": {
+        "includes": [
+          "all"
+        ]
+      }
+    },
+    "Release Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "composeLaunchAction": "LaunchBrowser",
+      "composeLaunchServiceName": "scanperson.webapi",
+      "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger",
+      "composeProfile": {
+        "includes": [
+          "webApi"
+        ]
       }
     }
   }

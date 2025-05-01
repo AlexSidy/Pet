@@ -1,0 +1,26 @@
+<label>Введите имя:</label>
+<input [(ngModel)]="title">
+<h2>Добро пожаловать {{title}}!</h2>
+<h1>Hello, {{ title }}</h1>
+<p>Congratulations! Your app is running. 🎉</p>
+
+<table>
+  <thead>
+    <tr>
+      <td>ID</td>
+      <td>Name</td>
+      <td>Mail</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of items">
+      <td>{{item?.id}}</td>
+      <td>{{item?.name}}
+      <td>
+      <td>{{item?.mail}}
+      <td>
+    </tr>
+  </tbody>
+</table>
+<button class="btn btn-sm btn-danger" (click)="getLoad()">Load</button>
+<button class="btn btn-sm btn-danger" (click)="postLoad()">post Load</button>

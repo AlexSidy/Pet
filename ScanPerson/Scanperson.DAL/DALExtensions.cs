@@ -14,6 +14,8 @@ namespace ScanPerson.DAL
 		public static void AddDalServices(this IServiceCollection services, string connectionString)
 		{
 			services.AddScanPersonDbContexts(connectionString);
+
+			// override default VersionTable 
 			services.AddMigrations(connectionString);
 			services.UpdateDatabase();
 			services.AddInitializers();
@@ -36,7 +38,9 @@ namespace ScanPerson.DAL
 					// Set the connection string
 					.WithGlobalConnectionString(connectionString)
 					// Define the assembly containing the migrations
-					.ScanIn(typeof(InitialSheme).Assembly).For.Migrations())
+					.ScanIn(typeof(InitialSheme).Assembly).For.Migrations()
+				)
+				
 				// Enable logging to console in the FluentMigrator way
 				.AddLogging(lb => lb.AddFluentMigratorConsole())
 				.UpdateDatabase();
@@ -57,7 +61,6 @@ namespace ScanPerson.DAL
 		private static void AddInitializers(this IServiceCollection services)
 		{
 			services.AddAllImplementations<IInitializer>();
-			services.AddTransient<IInitializer, PersonInitializer>();
 		}
 
 		private static void InitData(this IServiceCollection services)

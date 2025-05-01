@@ -6,11 +6,9 @@ namespace Scanperson.DAL.Initializers
 {
 	internal class PersonInitializer(ScanPersonDbContext context) : IInitializer
 	{
-		private readonly ScanPersonDbContext _context = context;
-
 		public void Seed()
 		{
-			if (!_context!.Persons!.Any())
+			if (context.Persons?.Any() != true)
 			{
 				var persons = new[]
 				{
@@ -18,8 +16,8 @@ namespace Scanperson.DAL.Initializers
 					new PersonEntity { Name = "Jane Smith", Mail = "JaneSmith@mail.ru" }
 				};
 
-				_context!.Persons!.AddRange(persons);
-				_context.SaveChanges();
+				context!.Persons!.AddRange(persons);
+				context.SaveChanges();
 			}
 		}
 	}
