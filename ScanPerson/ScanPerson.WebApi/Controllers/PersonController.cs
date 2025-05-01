@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using ScanPerson.BusinessLogic.Services;
 using ScanPerson.Models.Requests;
 using ScanPerson.Models.Items;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ScanPerson.WebApi.Controllers
 {
@@ -17,6 +18,7 @@ namespace ScanPerson.WebApi.Controllers
 		}
 
 		[HttpGet(nameof(GetPersons))]
+		[Authorize]
         public IEnumerable<PersonItem>? GetPersons(
             [FromQuery] PersonRequest request,
             [FromServices] IPersonService service)
@@ -24,12 +26,12 @@ namespace ScanPerson.WebApi.Controllers
             return service.Query(request);
         }
 
-		[HttpPost(nameof(CreatePerson))]
-		public IEnumerable<PersonItem>? CreatePerson(
+		[HttpPost(nameof(GetPerson))]
+		public PersonItem? GetPerson(
 			[FromBody] PersonRequest request,
 			[FromServices] IPersonService service)
 		{
-			return service.Query(request);
+			return service.Find(request);
 		}
 	}
 }

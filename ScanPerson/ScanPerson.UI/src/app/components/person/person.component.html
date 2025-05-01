@@ -13,14 +13,14 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let itemx of items">
-      <td>{{itemx?.id}}</td>
-      <td>{{itemx?.name}}
+    <tr *ngFor="let item of items">
+      <td>{{item?.id}}</td>
+      <td>{{item?.name}}
       <td>
-      <td>{{itemx?.mail}}
+      <td>{{item?.mail}}
       <td>
     </tr>
   </tbody>
 </table>
-<button class="btn btn-sm btn-danger" (click)="load()">Load</button>
+<button class="btn btn-sm btn-danger" (click)="getLoad()">Load</button>
 <button class="btn btn-sm btn-danger" (click)="postLoad()">post Load</button>

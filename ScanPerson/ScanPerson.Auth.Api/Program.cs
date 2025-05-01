@@ -38,12 +38,12 @@ builder.Services
 		options.TokenValidationParameters = new TokenValidationParameters
 		{
 			ValidateIssuer = true,
-			ValidIssuer = jwtOptins!.Issuer,
+			ValidIssuer = jwtOptins.Issuer,
 			ValidateAudience = true,
 			ValidAudience = jwtOptins.Audience,
 			ValidateLifetime = true,
 			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptins.SecretKey)),
-			ValidateIssuerSigningKey = true,
+			ValidateIssuerSigningKey = true
 		};
 	});
 

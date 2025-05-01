@@ -6,5 +6,7 @@ namespace ScanPerson.BusinessLogic.Services
 	public interface IPersonService
 	{
 		PersonItem[]? Query(PersonRequest request);
+
+		PersonItem? Find(PersonRequest request);
 	}
 }

@@ -15,7 +15,14 @@ namespace ScanPerson.BusinessLogic.Services
 
 		public PersonItem[]? Query(PersonRequest request)
 		{
-			var result = _context.Persons?.Select(x => new PersonItem(x.Id, x.Name, x.Mail)).ToArray();
+			var result = _context.Persons?.Select(x => new PersonItem(x.Id, x.Name, x.Mail))?.ToArray();
+
+			return result;
+		}
+
+		public PersonItem? Find(PersonRequest request)
+		{
+			var result = _context.Persons?.Select(x => new PersonItem(x.Id, x.Name, x.Mail)).FirstOrDefault();
 
 			return result;
 		}

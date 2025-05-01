@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Person } from '../../models/items/person';
+import { PersonRequest } from '../../models/requests/person.request';
 import { WebApi } from '../../constants/constants';
 
 @Component({
@@ -24,7 +25,7 @@ export class PersonComponent {
     this.httpClient = httpClient;
   }
 
-  load() {
+  getLoad() {
     this.getItems().subscribe({
       next: (response) => {
         this.items = response;
@@ -40,7 +41,7 @@ export class PersonComponent {
   postLoad() {
     this.postItems().subscribe({
       next: (response) => {
-        this.items = response;
+        this.items = [response];
       },
       error: (e) => {
         console.log(e);
@@ -50,8 +51,8 @@ export class PersonComponent {
     });
   }
 
-  postItems(): Observable<Person[]> {
-    return this.httpClient.post(`${this.url}/CreatePerson`, {Id: 100}) as  Observable<Person[]>;
+  postItems(): Observable<Person> {
+    return this.httpClient.post(`${this.url}/GetPerson`, new PersonRequest('login', 'password', 'email')) as  Observable<Person>;
   }
 
   getItems(): Observable<Person[]> {
