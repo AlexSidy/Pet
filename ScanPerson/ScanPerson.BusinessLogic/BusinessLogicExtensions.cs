@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+
 using ScanPerson.BusinessLogic.Services;
 
 namespace ScanPerson.BusinessLogic

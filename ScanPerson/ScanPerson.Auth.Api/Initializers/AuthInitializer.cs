@@ -1,11 +1,16 @@
-﻿using Microsoft.AspNetCore.Identity;
-using ScanPerson.Auth.Api.Initializers.Interfaces;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using System.Security.Claims;
+
+using Microsoft.AspNetCore.Identity;
+
+using ScanPerson.Auth.Api.Initializers.Interfaces;
+using ScanPerson.Common.Resources;
 
 namespace ScanPerson.Auth.Api.Initializers;
 
 internal class AuthInitializer(
+		ILogger<AuthInitializer> logger,
 		UserManager<User> userManager,
 		RoleManager<Role> roleManager) : IInitializer
 {
@@ -13,6 +18,7 @@ internal class AuthInitializer(
 	{
 		try
 		{
+			logger.LogInformation(string.Format(Messages.StartedMethod, MethodBase.GetCurrentMethod()));
 			string[] roleNames = { "admin", "user" };
 			foreach (var roleName in roleNames)
 			{
@@ -23,7 +29,7 @@ internal class AuthInitializer(
 					await roleManager.CreateAsync(new Role(roleName));
 				}
 			}
-			
+
 			var users = new (string name, string mail, string role, string claim, string pass)[]
 			{
 				new ("admin", "admin@example.com", "admin", "CanEdit", "Admin123!"),
@@ -38,7 +44,7 @@ internal class AuthInitializer(
 					var newUser = new User { UserName = user.name, Email = user.mail, SecurityStamp = Guid.NewGuid().ToString() };
 					// create user
 					var createResult = await userManager.CreateAsync(newUser, user.pass);
-					if(!createResult.Succeeded)
+					if (!createResult.Succeeded)
 					{
 						throw new InvalidOperationException(string.Join(", ", createResult.Errors.Select(x => x.Description)));
 					}
@@ -69,15 +75,15 @@ internal class AuthInitializer(
 					{
 						claims.Add(new Claim("Role", role));
 					}
-					
+
 					await userManager.AddClaimsAsync(found, claims);
 				}
 			}
 		}
 		catch (Exception ex)
 		{
-			//TODO : in task #24 add logging
-			throw ex;
+			logger.LogError(ex, Messages.InitDataError);
+			// Add transaction rollback #35
 		}
 	}
 }

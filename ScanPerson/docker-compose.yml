@@ -109,6 +109,7 @@ services:
 
 networks:
   scanperson-network:
+    external: true
     driver: bridge
 
 volumes:

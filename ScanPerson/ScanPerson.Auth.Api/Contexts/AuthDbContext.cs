@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ScanPerson.Auth.Api.Migrations._2024_12;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
+using ScanPerson.Auth.Api.Migrations._2024_12;
 
 namespace ScanPerson.Auth.Api
 {

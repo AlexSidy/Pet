@@ -1,11 +1,13 @@
-﻿using FluentMigrator.Runner;
+﻿using System.Reflection;
+
+using FluentMigrator.Runner;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+
 using Scanperson.DAL.Contexts;
-using Scanperson.DAL.Initializers;
 using Scanperson.DAL.Initializers.Interfaces;
 using Scanperson.DAL.Migrations._2024_12;
-using System.Reflection;
 
 namespace ScanPerson.DAL
 {
@@ -40,12 +42,12 @@ namespace ScanPerson.DAL
 					// Define the assembly containing the migrations
 					.ScanIn(typeof(InitialSheme).Assembly).For.Migrations()
 				)
-				
+
 				// Enable logging to console in the FluentMigrator way
 				.AddLogging(lb => lb.AddFluentMigratorConsole())
 				.UpdateDatabase();
 		}
-		
+
 		private static void UpdateDatabase(this IServiceCollection services)
 		{
 			// Get the service provider

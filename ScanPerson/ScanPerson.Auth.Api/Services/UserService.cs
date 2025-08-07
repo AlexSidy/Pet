@@ -1,20 +1,24 @@
-﻿using Microsoft.AspNetCore.Identity;
-using ScanPerson.Auth.Api.Resources;
+﻿using System.Reflection;
+
+using Microsoft.AspNetCore.Identity;
+
 using ScanPerson.Auth.Api.Services.Base;
 using ScanPerson.Auth.Api.Services.Interfaces;
+using ScanPerson.Common.Resources;
 using ScanPerson.Models.Requests.Auth;
 using ScanPerson.Models.Responses;
 
 namespace ScanPerson.Auth.Api.Services
 {
 	public class UserService(
-		//TODO в задаче #24 добавить логирование
 		ILogger<UserService> logger,
 		UserManager<User> userManager,
 		ITokenProvider jwtProvider) : OperationBase, IUserService
 	{
 		public async Task<ScanPersonResponse> RegisterAsync(RegisterRequest request)
 		{
+			logger.LogInformation(string.Format(Messages.StartedMethod, MethodBase.GetCurrentMethod()));
+
 			var found = await userManager.FindByEmailAsync(request.Email);
 			if (found == null)
 			{

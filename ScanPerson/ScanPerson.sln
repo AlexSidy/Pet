@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.BusinessLogic", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.Auth.Api", "ScanPerson.Auth.Api\ScanPerson.Auth.Api.csproj", "{D54673F9-C2F9-4626-B46E-FA74BC919E6E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.Common", "ScanPerson.Common\ScanPerson.Common.csproj", "{178DACE8-C5EA-439A-A431-F618987788A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{D54673F9-C2F9-4626-B46E-FA74BC919E6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D54673F9-C2F9-4626-B46E-FA74BC919E6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D54673F9-C2F9-4626-B46E-FA74BC919E6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{178DACE8-C5EA-439A-A431-F618987788A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{178DACE8-C5EA-439A-A431-F618987788A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{178DACE8-C5EA-439A-A431-F618987788A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{178DACE8-C5EA-439A-A431-F618987788A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

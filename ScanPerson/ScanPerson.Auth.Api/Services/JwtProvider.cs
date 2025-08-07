@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using ScanPerson.Auth.Api.Services.Interfaces;
-using ScanPerson.Models.Contracts.Auth;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+
+using ScanPerson.Auth.Api.Services.Interfaces;
+using ScanPerson.Models.Contracts.Auth;
 
 namespace ScanPerson.Auth.Api.Services
 {

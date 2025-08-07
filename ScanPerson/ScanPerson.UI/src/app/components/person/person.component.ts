@@ -52,11 +52,11 @@ export class PersonComponent {
   }
 
   postItems(): Observable<Person> {
-    return this.httpClient.post(`${this.url}/GetPerson`, new PersonRequest('login', 'password', 'email')) as  Observable<Person>;
+    return this.httpClient.post(`${this.url}/GetPersonAsync`, new PersonRequest('login', 'password', 'email')) as  Observable<Person>;
   }
 
   getItems(): Observable<Person[]> {
-    return this.httpClient.get<Person[]>(`${this.url}/GetPersons`) as Observable<Person[]>;
+    return this.httpClient.get<Person[]>(`${this.url}/GetPersonsAsync`) as Observable<Person[]>;
   }
 }
 

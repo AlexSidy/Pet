@@ -5,3 +5,5 @@
 4. Запускаем команду в терминале docker build -t sidralex/scanpersonwebapi:latest .
 5. Запускаем докер  docker run --rm -it -p 8080:8080 -e ASPNETCORE_HTTP_PORTS=8080 sidralex/scanpersonwebapi:latest
 6. Переходим на страницу http://localhost:8000/
+
+7. Необходимо создать единую сеть для всехконтейнеров командой docker network create scanperson-network

@@ -1,15 +1,36 @@
-using ScanPerson.Auth.Api;
+using System.Text;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
+
+using ScanPerson.Auth.Api;
+using ScanPerson.Common.Resources;
 using ScanPerson.Models.Contracts.Auth;
-using ScanPerson.Auth.Api.Resources;
+
+using Serilog;
+using Serilog.Sinks.Graylog;
+using Serilog.Sinks.Graylog.Core.Transport;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString(DbSection)
 	?? throw new InvalidOperationException(string.Format(Messages.SectionNotFound, DbSection));
 var jwtOptins = builder.Configuration.GetSection(JwtOptions.AppSettingsSection).Get<JwtOptions>()
 	?? throw new InvalidOperationException(string.Format(Messages.SectionNotFound, JwtOptions.AppSettingsSection));
+
+// Ќастройка Serilog
+Log.Logger = new LoggerConfiguration()
+	.WriteTo.Graylog(new GraylogSinkOptions
+	{
+		HostnameOrAddress = builder.Configuration.GetSection("Graylog").GetValue<string>("Host") ?? "graylog", // адрес вашего Graylog сервера
+		Port = builder.Configuration.GetSection("Graylog").GetValue<int?>("Port") ?? 12201, // порт GELF UDP/TCP (обычно 12201)
+		Facility = ProjectName, // название вашего приложени€
+		MinimumLogEventLevel = Serilog.Events.LogEventLevel.Information,
+		// ћожно добавить дополнительные настройки, например, пароли или протоколы
+		// ћожно добавить обработчик ошибок
+		TransportType = TransportType.Tcp // или Udp, в зависимости от настроек
+	})
+	.CreateLogger();
+builder.Host.UseSerilog();
 
 // Add services to the container.
 #region [Addition services]
@@ -73,4 +94,5 @@ partial class Program
 {
 	public const string DbSection = "AuthDb";
 	public const string AuthApi = "authApi";
+	public const string ProjectName = "ScanPerson.Auth.Api";
 }

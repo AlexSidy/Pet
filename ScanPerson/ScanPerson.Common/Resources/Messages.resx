@@ -120,4 +120,19 @@
   <data name="SectionNotFound" xml:space="preserve">
     <value>Section {0} not found or have error.</value>
   </data>
+  <data name="LoginOrPasswordHasError" xml:space="preserve">
+    <value>Login or password has error.</value>
+  </data>
+  <data name="UserAlredyExist" xml:space="preserve">
+    <value>Such user is exist.</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>User not found.</value>
+  </data>
+  <data name="StartedMethod" xml:space="preserve">
+    <value>Method called {0} started.</value>
+  </data>
+  <data name="InitDataError" xml:space="preserve">
+    <value>An error occurred while initializing data.</value>
+  </data>
 </root>

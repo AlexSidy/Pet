@@ -1,26 +1,32 @@
+using System.Reflection;
+
 using Microsoft.AspNetCore.Mvc;
-using ScanPerson.Models.Requests.Auth;
+
 using ScanPerson.Auth.Api.Services.Interfaces;
+using ScanPerson.Common.Controllers;
+using ScanPerson.Common.Resources;
+using ScanPerson.Models.Requests.Auth;
 
 namespace ScanPerson.Auth.Api.Controllers
 {
 	[ApiController]
 	[Route(Program.AuthApi + "/[controller]")]
 	public class AuthController(
-		//TODO: in task #24 add logging
 		ILogger<AuthController> logger,
 		IUserService userService
-		) : AuthControllerBase
+		) : ScanPersonControllerBase
 	{
 		[HttpPost(nameof(RegisterAsync))]
 		public async Task<IResult> RegisterAsync([FromBody] RegisterRequest request)
 		{
+			logger.LogInformation(string.Format(Messages.StartedMethod, MethodBase.GetCurrentMethod()));
 			return GetResult(await userService.RegisterAsync(request));
 		}
 
 		[HttpPost(nameof(LoginAsync))]
 		public async Task<IResult> LoginAsync([FromBody] LoginRequest request)
 		{
+			logger.LogInformation(string.Format(Messages.StartedMethod, MethodBase.GetCurrentMethod()));
 			return GetResult(await userService.LoginAsync(request), null, Results.Unauthorized());
 		}
 	}
