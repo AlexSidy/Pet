@@ -1,10 +1,13 @@
-﻿using FluentMigrator.Runner;
+﻿using System.Reflection;
+
+using FluentMigrator.Runner;
+
 using Microsoft.EntityFrameworkCore;
+
 using ScanPerson.Auth.Api.Initializers.Interfaces;
 using ScanPerson.Auth.Api.Migrations._2024_12;
 using ScanPerson.Auth.Api.Services;
 using ScanPerson.Auth.Api.Services.Interfaces;
-using System.Reflection;
 
 namespace ScanPerson.Auth.Api
 {

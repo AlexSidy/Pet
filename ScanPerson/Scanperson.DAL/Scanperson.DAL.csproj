@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ScanPerson.Common\ScanPerson.Common.csproj" />
     <ProjectReference Include="..\ScanPerson.Models\ScanPerson.Models.csproj" />
   </ItemGroup>
 

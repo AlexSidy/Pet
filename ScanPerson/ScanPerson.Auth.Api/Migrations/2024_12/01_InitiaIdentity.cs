@@ -1,5 +1,6 @@
-﻿using FluentMigrator;
-using System.Data;
+﻿using System.Data;
+
+using FluentMigrator;
 
 namespace ScanPerson.Auth.Api.Migrations._2024_12
 {

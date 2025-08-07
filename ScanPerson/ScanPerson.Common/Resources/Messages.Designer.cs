@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ScanPerson.WebApi.Resources {
+namespace ScanPerson.Common.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace ScanPerson.WebApi.Resources {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ScanPerson.WebApi.Resources.Messages", typeof(Messages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ScanPerson.Common.Resources.Messages", typeof(Messages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,11 +61,56 @@ namespace ScanPerson.WebApi.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An error occurred while initializing data..
+        /// </summary>
+        public static string InitDataError {
+            get {
+                return ResourceManager.GetString("InitDataError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login or password has error..
+        /// </summary>
+        public static string LoginOrPasswordHasError {
+            get {
+                return ResourceManager.GetString("LoginOrPasswordHasError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Section {0} not found or have error..
         /// </summary>
         public static string SectionNotFound {
             get {
                 return ResourceManager.GetString("SectionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method called {0} started..
+        /// </summary>
+        public static string StartedMethod {
+            get {
+                return ResourceManager.GetString("StartedMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Such user is exist..
+        /// </summary>
+        public static string UserAlredyExist {
+            get {
+                return ResourceManager.GetString("UserAlredyExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User not found..
+        /// </summary>
+        public static string UserNotFound {
+            get {
+                return ResourceManager.GetString("UserNotFound", resourceCulture);
             }
         }
     }

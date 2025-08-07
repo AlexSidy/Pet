@@ -11,7 +11,7 @@ namespace Scanperson.DAL.Migrations._2024_12
 		{
 			Create.Schema(WebAppSchema);
 		}
-		
+
 		public override void Down()
 		{
 			Delete.Schema(WebAppSchema);

@@ -1,16 +1,35 @@
-using ScanPerson.DAL;
-using ScanPerson.BusinessLogic;
+using System.Text;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
+
+using ScanPerson.BusinessLogic;
+using ScanPerson.Common.Resources;
+using ScanPerson.DAL;
 using ScanPerson.Models.Contracts.Auth;
-using ScanPerson.WebApi.Resources;
+
+using Serilog;
+using Serilog.Sinks.Graylog;
+using Serilog.Sinks.Graylog.Core.Transport;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ScanPersonDb") ??
-    throw new InvalidOperationException("Connection string 'ScanPersonDb' not found.");
+	throw new InvalidOperationException("Connection string 'ScanPersonDb' not found.");
 var jwtOptins = builder.Configuration.GetSection(JwtOptions.AppSettingsSection).Get<JwtOptions>()
 	?? throw new InvalidOperationException(string.Format(Messages.SectionNotFound, JwtOptions.AppSettingsSection));
+
+// Setup Serilog
+Log.Logger = new LoggerConfiguration()
+	.WriteTo.Graylog(new GraylogSinkOptions
+	{
+		HostnameOrAddress = builder.Configuration.GetSection("Graylog").GetValue<string>("Host") ?? "graylog", // graylog`s hostname
+		Port = builder.Configuration.GetSection("Graylog").GetValue<int?>("Port") ?? 12201, // port GELF UDP/TCP (ussualy 12201)
+		Facility = ProjectName, // project name
+		MinimumLogEventLevel = Serilog.Events.LogEventLevel.Information,
+		TransportType = TransportType.Tcp
+	})
+	.CreateLogger();
+builder.Host.UseSerilog();
 
 // Add services to the container.
 #region [Addition services]
@@ -21,7 +40,7 @@ builder.Services.AddCors(options =>
 {
 	options.AddPolicy("AllowLocalhost", builder =>
 	{
-		builder.WithOrigins(["http://localhost:4200", "https://localhost:4200",	"http://scanperson.ui:4200","https://scanperson.ui:4200"])
+		builder.WithOrigins(["http://localhost:4200", "https://localhost:4200", "http://scanperson.ui:4200", "https://scanperson.ui:4200"])
 			   .AllowAnyHeader() // Разрешаем любые заголовки
 			   .AllowAnyMethod(); // Разрешаем любые методы
 	});
@@ -55,9 +74,9 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    app.UseDeveloperExceptionPage();
+	app.UseSwagger();
+	app.UseSwaggerUI();
+	app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();
@@ -74,4 +93,5 @@ app.Run();
 partial class Program
 {
 	public const string WebApi = "webApi";
+	public const string ProjectName = "ScanPerson.WebApi";
 }

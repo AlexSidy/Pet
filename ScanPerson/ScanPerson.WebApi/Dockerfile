@@ -14,6 +14,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["ScanPerson.WebApi/ScanPerson.WebApi.csproj", "ScanPerson.WebApi/"]
 COPY ["ScanPerson.Models/ScanPerson.Models.csproj", "ScanPerson.Models/"]
+COPY ["ScanPerson.Models/ScanPerson.Common.csproj", "ScanPerson.Common/"]
 COPY ["Scanperson.DAL/Scanperson.DAL.csproj", "Scanperson.DAL/"]
 COPY ["ScanPerson.BusinessLogic/ScanPerson.BusinessLogic.csproj", "ScanPerson.BusinessLogic/"]
 RUN dotnet restore "ScanPerson.WebApi/ScanPerson.WebApi.csproj"

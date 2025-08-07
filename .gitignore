@@ -4,6 +4,7 @@
 
 /.vs
 /ScanPerson/.vs/
+/Graylog/.vs/
 /ScanPerson/ScanPerson.WebApi/wwwroot
 
 # Игнорировать папки сборки

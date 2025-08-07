@@ -15,7 +15,7 @@ namespace Scanperson.DAL.Migrations._2024_12
 				.WithColumn("Name").AsString()
 				.WithColumn("Mail").AsString();
 		}
-		
+
 		public override void Down()
 		{
 			Delete.Table(TableName).InSchema(InitialSheme.WebAppSchema);

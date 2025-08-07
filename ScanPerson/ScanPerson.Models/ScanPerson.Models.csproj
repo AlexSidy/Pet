@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>ScanPersonModelsSdk</PackageId>
-    <Version>1.0.3</Version>
+    <Version>1.0.6</Version>
     <Authors>AlexSi</Authors>
     <Company>Home</Company>
     <Description>Scan person`s models</Description>

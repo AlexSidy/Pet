@@ -1,15 +1,34 @@
-using ScanPerson.Auth.Api;
+using System.Text;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
+
+using ScanPerson.Auth.Api;
+using ScanPerson.Common.Resources;
 using ScanPerson.Models.Contracts.Auth;
-using ScanPerson.Auth.Api.Resources;
+
+using Serilog;
+using Serilog.Sinks.Graylog;
+using Serilog.Sinks.Graylog.Core.Transport;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString(DbSection)
 	?? throw new InvalidOperationException(string.Format(Messages.SectionNotFound, DbSection));
 var jwtOptins = builder.Configuration.GetSection(JwtOptions.AppSettingsSection).Get<JwtOptions>()
 	?? throw new InvalidOperationException(string.Format(Messages.SectionNotFound, JwtOptions.AppSettingsSection));
+
+// Setup Serilog
+Log.Logger = new LoggerConfiguration()
+	.WriteTo.Graylog(new GraylogSinkOptions
+	{
+		HostnameOrAddress = builder.Configuration.GetSection("Graylog").GetValue<string>("Host") ?? "graylog", // graylog`s hostname
+		Port = builder.Configuration.GetSection("Graylog").GetValue<int?>("Port") ?? 12201, // port GELF UDP/TCP (ussualy 12201)
+		Facility = ProjectName, // project name
+		MinimumLogEventLevel = Serilog.Events.LogEventLevel.Information,
+		TransportType = TransportType.Tcp
+	})
+	.CreateLogger();
+builder.Host.UseSerilog();
 
 // Add services to the container.
 #region [Addition services]
@@ -73,4 +92,5 @@ partial class Program
 {
 	public const string DbSection = "AuthDb";
 	public const string AuthApi = "authApi";
+	public const string ProjectName = "ScanPerson.Auth.Api";
 }

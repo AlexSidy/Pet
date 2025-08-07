@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Response from operation with result object.
 	/// </summary>
-	public class ScanPersonResultResponse<TResult>: ScanPersonResponse
+	public class ScanPersonResultResponse<TResult> : ScanPersonResponse
 		where TResult : class
 	{
 		public ScanPersonResultResponse(TResult result) : base()

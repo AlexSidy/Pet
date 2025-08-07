@@ -20,7 +20,7 @@ namespace ScanPerson.Models.Responses
 		/// </summary>
 		public ScanPersonResponse(IEnumerable<string> errors)
 		{
-			IsSuccess= false;
+			IsSuccess = false;
 			Errors = errors;
 		}
 
