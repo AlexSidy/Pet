@@ -1,9 +1,7 @@
-using System.Diagnostics;
 using System.Reflection;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 using ScanPerson.BusinessLogic.Services;
 using ScanPerson.Common.Controllers;
@@ -35,17 +33,10 @@ namespace ScanPerson.WebApi.Controllers
 			[FromBody] PersonRequest request,
 			[FromServices] IPersonService service)
 		{
-			try
-			{
-				logger.LogInformation(string.Format(Messages.StartedMethod, MethodBase.GetCurrentMethod()));
-				var result = new ScanPersonResultResponse<PersonItem?>(service.Find(request));
+			logger.LogInformation(string.Format(Messages.StartedMethod, MethodBase.GetCurrentMethod()));
+			var result = new ScanPersonResultResponse<PersonItem?>(service.Find(request));
 
-				return GetResult(result);
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
+			return GetResult(result);
 		}
 	}
 }
