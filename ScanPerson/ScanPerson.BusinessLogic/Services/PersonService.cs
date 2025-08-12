@@ -7,6 +7,7 @@ using Scanperson.DAL.Contexts;
 using ScanPerson.Common.Resources;
 using ScanPerson.Models.Items;
 using ScanPerson.Models.Requests;
+using ScanPerson.Models.Responses;
 
 namespace ScanPerson.BusinessLogic.Services
 {
@@ -14,18 +15,20 @@ namespace ScanPerson.BusinessLogic.Services
 		ILogger<PersonService> logger,
 		ScanPersonDbContext context) : IPersonService
 	{
-		public PersonItem[]? Query(PersonRequest request)
+		public ScanPersonResultResponse<PersonItem[]?> Query(PersonRequest request)
 		{
 			logger.LogInformation(string.Format(Messages.StartedMethod, MethodBase.GetCurrentMethod()));
-			var result = context.Persons?.Select(x => new PersonItem(x.Id, x.Name, x.Mail))?.ToArray();
+			var result = new ScanPersonResultResponse<PersonItem[]?>(context.Persons?.Select(x => new PersonItem(x.Id, x.Name, x.Mail))?.ToArray());
 
 			return result;
 		}
 
-		public PersonItem? Find(PersonRequest request)
+		public ScanPersonResultResponse<PersonItem?>? Find(PersonRequest request)
 		{
 			logger.LogInformation(string.Format(Messages.StartedMethod, MethodBase.GetCurrentMethod()));
-			var result = context.Persons?.Select(x => new PersonItem(x.Id, x.Name, x.Mail)).FirstOrDefault();
+			var result = context.Persons?
+				.Select(x => new ScanPersonResultResponse<PersonItem?>(new PersonItem(x.Id, x.Name, x.Mail)))
+				.FirstOrDefault();
 
 			return result;
 		}

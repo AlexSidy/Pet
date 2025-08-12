@@ -8,9 +8,10 @@ namespace ScanPerson.Common.Controllers
 	[Controller]
 	public class ScanPersonControllerBase : ControllerBase
 	{
-		protected IResult GetResult(ScanPersonResponse response, IResult? succces = null, IResult? fail = null)
+		protected IResult GetResult<TResult>(TResult response, IResult? succces = null, IResult? fail = null)
+			where TResult : ScanPersonResponse?
 		{
-			return response.IsSuccess
+			return response!.IsSuccess
 				? succces ?? Results.Ok(response)
 				: fail ?? Results.BadRequest(response.Error);
 		}

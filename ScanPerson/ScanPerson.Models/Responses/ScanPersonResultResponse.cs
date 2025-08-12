@@ -1,4 +1,6 @@
-﻿namespace ScanPerson.Models.Responses
+﻿using System.Collections.Generic;
+
+namespace ScanPerson.Models.Responses
 {
 	/// <summary>
 	/// Response from operation with result object.
@@ -6,9 +8,23 @@
 	public class ScanPersonResultResponse<TResult> : ScanPersonResponse
 		where TResult : class
 	{
+		/// <summary>
+		/// Parametreless constructor.
+		/// </summary>
+		public ScanPersonResultResponse() : base()
+		{
+		}
+
 		public ScanPersonResultResponse(TResult result) : base()
 		{
 			Result = result;
+		}
+
+		/// <summary>
+		/// Constructor for unsuccess response with errors.
+		/// </summary>
+		public ScanPersonResultResponse(IEnumerable<string> errors) : base(errors)
+		{
 		}
 
 		/// <summary>
