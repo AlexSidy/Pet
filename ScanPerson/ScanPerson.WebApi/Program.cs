@@ -7,12 +7,15 @@ using ScanPerson.BusinessLogic;
 using ScanPerson.Common.Resources;
 using ScanPerson.DAL;
 using ScanPerson.Models.Contracts.Auth;
+using ScanPerson.WebApi.Middlewares.Exceptions;
 
 using Serilog;
 using Serilog.Sinks.Graylog;
 using Serilog.Sinks.Graylog.Core.Transport;
 
 var builder = WebApplication.CreateBuilder(args);
+var configPath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
+builder.Configuration.AddJsonFile(configPath);
 var connectionString = builder.Configuration.GetConnectionString("ScanPersonDb") ??
 	throw new InvalidOperationException("Connection string 'ScanPersonDb' not found.");
 var jwtOptins = builder.Configuration.GetSection(JwtOptions.AppSettingsSection).Get<JwtOptions>()
@@ -71,14 +74,14 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 #region [Usage services]
-// Configure the HTTP request pipeline.
+// Configur middleware pipeline.
 if (app.Environment.IsDevelopment())
 {
 	app.UseSwagger();
 	app.UseSwaggerUI();
-	app.UseDeveloperExceptionPage();
 }
 
+app.UseExceptionHandlerMiddleware();
 app.UseHttpsRedirection();
 app.UseRouting();
 
@@ -90,7 +93,7 @@ app.MapControllers();
 
 app.Run();
 
-partial class Program
+public partial class Program
 {
 	public const string WebApi = "webApi";
 	public const string ProjectName = "ScanPerson.WebApi";

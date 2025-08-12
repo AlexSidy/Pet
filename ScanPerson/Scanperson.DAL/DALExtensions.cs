@@ -51,7 +51,7 @@ namespace ScanPerson.DAL
 		private static void UpdateDatabase(this IServiceCollection services)
 		{
 			// Get the service provider
-			var serviceProvider = services.BuildServiceProvider(false); ;
+			var serviceProvider = services.BuildServiceProvider(false);
 
 			// Instantiate the runner
 			var runner = serviceProvider.GetRequiredService<IMigrationRunner>();

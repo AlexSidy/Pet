@@ -2,8 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
+	<Version>1.0.1</Version>
+	<PackageId>ScanPerson.Common.Sdk</PackageId>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<Authors>AlexSi</Authors>
+	<Company>Home</Company>
+	<Description>Scan person`s common logic</Description>
+	<PackageLicenseFile>LICENSE.TXT</PackageLicenseFile>
+	<PackageLicense>MIT</PackageLicense>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,10 +34,24 @@
   </ItemGroup>
 
   <ItemGroup>
+	  <None Include="licenses\LICENSE.TXT" Pack="true" PackagePath="" />
+  </ItemGroup>
+	
+  <ItemGroup>
+	  <None Update="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+	<ItemGroup>
     <EmbeddedResource Update="Resources\Messages.resx">
       <LastGenOutput>Messages.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
