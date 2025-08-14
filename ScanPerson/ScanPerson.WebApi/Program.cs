@@ -74,7 +74,7 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 #region [Usage services]
-// Configur middleware pipeline.
+// Configure middleware pipeline.
 if (app.Environment.IsDevelopment())
 {
 	app.UseSwagger();
