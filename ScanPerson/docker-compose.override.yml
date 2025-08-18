@@ -1,0 +1,40 @@
+services:
+  scanperson.ui:
+    environment:
+        - SCANPERSON_AUTH_API_DOMEN=${SCANPERSON_AUTH_API_DOMEN}
+        - SCANPERSON_WEBAPI_DOMEN=${SCANPERSON_WEBAPI_DOMEN}
+        - ASPNETCORE_ENVIRONMENT=Development
+        - CHOKIDAR_USEPOLLING=true 
+      
+  scanperson.webapi:
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_HTTP_PORTS=8080
+        - ASPNETCORE_HTTPS_PORTS=8081
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}
+        - Allowed_Hosts=${Allowed_Hosts}
+
+  scanperson.auth.api:
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_HTTP_PORTS=8090
+        - ASPNETCORE_HTTPS_PORTS=8091
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}
+        - Allowed_Hosts=${Allowed_Hosts}
+
+  scanpersondb:
+    environment:
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        POSTGRES_DB: ${POSTGRES_DB}
+        PGDATA: ${PGDATA}
+
+  pgadmin:
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_CONFIG_SERVER_MODE: ${PGADMIN_CONFIG_SERVER_MODE}
+
+      

@@ -12,6 +12,9 @@ using Serilog.Sinks.Graylog;
 using Serilog.Sinks.Graylog.Core.Transport;
 
 var builder = WebApplication.CreateBuilder(args);
+var environmentName = builder.Environment.EnvironmentName;
+var configPath = Path.Combine(AppContext.BaseDirectory, $"appsettings.{environmentName}.json");
+builder.Configuration.AddJsonFile(configPath);
 var connectionString = builder.Configuration.GetConnectionString(DbSection)
 	?? throw new InvalidOperationException(string.Format(Messages.SectionNotFound, DbSection));
 var jwtOptins = builder.Configuration.GetSection(JwtOptions.AppSettingsSection).Get<JwtOptions>()
@@ -32,13 +35,13 @@ builder.Host.UseSerilog();
 
 // Add services to the container.
 #region [Addition services]
-builder.Services.AddSingleton(jwtOptins);
 builder.Services.AddScanPersonAuth(connectionString);
+var allowedHosts = builder.Configuration.GetValue<string>("Allowed_Hosts")?.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries) ?? [];
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy("AllowLocalhost", builder =>
+	options.AddPolicy("MyTrustedHosts", builder =>
 	{
-		builder.WithOrigins(["http://localhost:4200", "https://localhost:4200", "http://scanperson.ui:4200", "https://scanperson.ui:4200"])
+		builder.WithOrigins(allowedHosts)
 			   .AllowAnyHeader() // Разрешаем любые заголовки
 			   .AllowAnyMethod(); // Разрешаем любые методы
 	});
@@ -79,7 +82,7 @@ if (app.Environment.IsDevelopment())
 	app.UseDeveloperExceptionPage();
 }
 
-app.UseCors("AllowLocalhost");
+app.UseCors("MyTrustedHosts");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

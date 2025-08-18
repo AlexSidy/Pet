@@ -14,7 +14,8 @@ using Serilog.Sinks.Graylog;
 using Serilog.Sinks.Graylog.Core.Transport;
 
 var builder = WebApplication.CreateBuilder(args);
-var configPath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
+var environmentName = builder.Environment.EnvironmentName;
+var configPath = Path.Combine(AppContext.BaseDirectory, $"appsettings.{environmentName}.json");
 builder.Configuration.AddJsonFile(configPath);
 var connectionString = builder.Configuration.GetConnectionString("ScanPersonDb") ??
 	throw new InvalidOperationException("Connection string 'ScanPersonDb' not found.");
@@ -39,11 +40,12 @@ builder.Host.UseSerilog();
 builder.Services.AddDalServices(connectionString);
 builder.Services.AddBusinessLogicServices();
 
+var allowedHosts = builder.Configuration.GetValue<string>("Allowed_Hosts")?.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries) ?? [];
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy("AllowLocalhost", builder =>
+	options.AddPolicy("MyTrustedHosts", builder =>
 	{
-		builder.WithOrigins(["http://localhost:4200", "https://localhost:4200", "http://scanperson.ui:4200", "https://scanperson.ui:4200"])
+		builder.WithOrigins(allowedHosts)
 			   .AllowAnyHeader() // Разрешаем любые заголовки
 			   .AllowAnyMethod(); // Разрешаем любые методы
 	});
@@ -85,7 +87,7 @@ app.UseExceptionHandlerMiddleware();
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseCors("AllowLocalhost");
+app.UseCors("MyTrustedHosts");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

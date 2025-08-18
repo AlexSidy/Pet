@@ -13,7 +13,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["ScanPerson.Auth.Api/ScanPerson.Auth.Api.csproj", "ScanPerson.Auth.Api/"]
 COPY ["ScanPerson.Models/ScanPerson.Models.csproj", "ScanPerson.Models/"]
-COPY ["ScanPerson.Models/ScanPerson.Common.csproj", "ScanPerson.Common/"]
+COPY ["ScanPerson.Common/ScanPerson.Common.csproj", "ScanPerson.Common/"]
 RUN dotnet restore "ScanPerson.Auth.Api/ScanPerson.Auth.Api.csproj"
 COPY . .
 WORKDIR "/src/ScanPerson.Auth.Api"
@@ -27,5 +27,7 @@ RUN dotnet publish "ScanPerson.Auth.Api.csproj" -c $BUILD_CONFIGURATION -o /app/
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "ScanPerson.Auth.Api.dll"]
+COPY --from=publish /app/publish ./
+#COPY --from=publish /app/publish/ScanPerson.Auth.Api.dll .
+#ENTRYPOINT ["dotnet", "ScanPerson.Auth.Api.dll"]
+ENTRYPOINT ["dotnet", "/app/ScanPerson.Auth.Api.dll"]

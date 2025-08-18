@@ -9,7 +9,7 @@ Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "ScanPerson.UI", "ScanPerson
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{D7EE9B5B-50D8-4005-9624-D38D27E3A423}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scanperson.DAL", "Scanperson.DAL\Scanperson.DAL.csproj", "{D6520A4E-E4ED-4074-8B46-B5D3F05AB48C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.DAL", "Scanperson.DAL\ScanPerson.DAL.csproj", "{D6520A4E-E4ED-4074-8B46-B5D3F05AB48C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.Models", "ScanPerson.Models\ScanPerson.Models.csproj", "{D78251DE-3C4F-432D-A772-830100891C5B}"
 EndProject

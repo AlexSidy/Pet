@@ -33,4 +33,8 @@
     <ProjectReference Include="..\ScanPerson.Models\ScanPerson.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="https\" />
+  </ItemGroup>
+
 </Project>

@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { Person } from '../../models/items/person';
 import { PersonRequest } from '../../models/requests/person.request';
 import { WebApi } from '../../constants/constants';
+import { ScanPersonResultResponse } from "../../models/responses/scan.person.result.response";
 
 @Component({
   selector: 'app-home',
@@ -28,7 +29,9 @@ export class PersonComponent {
   getLoad() {
     this.getItems().subscribe({
       next: (response) => {
-        this.items = response;
+        if (response.isSuccess) {
+          this.items = [...response.result];
+        }
       },
       error: (e) => {
         console.log(e);
@@ -40,23 +43,26 @@ export class PersonComponent {
 
   postLoad() {
     this.postItems().subscribe({
-      next: (response) => {
-        this.items = [response];
+      next: (response : ScanPersonResultResponse): void => {
+        if (response.isSuccess) {
+          this.items = [response.result];
+        }
       },
-      error: (e) => {
+      error: (e): void => {
+        alert('Failed to register. Please try again later:' + e.error);
         console.log(e);
       },
-      complete: () => {
+      complete: (): void => {
       }
     });
   }
 
-  postItems(): Observable<Person> {
-    return this.httpClient.post(`${this.url}/GetPersonAsync`, new PersonRequest('login', 'password', 'email')) as  Observable<Person>;
+  postItems(): Observable<ScanPersonResultResponse> {
+    return this.httpClient.post(`${this.url}/GetPersonAsync`, new PersonRequest('login', 'password', 'email')) as  Observable<ScanPersonResultResponse>;
   }
 
-  getItems(): Observable<Person[]> {
-    return this.httpClient.get<Person[]>(`${this.url}/GetPersonsAsync`) as Observable<Person[]>;
+  getItems(): Observable<ScanPersonResultResponse> {
+    return this.httpClient.get<ScanPersonResultResponse>(`${this.url}/GetPersonsAsync`) as Observable<ScanPersonResultResponse>;
   }
 }
 

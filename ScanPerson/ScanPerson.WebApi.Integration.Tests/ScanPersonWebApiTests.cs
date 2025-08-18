@@ -2,6 +2,8 @@
 using System.Net.Http.Json;
 using System.Text;
 
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -34,6 +36,7 @@ namespace ScanPerson.WebApi.Integration.Tests
 			_factory = new WebApplicationFactory<Program>()
 				.WithWebHostBuilder(builder =>
 				{
+					builder.UseEnvironment("Test");
 					builder.ConfigureServices(services =>
 					{
 						// Удаляем реальный сервис
