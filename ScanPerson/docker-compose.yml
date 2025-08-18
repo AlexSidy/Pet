@@ -1,7 +1,7 @@
 services:
   scanperson.ui:
     container_name: scanpersonui
-    image: ${DOCKER_REGISTRY-}scanpersonui
+    image: scanpersonui
     restart: "no"
     profiles: [all, ui]
     build:
@@ -10,9 +10,9 @@ services:
     depends_on:
         - scanperson.webapi
     environment:
-        - SCANPERSON_AUTH_API_DOMEN=scanperson.auth.api
-        - SCANPERSON_WEBAPI_DOMEN=scanperson.webapi
-        - ASPNETCORE_ENVIRONMENT=Development
+        - SCANPERSON_AUTH_API_DOMEN=${SCANPERSON_AUTH_API_DOMEN}
+        - SCANPERSON_WEBAPI_DOMEN=${SCANPERSON_WEBAPI_DOMEN}
+        - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
         - CHOKIDAR_USEPOLLING=true 
     ports:
         - 4200:4200
@@ -25,7 +25,7 @@ services:
       
   scanperson.webapi:
     container_name: scanpersonwebapi
-    image: ${DOCKER_REGISTRY-}scanpersonwebapi
+    image: scanpersonwebapi
     restart: "no"
     profiles: [all, webApi, postgres]
     build:
@@ -34,22 +34,24 @@ services:
     depends_on:
         - scanpersondb
     environment:
-        - SCANPERSON_UI_DOMEN=scanperson.ui
-        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
         - ASPNETCORE_HTTP_PORTS=8080
         - ASPNETCORE_HTTPS_PORTS=8081
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}
+        - Allowed_Hosts=${Allowed_Hosts}
+        - JwtOptions__SecretKey=${JwtOptions__SecretKey}
     ports:
         - 8080:8080 # HTTP
         - 8081:8081 # HTTPS
-    # volumes:
-        #- ./ScanPerson.WebApi:/app
-        #- ~/.vsdbg:/remote_debugger:rw
+    volumes:
+        - ./ScanPerson.WebApi/https/cert.pfx:/https/cert.pfx
     networks:
         - scanperson-network
 
   scanperson.auth.api:
     container_name:  scanpersonauthapi
-    image: ${DOCKER_REGISTRY-}scanpersonauthapi
+    image: scanpersonauthapi
     restart: "no"
     profiles: [all, webApi, auth]
     build:
@@ -58,16 +60,18 @@ services:
     depends_on:
         - scanpersondb
     environment:
-        - SCANPERSON_UI_DOMEN=scanperson.ui
-        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
         - ASPNETCORE_HTTP_PORTS=8090
         - ASPNETCORE_HTTPS_PORTS=8091
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}
+        - Allowed_Hosts=${Allowed_Hosts}
+        - JwtOptions__SecretKey=${JwtOptions__SecretKey}
     ports:
         - 8090:8090
         - 8091:8091
-    # volumes:
-        #- ./ScanPerson.Auth.Api:/app
-        #- ~/.vsdbg:/remote_debugger:rw
+    volumes:
+        - ./ScanPerson.Auth.Api/https/cert.pfx:/https/cert.pfx
     networks:
         - scanperson-network
 
@@ -77,9 +81,10 @@ services:
     restart: "no"
     profiles: [all, postgres, webApi]
     environment:
-        POSTGRES_USER: postgres #${POSTGRES_USER}
-        POSTGRES_PASSWORD: postgres #${POSTGRES_PASSWORD}
-        PGDATA: /data/postgres
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        POSTGRES_DB: ${POSTGRES_DB}
+        PGDATA: ${PGDATA}
     ports:
         - 5433:5432
     volumes:
@@ -87,7 +92,7 @@ services:
         - postgres:/var/lib/postgresql/data
     networks:
         - scanperson-network
-
+ 
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4
@@ -96,9 +101,9 @@ services:
     depends_on:
       - scanpersondb
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@mail.ru
-      PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_CONFIG_SERVER_MODE: ${PGADMIN_CONFIG_SERVER_MODE}
     volumes:
         - postgres:/data/postgres
         - pgadmin:/var/lib/pgadmin

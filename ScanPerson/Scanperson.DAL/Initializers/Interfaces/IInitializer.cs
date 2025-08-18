@@ -1,4 +1,4 @@
-﻿namespace Scanperson.DAL.Initializers.Interfaces
+﻿namespace ScanPerson.DAL.Initializers.Interfaces
 {
 	internal interface IInitializer
 	{

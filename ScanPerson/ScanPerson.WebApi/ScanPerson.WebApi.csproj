@@ -24,10 +24,11 @@
   <ItemGroup>
     <ProjectReference Include="..\ScanPerson.BusinessLogic\ScanPerson.BusinessLogic.csproj" />
     <ProjectReference Include="..\ScanPerson.Common\ScanPerson.Common.csproj" />
-    <ProjectReference Include="..\Scanperson.DAL\Scanperson.DAL.csproj" />
+    <ProjectReference Include="..\ScanPerson.DAL\ScanPerson.DAL.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="https\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

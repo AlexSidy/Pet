@@ -14,8 +14,12 @@ using Serilog.Sinks.Graylog;
 using Serilog.Sinks.Graylog.Core.Transport;
 
 var builder = WebApplication.CreateBuilder(args);
-var configPath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
-builder.Configuration.AddJsonFile(configPath);
+var environmentName = builder.Environment.EnvironmentName;
+var configPath = Path.Combine(AppContext.BaseDirectory, $"appsettings.{environmentName}.json");
+builder.Configuration
+	.AddJsonFile(configPath)
+	.AddEnvironmentVariables();
+
 var connectionString = builder.Configuration.GetConnectionString("ScanPersonDb") ??
 	throw new InvalidOperationException("Connection string 'ScanPersonDb' not found.");
 var jwtOptins = builder.Configuration.GetSection(JwtOptions.AppSettingsSection).Get<JwtOptions>()
@@ -39,11 +43,12 @@ builder.Host.UseSerilog();
 builder.Services.AddDalServices(connectionString);
 builder.Services.AddBusinessLogicServices();
 
+var allowedHosts = builder.Configuration.GetValue<string>("Allowed_Hosts")?.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries) ?? [];
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy("AllowLocalhost", builder =>
+	options.AddPolicy("MyTrustedHosts", builder =>
 	{
-		builder.WithOrigins(["http://localhost:4200", "https://localhost:4200", "http://scanperson.ui:4200", "https://scanperson.ui:4200"])
+		builder.WithOrigins(allowedHosts)
 			   .AllowAnyHeader() // Разрешаем любые заголовки
 			   .AllowAnyMethod(); // Разрешаем любые методы
 	});
@@ -74,7 +79,7 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 #region [Usage services]
-// Configur middleware pipeline.
+// Configure middleware pipeline.
 if (app.Environment.IsDevelopment())
 {
 	app.UseSwagger();
@@ -85,7 +90,7 @@ app.UseExceptionHandlerMiddleware();
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseCors("AllowLocalhost");
+app.UseCors("MyTrustedHosts");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

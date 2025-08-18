@@ -2,13 +2,13 @@
 
 using Microsoft.Extensions.Logging;
 
-using Scanperson.DAL.Contexts;
-using Scanperson.DAL.Initializers.Interfaces;
+using ScanPerson.DAL.Contexts;
+using ScanPerson.DAL.Initializers.Interfaces;
 
 using ScanPerson.Common.Resources;
 using ScanPerson.Models.Entities;
 
-namespace Scanperson.DAL.Initializers
+namespace ScanPerson.DAL.Initializers
 {
 	internal class PersonInitializer(
 		ILogger<PersonInitializer> logger,

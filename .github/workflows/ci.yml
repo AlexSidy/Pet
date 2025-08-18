@@ -1,4 +1,4 @@
-name: GitHub Actions Demo
+name: CI Actions
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push]
 jobs:
@@ -16,3 +16,4 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
+      - run: echo "This job.container.id is ${{ job.container.id }}."

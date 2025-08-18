@@ -5,9 +5,9 @@ using FluentMigrator.Runner;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-using Scanperson.DAL.Contexts;
-using Scanperson.DAL.Initializers.Interfaces;
-using Scanperson.DAL.Migrations._2024_12;
+using ScanPerson.DAL.Contexts;
+using ScanPerson.DAL.Initializers.Interfaces;
+using ScanPerson.DAL.Migrations._2024_12;
 
 namespace ScanPerson.DAL
 {

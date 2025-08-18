@@ -1,6 +1,6 @@
 ﻿using FluentMigrator;
 
-namespace Scanperson.DAL.Migrations._2024_12
+namespace ScanPerson.DAL.Migrations._2024_12
 {
 	[Migration(202408122050)]
 	public class CreatePerson : Migration
