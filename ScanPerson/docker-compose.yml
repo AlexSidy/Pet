@@ -1,7 +1,7 @@
 services:
   scanperson.ui:
     container_name: scanpersonui
-    image: ${DOCKER_REGISTRY-}scanpersonui
+    image: scanpersonui
     restart: "no"
     profiles: [all, ui]
     build:
@@ -25,7 +25,7 @@ services:
       
   scanperson.webapi:
     container_name: scanpersonwebapi
-    image: ${DOCKER_REGISTRY-}scanpersonwebapi
+    image: scanpersonwebapi
     restart: "no"
     profiles: [all, webApi, postgres]
     build:
@@ -50,7 +50,7 @@ services:
 
   scanperson.auth.api:
     container_name:  scanpersonauthapi
-    image: ${DOCKER_REGISTRY-}scanpersonauthapi
+    image: scanpersonauthapi
     restart: "no"
     profiles: [all, webApi, auth]
     build:

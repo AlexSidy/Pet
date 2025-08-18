@@ -33,5 +33,5 @@ RUN dotnet publish "ScanPerson.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/pu
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /publish ./
+COPY --from=publish /app/publish ./
 ENTRYPOINT ["dotnet", "ScanPerson.WebApi.dll"]

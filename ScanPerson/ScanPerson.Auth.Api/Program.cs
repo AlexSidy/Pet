@@ -35,6 +35,7 @@ builder.Host.UseSerilog();
 
 // Add services to the container.
 #region [Addition services]
+builder.Services.AddSingleton(jwtOptins);
 builder.Services.AddScanPersonAuth(connectionString);
 var allowedHosts = builder.Configuration.GetValue<string>("Allowed_Hosts")?.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries) ?? [];
 builder.Services.AddCors(options =>

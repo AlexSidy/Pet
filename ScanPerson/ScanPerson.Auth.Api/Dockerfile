@@ -22,12 +22,10 @@ RUN dotnet build "ScanPerson.Auth.Api.csproj" -c $BUILD_CONFIGURATION -o /app/bu
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "ScanPerson.Auth.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "ScanPerson.Auth.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish ./
-#COPY --from=publish /app/publish/ScanPerson.Auth.Api.dll .
-#ENTRYPOINT ["dotnet", "ScanPerson.Auth.Api.dll"]
-ENTRYPOINT ["dotnet", "/app/ScanPerson.Auth.Api.dll"]
+ENTRYPOINT ["dotnet", "ScanPerson.Auth.Api.dll"]
