@@ -14,6 +14,7 @@ services:
         - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}
         - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}
         - Allowed_Hosts=${Allowed_Hosts}
+        - JwtOptions__SecretKey=${JwtOptions__SecretKey}
 
   scanperson.auth.api:
     environment:
@@ -23,6 +24,7 @@ services:
         - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}
         - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}
         - Allowed_Hosts=${Allowed_Hosts}
+        - JwtOptions__SecretKey=${JwtOptions__SecretKey}
 
   scanpersondb:
     environment:

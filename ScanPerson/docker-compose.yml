@@ -40,6 +40,7 @@ services:
         - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}
         - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}
         - Allowed_Hosts=${Allowed_Hosts}
+        - JwtOptions__SecretKey=${JwtOptions__SecretKey}
     ports:
         - 8080:8080 # HTTP
         - 8081:8081 # HTTPS
@@ -65,6 +66,7 @@ services:
         - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}
         - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}
         - Allowed_Hosts=${Allowed_Hosts}
+        - JwtOptions__SecretKey=${JwtOptions__SecretKey}
     ports:
         - 8090:8090
         - 8091:8091

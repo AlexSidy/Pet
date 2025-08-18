@@ -14,7 +14,10 @@ using Serilog.Sinks.Graylog.Core.Transport;
 var builder = WebApplication.CreateBuilder(args);
 var environmentName = builder.Environment.EnvironmentName;
 var configPath = Path.Combine(AppContext.BaseDirectory, $"appsettings.{environmentName}.json");
-builder.Configuration.AddJsonFile(configPath);
+builder.Configuration
+	.AddJsonFile(configPath)
+	.AddEnvironmentVariables();
+
 var connectionString = builder.Configuration.GetConnectionString(DbSection)
 	?? throw new InvalidOperationException(string.Format(Messages.SectionNotFound, DbSection));
 var jwtOptins = builder.Configuration.GetSection(JwtOptions.AppSettingsSection).Get<JwtOptions>()

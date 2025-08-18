@@ -16,7 +16,10 @@ using Serilog.Sinks.Graylog.Core.Transport;
 var builder = WebApplication.CreateBuilder(args);
 var environmentName = builder.Environment.EnvironmentName;
 var configPath = Path.Combine(AppContext.BaseDirectory, $"appsettings.{environmentName}.json");
-builder.Configuration.AddJsonFile(configPath);
+builder.Configuration
+	.AddJsonFile(configPath)
+	.AddEnvironmentVariables();
+
 var connectionString = builder.Configuration.GetConnectionString("ScanPersonDb") ??
 	throw new InvalidOperationException("Connection string 'ScanPersonDb' not found.");
 var jwtOptins = builder.Configuration.GetSection(JwtOptions.AppSettingsSection).Get<JwtOptions>()
