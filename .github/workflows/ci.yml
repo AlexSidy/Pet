@@ -22,6 +22,8 @@ jobs:
         dotnet-version: 9.0.x
     - name: Change directory to solution folder
       run: cd ./ScanPerson
+    - name: Clean solution
+      run: dotnet clean ./ScanPerson/ScanPerson.sln
     - name: Restore dependencies
       run: dotnet restore ./ScanPerson/ScanPerson.sln
     - name: Build
