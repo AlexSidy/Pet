@@ -2,7 +2,7 @@
 
 using Microsoft.Extensions.Logging;
 
-using ScanPerson.DAL2.Contexts;
+using ScanPerson.DAL.Contexts;
 
 using ScanPerson.Common.Resources;
 using ScanPerson.Models.Items;

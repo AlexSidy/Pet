@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ScanPerson.Common\ScanPerson.Common.csproj" />
-    <ProjectReference Include="..\ScanPerson.DAL2\ScanPerson.DAL2.csproj" />
+    <ProjectReference Include="..\ScanPerson.DAL\ScanPerson.DAL.csproj" />
     <ProjectReference Include="..\ScanPerson.Models\ScanPerson.Models.csproj" />
   </ItemGroup>
 

@@ -24,7 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ScanPerson.BusinessLogic\ScanPerson.BusinessLogic.csproj" />
     <ProjectReference Include="..\ScanPerson.Common\ScanPerson.Common.csproj" />
-    <ProjectReference Include="..\ScanPerson.DAL2\ScanPerson.DAL2.csproj" />
+    <ProjectReference Include="..\ScanPerson.DAL\ScanPerson.DAL.csproj" />
   </ItemGroup>
 
   <ItemGroup>

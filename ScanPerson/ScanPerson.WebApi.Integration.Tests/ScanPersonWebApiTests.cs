@@ -13,7 +13,7 @@ using Moq;
 using Newtonsoft.Json;
 
 using ScanPerson.BusinessLogic.Services;
-using ScanPerson.DAL2.Contexts;
+using ScanPerson.DAL.Contexts;
 using ScanPerson.Models.Items;
 using ScanPerson.Models.Requests;
 using ScanPerson.Models.Responses;

@@ -5,11 +5,11 @@ using FluentMigrator.Runner;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-using ScanPerson.DAL2.Contexts;
-using ScanPerson.DAL2.Initializers.Interfaces;
-using ScanPerson.DAL2.Migrations._2024_12;
+using ScanPerson.DAL.Contexts;
+using ScanPerson.DAL.Initializers.Interfaces;
+using ScanPerson.DAL.Migrations._2024_12;
 
-namespace ScanPerson.DAL2
+namespace ScanPerson.DAL
 {
 	public static class DALExtensions
 	{
