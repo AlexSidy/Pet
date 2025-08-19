@@ -1,6 +1,6 @@
 ﻿using FluentMigrator;
 
-namespace ScanPerson.DAL.Migrations._2024_12
+namespace ScanPerson.DAL2.Migrations._2024_12
 {
 	[Migration(202408122040)]
 	public class InitialSheme : Migration

@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-using ScanPerson.DAL.Migrations._2024_12;
+using ScanPerson.DAL2.Migrations._2024_12;
 
 using ScanPerson.Models.Entities;
 
-namespace ScanPerson.DAL.Contexts
+namespace ScanPerson.DAL2.Contexts
 {
 	public class ScanPersonDbContext : DbContext
 	{
