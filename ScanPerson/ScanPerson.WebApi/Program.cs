@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 
 using ScanPerson.BusinessLogic;
 using ScanPerson.Common.Resources;
-using ScanPerson.DAL;
+using ScanPerson.DAL2;
 using ScanPerson.Models.Contracts.Auth;
 using ScanPerson.WebApi.Middlewares.Exceptions;
 
