@@ -19,10 +19,12 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 9.0.x
+    - name: Change directory to solution folder
+      run: cd ./ScanPerson
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ScanPerson.sln
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal ScanPerson.sln
