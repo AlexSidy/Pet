@@ -6,6 +6,10 @@
 /ScanPerson/.vs/
 /Graylog/.vs/
 /ScanPerson/ScanPerson.WebApi/wwwroot
+*/TestResults*
+*/*/TestResults*
+
+
 
 # Игнорировать папки сборки
 bin/

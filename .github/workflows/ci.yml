@@ -35,7 +35,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore ./ScanPerson/ScanPerson.sln
     - name: Test
-      run: dotnet test --no-build --verbosity normal --logger trx --results-directory "TestResults-${{ matrix.dotnet-version }}" ./ScanPerson/**/*.Tests.csproj
+      run: dotnet test --no-build --verbosity normal --logger trx --results-directory "./ScanPerson/TestResults-${{ matrix.dotnet-version }}" ./ScanPerson/ScanPerson.sln
     - name: Upload dotnet test results
       uses: actions/upload-artifact@v4
       with:
