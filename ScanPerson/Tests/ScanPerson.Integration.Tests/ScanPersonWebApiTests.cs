@@ -90,9 +90,10 @@ namespace ScanPerson.WebApi.Integration.Tests
 				Login = "login",
 				Password = "password"
 			}); ;
-			var personResponse = new ScanPersonResultResponse<PersonItem?>(new PersonItem(1, "Test", "Mail"));
+			var personResponse = new ScanPersonResultResponse<PersonItem>(new PersonItem(1, "Test", "Mail"));
+			var taskResponse = Task.FromResult(personResponse);
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
-			_personService.Setup(x => x.Find(It.IsAny<PersonRequest>())).Returns(personResponse);
+			_personService.Setup(x => x.FindAsync(It.IsAny<PersonRequest>())).Returns(taskResponse!);
 
 			// Act
 			try
@@ -130,7 +131,7 @@ namespace ScanPerson.WebApi.Integration.Tests
 				Password = "password"
 			});
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
-			_personService.Setup(x => x.Find(It.IsAny<PersonRequest>())).Throws<InvalidOperationException>();
+			_personService.Setup(x => x.FindAsync(It.IsAny<PersonRequest>())).Throws<InvalidOperationException>();
 
 			// Act
 			try

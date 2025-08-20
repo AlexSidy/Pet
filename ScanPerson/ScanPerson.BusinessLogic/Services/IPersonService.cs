@@ -6,8 +6,8 @@ namespace ScanPerson.BusinessLogic.Services
 {
 	public interface IPersonService
 	{
-		ScanPersonResultResponse<PersonItem[]?> Query(PersonRequest request);
+		Task<ScanPersonResultResponse<PersonItem[]?>> QueryAsync(PersonRequest request);
 
-		ScanPersonResultResponse<PersonItem?>? Find(PersonRequest request);
+		Task<ScanPersonResultResponse<PersonItem?>?> FindAsync(PersonRequest request);
 	}
 }

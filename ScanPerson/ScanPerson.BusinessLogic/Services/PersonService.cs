@@ -14,22 +14,22 @@ namespace ScanPerson.BusinessLogic.Services
 		ILogger<PersonService> logger,
 		ScanPersonDbContext context) : IPersonService
 	{
-		public ScanPersonResultResponse<PersonItem[]?> Query(PersonRequest request)
+		public Task<ScanPersonResultResponse<PersonItem[]?>> QueryAsync(PersonRequest request)
 		{
 			logger.LogInformation(Messages.StartedMethod, MethodBase.GetCurrentMethod());
 			var result = new ScanPersonResultResponse<PersonItem[]?>(context.Persons?.Select(x => new PersonItem(x.Id, x.Name, x.Mail))?.ToArray());
 
-			return result;
+			return Task.FromResult(result);
 		}
 
-		public ScanPersonResultResponse<PersonItem?>? Find(PersonRequest request)
+		public Task<ScanPersonResultResponse<PersonItem?>?> FindAsync(PersonRequest request)
 		{
 			logger.LogInformation(Messages.StartedMethod, MethodBase.GetCurrentMethod());
 			var result = context.Persons?
 				.Select(x => new ScanPersonResultResponse<PersonItem?>(new PersonItem(x.Id, x.Name, x.Mail)))
 				.FirstOrDefault();
 
-			return result;
+			return Task.FromResult(result);
 		}
 	}
 }

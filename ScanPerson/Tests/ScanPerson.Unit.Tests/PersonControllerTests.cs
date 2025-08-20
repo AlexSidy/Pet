@@ -40,7 +40,7 @@ namespace ScanPerson.WebApi.Unit.Tests
 		}
 
 		[TestMethod]
-		public async Task GetPersonAsync_PersonRequestIsCorrect_ReturnFailResult()
+		public async Task FindAsync_PersonRequestIsCorrect_ReturnFailResult()
 		{
 			// Arrange
 			var personRequest = new PersonRequest
@@ -50,8 +50,9 @@ namespace ScanPerson.WebApi.Unit.Tests
 				Password = "password"
 			};
 			var errorMessage = "error";
-			var personResponse = new ScanPersonResultResponse<PersonItem?>([errorMessage]);
-			_personService.Setup(x => x.Find(It.IsAny<PersonRequest>())).Returns(personResponse);
+			var personResponse = new ScanPersonResultResponse<PersonItem>([errorMessage]);
+			var taskResponse = Task.FromResult(personResponse);
+			_personService.Setup(x => x.FindAsync(It.IsAny<PersonRequest>())).Returns(taskResponse!);
 
 			// Act
 			var result = (Microsoft.AspNetCore.Http.HttpResults.BadRequest<string>)await _cut.GetPersonAsync(personRequest);
@@ -64,7 +65,7 @@ namespace ScanPerson.WebApi.Unit.Tests
 		}
 
 		[TestMethod]
-		public async Task GetPersonAsync_PersonRequestIsCorrect_ReturnSeccessResult()
+		public async Task FindAsync_PersonRequestIsCorrect_ReturnSeccessResult()
 		{
 			// Arrange
 			var personRequest = new PersonRequest
@@ -74,7 +75,8 @@ namespace ScanPerson.WebApi.Unit.Tests
 				Password = "password"
 			};
 			var personResponse = new ScanPersonResultResponse<PersonItem>(new PersonItem(1, "Test", "Mail"));
-			_personService.Setup(x => x.Find(It.IsAny<PersonRequest>())).Returns(personResponse!);
+			var taskResponse = Task.FromResult(personResponse);
+			_personService.Setup(x => x.FindAsync(It.IsAny<PersonRequest>())).Returns(taskResponse!);
 
 			// Act
 			var result = (Microsoft.AspNetCore.Http.HttpResults.Ok<ScanPersonResultResponse<PersonItem?>>)await _cut.GetPersonAsync(personRequest);
