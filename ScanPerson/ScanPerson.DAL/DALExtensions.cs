@@ -11,7 +11,7 @@ using ScanPerson.DAL.Migrations._2024_12;
 
 namespace ScanPerson.DAL
 {
-	public static class DALExtensions
+	public static class DalExtensions
 	{
 		public static void AddDalServices(this IServiceCollection services, string connectionString)
 		{
