@@ -44,7 +44,9 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k: ${{ env.SONAR_PROJECT_KEY }} /o: ${{ env.SONAR_ORGANIZATION }} /d:sonar.host.url="https://sonarcloud.io"
+          $projectKey = "${{ secrets.SONAR_PROJECT_KEY }}"
+          $organization = "${{ secrets.SONAR_ORGANIZATION }}"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:$projectKey /o:$organization /d:sonar.host.url="https://sonarcloud.io"
           dotnet restore ./ScanPerson/ScanPerson.sln
           dotnet build --no-restore ./ScanPerson/ScanPerson.sln
           .\.sonar\scanner\dotnet-sonarscanner end
