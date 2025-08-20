@@ -18,7 +18,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        # Убедитесь, что глубина репозитория достаточно большая для анализа
+        # убедитесь, что глубина репозитория достаточно большая для анализа
         fetch-depth: 0
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
