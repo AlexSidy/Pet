@@ -45,7 +45,7 @@ jobs:
       with:
         projectKey: AlexSidy_Pet
         organization: alexsidy
-        token: ${{ secrets.SCAN_PERSON_SONAR_TOKEN }}
+        token: ${{ secrets.SONAR_TOKEN }}
         args: |
           -Dsonar.host.url=https://sonarcloud.io
 
