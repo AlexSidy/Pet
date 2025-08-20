@@ -47,9 +47,27 @@ jobs:
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:${{ secrets.SONAR_PROJECT_KEY }} /o:${{ secrets.SONAR_ORGANIZATION }} /d:sonar.host.url="https://sonarcloud.io" /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          .\.sonar\scanner\dotnet-sonarscanner begin `
+          /k:${{ env.SONAR_PROJECT_KEY }} `
+          /o:${{ env.SONAR_ORGANIZATION }} `
+          /d:sonar.host.url="https://sonarcloud.io" `
+          /d:sonar.token="${{ env.SONAR_TOKEN }}"
+          /d:sonar.cs.opencover.reportsPaths=".\ScanPerson\TestResults\*.trx"
+
           dotnet restore ./ScanPerson/ScanPerson.sln
           dotnet build --no-restore ./ScanPerson/ScanPerson.sln
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
+          dotnet test --no-build `
+          --verbosity normal --logger trx`
+          /p:CollectCoverage=true `
+          /p:CoverletOutputFormat=opencover `
+          /p:CoverletOutput=./ScanPerson/TestResults/ `
+          --results-directory ./ScanPerson/TestResults `
+          ./ScanPerson/ScanPerson.sln
+
+          .\.sonar\scanner\dotnet-sonarscanner end `
+          /d:sonar.token="${{ env.SONAR_TOKEN }}"

@@ -102,8 +102,8 @@ namespace ScanPerson.WebApi.Integration.Tests
 
 				// Assert
 				Assert.IsNotNull(response);
-				Assert.IsNotNull(response.Content);
 				response.EnsureSuccessStatusCode();
+				Assert.IsNotNull(response?.Content?.Headers?.ContentType);
 				Assert.AreEqual("application/json; charset=utf-8", response?.Content?.Headers?.ContentType?.ToString());
 				var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<PersonItem?>?>();
 				Assert.IsNotNull(result);
@@ -140,7 +140,6 @@ namespace ScanPerson.WebApi.Integration.Tests
 
 				// Assert
 				Assert.IsNotNull(response);
-				Assert.IsNotNull(response.Content);
 				Assert.IsFalse(response.IsSuccessStatusCode);
 				Assert.AreEqual(HttpStatusCode.InternalServerError, response.StatusCode);
 			}
