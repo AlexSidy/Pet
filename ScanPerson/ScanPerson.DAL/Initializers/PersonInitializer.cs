@@ -17,7 +17,7 @@ namespace ScanPerson.DAL.Initializers
 		{
 			try
 			{
-				logger.LogInformation(string.Format(Messages.StartedMethod, MethodBase.GetCurrentMethod()));
+				logger.LogInformation(Messages.StartedMethod, MethodBase.GetCurrentMethod());
 				if (context.Persons?.Any() != true)
 				{
 					var persons = new[]

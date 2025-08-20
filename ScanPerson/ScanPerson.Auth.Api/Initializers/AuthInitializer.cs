@@ -18,7 +18,7 @@ internal class AuthInitializer(
 	{
 		try
 		{
-			logger.LogInformation(string.Format(Messages.StartedMethod, MethodBase.GetCurrentMethod()));
+			logger.LogInformation(Messages.StartedMethod, MethodBase.GetCurrentMethod());
 			string[] roleNames = { "admin", "user" };
 			foreach (var roleName in roleNames)
 			{

@@ -17,14 +17,14 @@ namespace ScanPerson.Auth.Api.Controllers
 		[HttpPost(nameof(RegisterAsync))]
 		public async Task<IResult> RegisterAsync([FromBody] RegisterRequest request)
 		{
-			logger.LogInformation(string.Format(Messages.StartedMethod, ControllerContext?.RouteData?.Values["action"]));
+			logger.LogInformation(Messages.StartedMethod, ControllerContext?.RouteData?.Values["action"]);
 			return GetResult(await userService.RegisterAsync(request));
 		}
 
 		[HttpPost(nameof(LoginAsync))]
 		public async Task<IResult> LoginAsync([FromBody] LoginRequest request)
 		{
-			logger.LogInformation(string.Format(Messages.StartedMethod, ControllerContext?.RouteData?.Values["action"]));
+			logger.LogInformation(Messages.StartedMethod, ControllerContext?.RouteData?.Values["action"]);
 			return GetResult(await userService.LoginAsync(request), null, Results.Unauthorized());
 		}
 	}

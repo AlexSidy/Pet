@@ -16,7 +16,7 @@ namespace ScanPerson.BusinessLogic.Services
 	{
 		public ScanPersonResultResponse<PersonItem[]?> Query(PersonRequest request)
 		{
-			logger.LogInformation(string.Format(Messages.StartedMethod, MethodBase.GetCurrentMethod()));
+			logger.LogInformation(Messages.StartedMethod, MethodBase.GetCurrentMethod());
 			var result = new ScanPersonResultResponse<PersonItem[]?>(context.Persons?.Select(x => new PersonItem(x.Id, x.Name, x.Mail))?.ToArray());
 
 			return result;
@@ -24,7 +24,7 @@ namespace ScanPerson.BusinessLogic.Services
 
 		public ScanPersonResultResponse<PersonItem?>? Find(PersonRequest request)
 		{
-			logger.LogInformation(string.Format(Messages.StartedMethod, MethodBase.GetCurrentMethod()));
+			logger.LogInformation(Messages.StartedMethod, MethodBase.GetCurrentMethod());
 			var result = context.Persons?
 				.Select(x => new ScanPersonResultResponse<PersonItem?>(new PersonItem(x.Id, x.Name, x.Mail)))
 				.FirstOrDefault();
