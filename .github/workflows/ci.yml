@@ -15,7 +15,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        # убедитесь, что глубина репозитория достаточно большая для анализа
+        fetch-depth: 0
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
@@ -35,6 +39,16 @@ jobs:
           
     - name: Build
       run: dotnet build --no-restore ./ScanPerson/ScanPerson.sln
+
+    - name: Run SonarQube analysis
+      uses: SonarSource/sonarqube-scan-action@master
+      with:
+        projectKey: AlexSidy_Pet
+        organization: alexsidy
+        token: ${{ secrets.SCAN_PERSON_SONAR_TOKEN }}
+        args: |
+          -Dsonar.host.url=https://sonarcloud.io
+
     - name: Test
       run: |
           dotnet test --no-build --verbosity normal --logger trx --results-directory "./ScanPerson/IntegrationTestResults-${{ matrix.dotnet-version }}" ./ScanPerson/Tests/ScanPerson.Integration.Tests/ScanPerson.Integration.Tests.csproj

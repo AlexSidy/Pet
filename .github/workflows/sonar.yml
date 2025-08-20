@@ -1,4 +1,8 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
 name: SonarQube
+
 on:
   push:
     branches: [ "**" ]
@@ -8,42 +12,47 @@ on:
 
 jobs:
   build:
-    name: Build and analyze
-    runs-on: windows-latest
+
+    runs-on: ubuntu-latest
+
     steps:
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: 17
-          distribution: 'zulu' # Alternative distribution options are available.
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Cache SonarQube Cloud packages
-        uses: actions/cache@v4
-        with:
-          path: ~\sonar\cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache SonarQube Cloud scanner
-        id: cache-sonar-scanner
-        uses: actions/cache@v4
-        with:
-          path: .\.sonar\scanner
-          key: ${{ runner.os }}-sonar-scanner
-          restore-keys: ${{ runner.os }}-sonar-scanner
-      - name: Install SonarQube Cloud scanner
-        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-        shell: powershell
-        run: |
-          New-Item -Path .\.sonar\scanner -ItemType Directory
-          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
-          dir .\.sonar
-      - name: Build and analyze
-        env:
-          SONAR_TOKEN: ${{ secrets.SCAN_PERSON_SONAR_TOKEN }}
-        shell: powershell
-        run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"AlexSidy_Pet" /o:"alexsidy" /d:sonar.host.url="https://sonarcloud.io"
-          dotnet build ./ScanPerson/ScanPerson.sln
-          .\.sonar\scanner\dotnet-sonarscanner end
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+    - name: Change directory to solution folder
+      run: cd ./ScanPerson
+    - name: Clean build artifacts
+      run: |
+        find . -type d -name "bin" -exec rm -rf {} +
+        find . -type d -name "obj" -exec rm -rf {} +
+    - name: Clear NuGet cache
+      run: dotnet nuget locals all --clear
+    - name: Clean solution
+      run: dotnet clean ./ScanPerson/ScanPerson.sln
+    - name: Restore dependencies
+      run: dotnet restore ./ScanPerson/ScanPerson.sln
+          
+    - name: Build
+      run: dotnet build --no-restore ./ScanPerson/ScanPerson.sln
+    - name: Test
+      run: |
+          dotnet test --no-build --verbosity normal --logger trx --results-directory "./ScanPerson/IntegrationTestResults-${{ matrix.dotnet-version }}" ./ScanPerson/Tests/ScanPerson.Integration.Tests/ScanPerson.Integration.Tests.csproj
+          dotnet test --no-build --verbosity normal --logger trx --results-directory "./ScanPerson/UnitTestResults-${{ matrix.dotnet-version }}" ./ScanPerson/Tests/ScanPerson.Unit.Tests/ScanPerson.Unit.Tests.csproj
+    - name: Upload dotnet integration test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: dotnet-results-${{ matrix.dotnet-version }}
+        path: ./ScanPerson/IntegrationTestResults-${{ matrix.dotnet-version }}
+    - name: Upload dotnet unit test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: dotnet-results-${{ matrix.dotnet-version }}
+        path: ./ScanPerson/UnitTestResults-${{ matrix.dotnet-version }}
+      # Use always() to always run this step to publish test results when there are test failures
+      if: ${{ always() }}
