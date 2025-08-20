@@ -36,12 +36,17 @@ jobs:
       run: dotnet build --no-restore ./ScanPerson/ScanPerson.sln
     - name: Test
       run: |
-          dotnet test --no-build --verbosity normal --logger trx --results-directory "./ScanPerson/TestResults-${{ matrix.dotnet-version }}" ./ScanPerson/Tests/ScanPerson.Integration.Tests/ScanPerson.Integration.Tests.csproj
-          dotnet test --no-build --verbosity normal --logger trx --results-directory "./ScanPerson/TestResults-${{ matrix.dotnet-version }}" ./ScanPerson/Tests/ScanPerson.Unit.Tests/ScanPerson.Unit.Tests.csproj
-    - name: Upload dotnet test results
+          dotnet test --no-build --verbosity normal --logger trx --results-directory "./ScanPerson/IntegrationTestResults-${{ matrix.dotnet-version }}" ./ScanPerson/Tests/ScanPerson.Integration.Tests/ScanPerson.Integration.Tests.csproj
+          dotnet test --no-build --verbosity normal --logger trx --results-directory "./ScanPerson/UnitTestResults-${{ matrix.dotnet-version }}" ./ScanPerson/Tests/ScanPerson.Unit.Tests/ScanPerson.Unit.Tests.csproj
+    - name: Upload dotnet integration test results
       uses: actions/upload-artifact@v4
       with:
         name: dotnet-results-${{ matrix.dotnet-version }}
-        path: ./ScanPerson/TestResults-${{ matrix.dotnet-version }}
+        path: ./ScanPerson/IntegrationTestResults-${{ matrix.dotnet-version }}
+    - name: Upload dotnet unit test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: dotnet-results-${{ matrix.dotnet-version }}
+        path: ./ScanPerson/UnitTestResults-${{ matrix.dotnet-version }}
       # Use always() to always run this step to publish test results when there are test failures
       if: ${{ always() }}
