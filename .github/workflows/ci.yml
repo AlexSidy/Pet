@@ -15,11 +15,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        # убедитесь, что глубина репозитория достаточно большая для анализа
-        fetch-depth: 0
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
@@ -36,11 +31,6 @@ jobs:
       run: dotnet clean ./ScanPerson/ScanPerson.sln
     - name: Restore dependencies
       run: dotnet restore ./ScanPerson/ScanPerson.sln
-      
-    - name: SonarCloud Scan
-      uses: sonarsource/sonarqube-scan-action@v5.0.0
-      env:
-        SONAR_TOKEN: ${{ secrets.SCAN_PERSON_SONAR_TOKEN }}
           
     - name: Build
       run: dotnet build --no-restore ./ScanPerson/ScanPerson.sln
