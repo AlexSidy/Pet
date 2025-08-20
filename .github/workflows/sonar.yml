@@ -42,6 +42,7 @@ jobs:
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          sonar.projectBaseDir: ./ScanPerson
         shell: powershell
         run: |
           $projectKey = "${{ secrets.SONAR_PROJECT_KEY }}"
