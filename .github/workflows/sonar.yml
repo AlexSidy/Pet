@@ -44,7 +44,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:${{ secrets.SONAR_PROJECT_KEY }} /o:${{ secrets.SONAR_ORGANIZATION }} /d:sonar.host.url="https://sonarcloud.io" /d:sonar.projectBaseDir="./ScanPerson" /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:${{ secrets.SONAR_PROJECT_KEY }} /o:${{ secrets.SONAR_ORGANIZATION }} /d:sonar.host.url="https://sonarcloud.io" /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
           dotnet restore ./ScanPerson/ScanPerson.sln
           dotnet build --no-restore ./ScanPerson/ScanPerson.sln
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
