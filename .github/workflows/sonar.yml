@@ -52,22 +52,24 @@ jobs:
         shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin `
-          /k:${{ env.SONAR_PROJECT_KEY }} `
-          /o:${{ env.SONAR_ORGANIZATION }} `
-          /d:sonar.host.url="https://sonarcloud.io" `
-          /d:sonar.token="${{ env.SONAR_TOKEN }}"
-          /d:sonar.cs.opencover.reportsPaths=".\ScanPerson\TestResults\*.trx"
+            /k:${{ env.SONAR_PROJECT_KEY }} `
+            /o:${{ env.SONAR_ORGANIZATION }} `
+            /d:sonar.host.url="https://sonarcloud.io" `
+            /d:sonar.token="${{ env.SONAR_TOKEN }}" `
+            /d:sonar.cs.opencover.reportsPaths=".\ScanPerson\TestResults\opencover.xml" `
+            /d:sonar.coverage.exclusions="**/*.cs"
 
           dotnet restore ./ScanPerson/ScanPerson.sln
           dotnet build --no-restore ./ScanPerson/ScanPerson.sln
 
+          # Command dotnet test for run tests and generate coverage report
           dotnet test --no-build `
-          --verbosity normal --logger trx`
-          /p:CollectCoverage=true `
-          /p:CoverletOutputFormat=opencover `
-          /p:CoverletOutput=./ScanPerson/TestResults/ `
-          --results-directory ./ScanPerson/TestResults `
-          ./ScanPerson/ScanPerson.sln
+            --verbosity normal --logger trx `
+            /p:CollectCoverage=true `
+            /p:CoverletOutputFormat=opencover `
+            /p:CoverletOutput=./ScanPerson/TestResults/opencover.xml `
+            --results-directory ./ScanPerson/TestResults/opencover.xml `
+            ./ScanPerson/ScanPerson.sln
 
           .\.sonar\scanner\dotnet-sonarscanner end `
           /d:sonar.token="${{ env.SONAR_TOKEN }}"
