@@ -3,43 +3,30 @@
 using FluentMigrator.Runner;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
-using ScanPerson.Auth.Api.Initializers.Interfaces;
-using ScanPerson.Auth.Api.Migrations._2024_12;
-using ScanPerson.Auth.Api.Services;
-using ScanPerson.Auth.Api.Services.Interfaces;
+using ScanPerson.DAL.Contexts;
+using ScanPerson.DAL.Initializers.Interfaces;
+using ScanPerson.DAL.Migrations._2024_12;
 
-namespace ScanPerson.Auth.Api
+namespace ScanPerson.DAL
 {
-	public static class AuthExtensions
+	public static class DalExtensions
 	{
-		public static void AddScanPersonAuth(this IServiceCollection services, string connectionString)
+		public static void AddDalServices(this IServiceCollection services, string connectionString)
 		{
-			services.AddAuthDbContexts(connectionString);
+			services.AddScanPersonDbContexts(connectionString);
+
+			// override default VersionTable 
 			services.AddMigrations(connectionString);
 			services.UpdateDatabase();
-			services.AddIdentity();
 			services.AddInitializers();
 			services.InitData();
-			services.AddScoped<ITokenProvider, JwtProvider>();
-			services.AddScoped<IUserService, UserService>();
 		}
 
-		private static void AddAuthDbContexts(this IServiceCollection services, string connectionString)
+		private static void AddScanPersonDbContexts(this IServiceCollection services, string connectionString)
 		{
-			services.AddDbContext<AuthDbContext>(options => options.UseNpgsql(connectionString));
-		}
-
-		private static void AddIdentity(this IServiceCollection services)
-		{
-			services.AddDefaultIdentity<User>(options =>
-				{
-					options.SignIn.RequireConfirmedAccount = false;
-					options.Lockout.MaxFailedAccessAttempts = 5;
-					options.SignIn.RequireConfirmedEmail = false;
-				})
-				.AddRoles<Role>()
-				.AddEntityFrameworkStores<AuthDbContext>();
+			services.AddDbContext<ScanPersonDbContext>(options => options.UseNpgsql(connectionString));
 		}
 
 		public static void AddMigrations(this IServiceCollection services, string connectionString)
@@ -53,7 +40,7 @@ namespace ScanPerson.Auth.Api
 					// Set the connection string
 					.WithGlobalConnectionString(connectionString)
 					// Define the assembly containing the migrations
-					.ScanIn(typeof(InitiaIdentity).Assembly).For.Migrations()
+					.ScanIn(typeof(InitialSheme).Assembly).For.Migrations()
 				)
 
 				// Enable logging to console in the FluentMigrator way
@@ -64,11 +51,13 @@ namespace ScanPerson.Auth.Api
 		private static void UpdateDatabase(this IServiceCollection services)
 		{
 			// Get the service provider
-			var serviceProvider = services.BuildServiceProvider(false); ;
+			var serviceProvider = services.BuildServiceProvider(false);
 
-			// Instantiate the runner and execute the migrations
-			serviceProvider.GetRequiredService<IMigrationRunner>()
-				.MigrateUp();
+			// Instantiate the runner
+			var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
+
+			// Execute the migrations
+			runner.MigrateUp();
 		}
 
 		private static void AddInitializers(this IServiceCollection services)
@@ -83,7 +72,7 @@ namespace ScanPerson.Auth.Api
 			var initializers = serviceProvider.GetServices<IInitializer>();
 			foreach (var initializer in initializers)
 			{
-				initializer.SeedAsync();
+				initializer.Seed();
 			}
 		}
 

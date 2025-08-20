@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ScanPerson.WebApi\ScanPerson.WebApi.csproj" />
+    <ProjectReference Include="..\..\ScanPerson.WebApi\ScanPerson.WebApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>

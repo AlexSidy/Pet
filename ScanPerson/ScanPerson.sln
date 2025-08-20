@@ -21,9 +21,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.Common", "ScanPe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.Integration.Tests", "ScanPerson.WebApi.Integration.Tests\ScanPerson.Integration.Tests.csproj", "{AE1CE566-2737-46A3-8030-B4D2A7613CDC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests\ScanPerson.Integration.Tests", "Tests\ScanPerson.Integration.Tests\ScanPerson.Integration.Tests.csproj", "{AE1CE566-2737-46A3-8030-B4D2A7613CDC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.Unit.Tests", "ScanPerson.WebApi.Unit.Tests\ScanPerson.Unit.Tests.csproj", "{F22DAFCD-9E20-43C0-AE2B-15B652BD9D02}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests\ScanPerson.Unit.Tests", "Tests\ScanPerson.Unit.Tests\ScanPerson.Unit.Tests.csproj", "{F22DAFCD-9E20-43C0-AE2B-15B652BD9D02}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

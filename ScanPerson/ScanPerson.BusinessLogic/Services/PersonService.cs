@@ -2,9 +2,8 @@
 
 using Microsoft.Extensions.Logging;
 
-using ScanPerson.DAL.Contexts;
-
 using ScanPerson.Common.Resources;
+using ScanPerson.DAL.Contexts;
 using ScanPerson.Models.Items;
 using ScanPerson.Models.Requests;
 using ScanPerson.Models.Responses;

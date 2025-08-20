@@ -12,10 +12,10 @@ namespace ScanPerson.Auth.Api
 		{
 		}
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
+		protected override void OnModelCreating(ModelBuilder builder)
 		{
-			modelBuilder.HasDefaultSchema(InitiaIdentity.AuthSchema);
-			base.OnModelCreating(modelBuilder);
+			builder.HasDefaultSchema(InitiaIdentity.AuthSchema);
+			base.OnModelCreating(builder);
 		}
 	}
 

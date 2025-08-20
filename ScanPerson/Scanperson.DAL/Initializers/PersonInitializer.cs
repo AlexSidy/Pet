@@ -2,10 +2,9 @@
 
 using Microsoft.Extensions.Logging;
 
+using ScanPerson.Common.Resources;
 using ScanPerson.DAL.Contexts;
 using ScanPerson.DAL.Initializers.Interfaces;
-
-using ScanPerson.Common.Resources;
 using ScanPerson.Models.Entities;
 
 namespace ScanPerson.DAL.Initializers

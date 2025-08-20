@@ -22,7 +22,7 @@ export class PersonComponent {
   url = "/" + WebApi + "/Person";
   items: Person[] = [ new Person(1, "Test3") ];
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private readonly httpClient: HttpClient) {
     this.httpClient = httpClient;
   }
 

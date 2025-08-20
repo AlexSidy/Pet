@@ -6,22 +6,22 @@ namespace ScanPerson.Auth.Api.Services.Base
 	{
 		private const string ErrorDefault = "An error occurred while performing the operation.";
 
-		protected ScanPersonResponse GetSuccess()
+		protected static ScanPersonResponse GetSuccess()
 		{
 			return new ScanPersonResponse();
 		}
 
-		protected ScanPersonResponse GetSuccess<TResult>(TResult result) where TResult : class
+		protected static ScanPersonResponse GetSuccess<TResult>(TResult result) where TResult : class
 		{
 			return new ScanPersonResultResponse<TResult>(result);
 		}
 
-		protected ScanPersonResponse GetFail(string error = ErrorDefault)
+		protected static ScanPersonResponse GetFail(string error = ErrorDefault)
 		{
 			return new ScanPersonResponse(error);
 		}
 
-		protected ScanPersonResponse GetFail(IEnumerable<string> errors)
+		protected static ScanPersonResponse GetFail(IEnumerable<string> errors)
 		{
 			return new ScanPersonResponse(errors);
 		}
