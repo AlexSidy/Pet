@@ -19,6 +19,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - uses: actions/setup-dotnet@v4
+        with:
+            dotnet-version: 9.0.x
+      - name: Change directory to solution folder
+        run: cd ./ScanPerson
+
       - name: Cache SonarQube Cloud packages
         uses: actions/cache@v4
         with:
