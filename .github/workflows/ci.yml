@@ -4,8 +4,6 @@
 name: CI/CD Pipeline
 
 on:
-  push:
-    branches: [ "**" ]
   pull_request:
     branches: [ "dev", "prod" ] # «апуск при создании pull request, нацеленного на ветку 'dev'
 
