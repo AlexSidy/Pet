@@ -93,7 +93,7 @@ app.UseAuthorization();
 app.MapControllers();
 #endregion [Use services]
 
-app.Run();
+await app.RunAsync();
 
 partial class Program
 {

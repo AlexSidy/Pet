@@ -2,9 +2,9 @@
 using System.Net.Http.Json;
 using System.Text;
 
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -13,6 +13,7 @@ using Moq;
 using Newtonsoft.Json;
 
 using ScanPerson.BusinessLogic.Services;
+using ScanPerson.DAL.Contexts;
 using ScanPerson.Models.Items;
 using ScanPerson.Models.Requests;
 using ScanPerson.Models.Responses;
@@ -36,30 +37,46 @@ namespace ScanPerson.WebApi.Integration.Tests
 			_factory = new WebApplicationFactory<Program>()
 				.WithWebHostBuilder(builder =>
 				{
-					builder.UseEnvironment("Test");
+					builder.UseEnvironment("Staging");
 					builder.ConfigureServices(services =>
 					{
 						// Удаляем реальный сервис
 						var personServiceDescriptor = services.SingleOrDefault(
 							d => d.ServiceType == typeof(IPersonService));
-
-						var loggerDescriptor = services.SingleOrDefault(
-							d => d.ServiceType == typeof(ILogger<PersonController>));
-
 						if (personServiceDescriptor != null)
 						{
 							services.Remove(personServiceDescriptor);
 						}
+
+						var loggerDescriptor = services.SingleOrDefault(
+							d => d.ServiceType == typeof(ILogger<PersonController>));
 						if (loggerDescriptor != null)
 						{
 							services.Remove(loggerDescriptor);
 						}
+
+						var dbContextDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(ScanPersonDbContext));
+						if (dbContextDescriptor != null)
+						{
+							services.Remove(dbContextDescriptor);
+						}
+
+						// Регистрируем InMemory базу данных
+						services.AddDbContext<ScanPersonDbContext>(options =>
+						{
+							options.UseInMemoryDatabase("ScanPersonDb");
+						});
 
 						// Подменяем на мок сервис
 						services.AddTransient(_ => _personService.Object);
 						services.AddTransient(_ => _logger.Object);
 					});
 				});
+			using (var scope = _factory.Services.CreateScope())
+			{
+				var context = scope.ServiceProvider.GetRequiredService<ScanPersonDbContext>();
+				context.Database.EnsureCreated();
+			}
 			_httpClient = _factory.CreateDefaultClient();
 		}
 
@@ -73,9 +90,10 @@ namespace ScanPerson.WebApi.Integration.Tests
 				Login = "login",
 				Password = "password"
 			}); ;
-			var personResponse = new ScanPersonResultResponse<PersonItem?>(new PersonItem(1, "Test", "Mail"));
+			var personResponse = new ScanPersonResultResponse<PersonItem>(new PersonItem(1, "Test", "Mail"));
+			var taskResponse = Task.FromResult(personResponse);
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
-			_personService.Setup(x => x.Find(It.IsAny<PersonRequest>())).Returns(personResponse);
+			_personService.Setup(x => x.FindAsync(It.IsAny<PersonRequest>())).Returns(taskResponse!);
 
 			// Act
 			try
@@ -84,8 +102,8 @@ namespace ScanPerson.WebApi.Integration.Tests
 
 				// Assert
 				Assert.IsNotNull(response);
-				Assert.IsNotNull(response.Content);
 				response.EnsureSuccessStatusCode();
+				Assert.IsNotNull(response?.Content?.Headers?.ContentType);
 				Assert.AreEqual("application/json; charset=utf-8", response?.Content?.Headers?.ContentType?.ToString());
 				var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<PersonItem?>?>();
 				Assert.IsNotNull(result);
@@ -113,7 +131,7 @@ namespace ScanPerson.WebApi.Integration.Tests
 				Password = "password"
 			});
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
-			_personService.Setup(x => x.Find(It.IsAny<PersonRequest>())).Throws<InvalidOperationException>();
+			_personService.Setup(x => x.FindAsync(It.IsAny<PersonRequest>())).Throws<InvalidOperationException>();
 
 			// Act
 			try
@@ -122,7 +140,6 @@ namespace ScanPerson.WebApi.Integration.Tests
 
 				// Assert
 				Assert.IsNotNull(response);
-				Assert.IsNotNull(response.Content);
 				Assert.IsFalse(response.IsSuccessStatusCode);
 				Assert.AreEqual(HttpStatusCode.InternalServerError, response.StatusCode);
 			}

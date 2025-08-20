@@ -22,7 +22,7 @@ export class AppComponent {
     return this.authService.isAuthenticated();
   }
 
-  constructor(private authService: AuthService) {
+  constructor(private readonly authService: AuthService) {
   }
 
   public logout(): void {

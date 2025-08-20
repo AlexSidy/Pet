@@ -17,7 +17,7 @@ namespace ScanPerson.Auth.Api.Services
 	{
 		public async Task<ScanPersonResponse> RegisterAsync(RegisterRequest request)
 		{
-			logger.LogInformation(string.Format(Messages.StartedMethod, MethodBase.GetCurrentMethod()));
+			logger.LogInformation(Messages.StartedMethod, MethodBase.GetCurrentMethod());
 
 			var found = await userManager.FindByEmailAsync(request.Email);
 			if (found == null)
@@ -37,6 +37,7 @@ namespace ScanPerson.Auth.Api.Services
 
 		public async Task<ScanPersonResponse> LoginAsync(LoginRequest request)
 		{
+			logger.LogInformation(Messages.StartedMethod, MethodBase.GetCurrentMethod());
 			var found = await userManager.FindByEmailAsync(request.Email);
 			if (found == null)
 			{

@@ -40,7 +40,11 @@ builder.Host.UseSerilog();
 
 // Add services to the container.
 #region [Addition services]
-builder.Services.AddDalServices(connectionString);
+// If is not testing
+if (!builder.Environment.IsStaging())
+{
+	builder.Services.AddDalServices(connectionString);
+}
 builder.Services.AddBusinessLogicServices();
 
 var allowedHosts = builder.Configuration.GetValue<string>("Allowed_Hosts")?.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries) ?? [];
@@ -96,7 +100,7 @@ app.UseAuthorization();
 app.MapControllers();
 #endregion [Use services]
 
-app.Run();
+await app.RunAsync();
 
 public partial class Program
 {

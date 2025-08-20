@@ -18,7 +18,7 @@ internal class AuthInitializer(
 	{
 		try
 		{
-			logger.LogInformation(string.Format(Messages.StartedMethod, MethodBase.GetCurrentMethod()));
+			logger.LogInformation(Messages.StartedMethod, MethodBase.GetCurrentMethod());
 			string[] roleNames = { "admin", "user" };
 			foreach (var roleName in roleNames)
 			{
@@ -56,34 +56,57 @@ internal class AuthInitializer(
 					return;
 				}
 
-				var roles = await userManager.GetRolesAsync(found);
-				if (!roles.Any())
-				{
-					// add role to user
-					await userManager.AddToRoleAsync(found, user.role);
-				}
+				IList<string> roles = await AddRole(user.role, found);
 
-				var claims = await userManager.GetClaimsAsync(found) ?? new List<Claim>();
-				if (!claims.Any())
-				{
-					// add claim to user
-					var claimType = "Permission";
-					claims.Add(new Claim(JwtRegisteredClaimNames.Email, found.Email!));
-					claims.Add(new Claim(JwtRegisteredClaimNames.Sid, found.Id.ToString()));
-					claims.Add(new Claim(claimType, user.claim));
-					foreach (var role in roles)
-					{
-						claims.Add(new Claim("Role", role));
-					}
-
-					await userManager.AddClaimsAsync(found, claims);
-				}
+				await AddClaim(user.claim, found, roles);
 			}
 		}
 		catch (Exception ex)
 		{
 			logger.LogError(ex, Messages.InitDataError);
 			// Add transaction rollback #35
+		}
+	}
+
+	/// <summary>
+	/// Add role if user havent any role.
+	/// </summary>
+	/// <param name="role">Role name.</param>
+	/// <param name="found">Found user.</param>
+	private async Task<IList<string>> AddRole(string role, User found)
+	{
+		var roles = await userManager.GetRolesAsync(found);
+		if (!roles.Any())
+		{
+			// add role to user
+			await userManager.AddToRoleAsync(found, role);
+		}
+
+		return roles;
+	}
+
+	/// <summary>
+	/// Add claim if user havent this.
+	/// </summary>
+	/// <param name="claim">Claim name.</param>
+	/// <param name="found">Found user.</param>
+	/// <param name="roles">Roles.</param>
+	private async Task AddClaim(string claim, User found, IList<string> roles)
+	{
+		var claims = await userManager.GetClaimsAsync(found) ?? new List<Claim>();
+		if (!claims.Any())
+		{
+			// add claim to user
+			var claimType = "Permission";
+			claims.Add(new Claim(JwtRegisteredClaimNames.Email, found.Email!));
+			claims.Add(new Claim(JwtRegisteredClaimNames.Sid, found.Id.ToString()));
+			claims.Add(new Claim(claimType, claim));
+			foreach (var role in roles)
+			{
+				claims.Add(new Claim("Role", role));
+			}
+
+			await userManager.AddClaimsAsync(found, claims);
 		}
 	}
 }

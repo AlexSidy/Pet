@@ -63,14 +63,10 @@ namespace ScanPerson.Auth.Api
 
 		private static void UpdateDatabase(this IServiceCollection services)
 		{
-			// Get the service provider
-			var serviceProvider = services.BuildServiceProvider(false); ;
-
-			// Instantiate the runner
-			var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
-
-			// Execute the migrations
-			runner.MigrateUp();
+			// Get the service provider and execute the migrations
+			services.BuildServiceProvider(false)
+				.GetRequiredService<IMigrationRunner>()
+				.MigrateUp();
 		}
 
 		private static void AddInitializers(this IServiceCollection services)

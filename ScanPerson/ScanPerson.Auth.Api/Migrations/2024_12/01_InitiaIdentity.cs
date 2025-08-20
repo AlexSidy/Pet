@@ -15,6 +15,7 @@ namespace ScanPerson.Auth.Api.Migrations._2024_12
 		public const string AspNetUserLoginsTableName = "AspNetUserLogins";
 		public const string AspNetUserRolesTableName = "AspNetUserRoles";
 		public const string AspNetUserTokensTableName = "AspNetUserTokens";
+		private const string UserId = "UserId";
 
 		public override void Up()
 		{
@@ -23,7 +24,7 @@ namespace ScanPerson.Auth.Api.Migrations._2024_12
 			Create.Table(AspNetRolesTableName)
 				.InSchema(AuthSchema)
 				.WithColumn("Id").AsInt64().PrimaryKey("PK_AspNetRoles").Identity()
-				.WithColumn("Name").AsString(256).Nullable()
+				.WithColumn(UserId).AsString(256).Nullable()
 				.WithColumn("NormalizedName").AsString(256).Nullable().Unique("RoleNameIndex")
 				.WithColumn("ConcurrencyStamp").AsString().Nullable();
 
@@ -58,7 +59,7 @@ namespace ScanPerson.Auth.Api.Migrations._2024_12
 			Create.Table(AspNetUserClaimsTableName)
 				.InSchema(AuthSchema)
 				.WithColumn("Id").AsInt64().PrimaryKey("PK_AspNetUserClaims").Identity()
-				.WithColumn("UserId").AsInt64()
+				.WithColumn(UserId).AsInt64()
 					.ForeignKey("FK_AspNetUserClaims_AspNetUsers_UserId", AuthSchema, AspNetUsersTableName, "Id")
 					.OnDelete(Rule.Cascade)
 					.Indexed("IX_AspNetUserClaims_UserId")
@@ -70,14 +71,14 @@ namespace ScanPerson.Auth.Api.Migrations._2024_12
 				.WithColumn("LoginProvider").AsString(128)
 				.WithColumn("ProviderKey").AsString(128)
 				.WithColumn("ProviderDisplayName").AsString(128).Nullable()
-				.WithColumn("UserId").AsInt64()
+				.WithColumn(UserId).AsInt64()
 					.ForeignKey("FK_AspNetUserLogins_AspNetUsers_UserId", AuthSchema, AspNetUsersTableName, "Id")
 					.OnDelete(Rule.Cascade)
 				.Indexed("IX_AspNetUserLogins_UserId");
 
 			Create.Table(AspNetUserRolesTableName)
 				.InSchema(AuthSchema)
-				.WithColumn("UserId").AsInt64()
+				.WithColumn(UserId).AsInt64()
 					.ForeignKey("FK_AspNetUserRoles_AspNetUsers_UserId", AuthSchema, AspNetUsersTableName, "Id")
 					.OnDelete(Rule.Cascade)
 				.WithColumn("RoleId").AsInt64()
@@ -88,15 +89,15 @@ namespace ScanPerson.Auth.Api.Migrations._2024_12
 			Create.PrimaryKey("PK_AspNetUserRoles")
 				.OnTable(AspNetUserRolesTableName)
 				.WithSchema(AuthSchema)
-				.Columns("UserId", "RoleId");
+				.Columns(UserId, "RoleId");
 
 			Create.Table(AspNetUserTokensTableName)
 				.InSchema(AuthSchema)
-				.WithColumn("UserId").AsInt64()
+				.WithColumn(UserId).AsInt64()
 					.ForeignKey("FK_AspNetUserTokens_AspNetUsers_UserId", AuthSchema, AspNetUsersTableName, "Id")
 					.OnDelete(Rule.Cascade)
 				.WithColumn("LoginProvider").AsString(128)
-				.WithColumn("Name").AsString(128)
+				.WithColumn(UserId).AsString(128)
 				.WithColumn("Value").AsString(256).Nullable();
 		}
 

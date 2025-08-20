@@ -1,5 +1,5 @@
-<label>Введите имя:</label>
-<input [(ngModel)]="title">
+<label for="title">Введите имя:</label>
+<input [(ngModel)]="title" id="title">
 <h2>Добро пожаловать {{title}}!</h2>
 <h1>Hello, {{ title }}</h1>
 <p>Congratulations! Your app is running. 🎉</p>
@@ -7,17 +7,16 @@
 <table>
   <thead>
     <tr>
-      <td>ID</td>
-      <td>Name</td>
-      <td>Mail</td>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Mail</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let item of items">
       <td>{{item?.id}}</td>
-      <td>{{item?.name}}
-      <td>
-      <td>{{item?.mail}}
+      <td>{{item?.name}}</td>
+      <td>{{item?.mail}}</td>
       <td>
     </tr>
   </tbody>

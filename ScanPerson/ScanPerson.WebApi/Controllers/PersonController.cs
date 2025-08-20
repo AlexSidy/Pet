@@ -17,8 +17,8 @@ namespace ScanPerson.WebApi.Controllers
 		[Obsolete("Will be removed or changed.")]
 		public async Task<IResult> GetPersonsAsync([FromQuery] PersonRequest request)
 		{
-			logger.LogInformation(string.Format(Messages.StartedMethod, ControllerContext?.RouteData?.Values["action"]));
-			var result = service.Query(request);
+			logger.LogInformation(Messages.StartedMethod, ControllerContext?.RouteData?.Values["action"]);
+			var result = await service.QueryAsync(request);
 
 			return GetResult(result);
 		}
@@ -26,8 +26,8 @@ namespace ScanPerson.WebApi.Controllers
 		[HttpPost(nameof(GetPersonAsync))]
 		public async Task<IResult> GetPersonAsync([FromBody] PersonRequest request)
 		{
-			logger.LogInformation(string.Format(Messages.StartedMethod, ControllerContext?.RouteData?.Values["action"]));
-			var result = service.Find(request);
+			logger.LogInformation(Messages.StartedMethod, ControllerContext?.RouteData?.Values["action"]);
+			var result = await service.FindAsync(request);
 
 			return GetResult(result);
 		}
