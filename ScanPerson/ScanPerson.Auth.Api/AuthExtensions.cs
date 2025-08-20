@@ -63,11 +63,9 @@ namespace ScanPerson.Auth.Api
 
 		private static void UpdateDatabase(this IServiceCollection services)
 		{
-			// Get the service provider
-			var serviceProvider = services.BuildServiceProvider(false); ;
-
-			// Instantiate the runner and execute the migrations
-			serviceProvider.GetRequiredService<IMigrationRunner>()
+			// Get the service provider and execute the migrations
+			services.BuildServiceProvider(false)
+				.GetRequiredService<IMigrationRunner>()
 				.MigrateUp();
 		}
 
