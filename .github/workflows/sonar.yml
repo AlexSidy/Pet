@@ -38,11 +38,12 @@ jobs:
         run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+          dir .\.sonar
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SCAN_PERSON_SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"AlexSidy_Pet" /o:"alexsidy" /d:sonar.token="${{ secrets.SCAN_PERSON_SONAR_TOKEN }}"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"AlexSidy_Pet" /o:"alexsidy" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build ./ScanPerson/ScanPerson.sln
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SCAN_PERSON_SONAR_TOKEN }}"
+          .\.sonar\scanner\dotnet-sonarscanner end
