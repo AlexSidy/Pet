@@ -17,7 +17,7 @@ namespace ScanPerson.BusinessLogic.Services
 		public Task<ScanPersonResultResponse<PersonItem[]?>> QueryAsync(PersonRequest request)
 		{
 			logger.LogInformation(Messages.StartedMethod, MethodBase.GetCurrentMethod());
-			var result = new ScanPersonResultResponse<PersonItem[]?>(context.Persons?.Select(x => new PersonItem(x.Id, x.Name, x.Mail))?.ToArray());
+			var result = new ScanPersonResultResponse<PersonItem[]?>(context.Persons?.Select(x => new PersonItem(x.Id, x.Name, x.Mail)).ToArray());
 
 			return Task.FromResult(result);
 		}
