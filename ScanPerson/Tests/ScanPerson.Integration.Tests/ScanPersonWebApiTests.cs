@@ -19,7 +19,7 @@ using ScanPerson.Models.Requests;
 using ScanPerson.Models.Responses;
 using ScanPerson.WebApi.Controllers;
 
-namespace ScanPerson.WebApi.Integration.Tests
+namespace ScanPerson.Integration.Tests
 {
 	[TestClass]
 	public class ScanPersonWebApiTests : Xunit.IClassFixture<WebApplicationFactory<Program>>

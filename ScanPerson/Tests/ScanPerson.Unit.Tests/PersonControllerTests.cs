@@ -9,7 +9,7 @@ using ScanPerson.Models.Requests;
 using ScanPerson.Models.Responses;
 using ScanPerson.WebApi.Controllers;
 
-namespace ScanPerson.WebApi.Unit.Tests
+namespace ScanPerson.Unit.Tests
 {
 	[TestClass]
 	public sealed class PersonControllerTests
