@@ -1,10 +1,9 @@
-﻿using System.Reflection;
-
-using FluentMigrator.Runner;
+﻿using FluentMigrator.Runner;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
+using ScanPerson.Common.Extensions;
 using ScanPerson.DAL.Contexts;
 using ScanPerson.DAL.Initializers.Interfaces;
 using ScanPerson.DAL.Migrations._2024_12;
@@ -73,19 +72,6 @@ namespace ScanPerson.DAL
 			foreach (var initializer in initializers)
 			{
 				initializer.Seed();
-			}
-		}
-
-		private static void AddAllImplementations<T>(this IServiceCollection services)
-		{
-			// Находим все типы, которые реализуют интерфейс T
-			var implementations = Assembly.GetExecutingAssembly().GetTypes()
-				.Where(type => typeof(T).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
-
-			foreach (var implementation in implementations)
-			{
-				// Регистрируем каждую реализацию
-				services.AddTransient(typeof(T), implementation);
 			}
 		}
 	}

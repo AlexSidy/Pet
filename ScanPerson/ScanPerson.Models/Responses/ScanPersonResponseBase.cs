@@ -5,12 +5,12 @@ namespace ScanPerson.Models.Responses
 	/// <summary>
 	/// Response from operation.
 	/// </summary>
-	public class ScanPersonResponse
+	public class ScanPersonResponseBase
 	{
 		/// <summary>
 		/// Constructor for success response.
 		/// </summary>
-		public ScanPersonResponse()
+		public ScanPersonResponseBase()
 		{
 			IsSuccess = true;
 		}
@@ -18,7 +18,7 @@ namespace ScanPerson.Models.Responses
 		/// <summary>
 		/// Constructor for unsuccess response with errors.
 		/// </summary>
-		public ScanPersonResponse(IEnumerable<string> errors)
+		public ScanPersonResponseBase(IEnumerable<string> errors)
 		{
 			IsSuccess = false;
 			Errors = errors;
@@ -27,7 +27,7 @@ namespace ScanPerson.Models.Responses
 		/// <summary>
 		/// Constructor for unsuccess response with error.
 		/// </summary>
-		public ScanPersonResponse(string error)
+		public ScanPersonResponseBase(string error)
 		{
 			IsSuccess = false;
 			Errors = new[] { error };

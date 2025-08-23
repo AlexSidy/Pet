@@ -67,8 +67,8 @@ jobs:
             --verbosity normal --logger trx `
             /p:CollectCoverage=true `
             /p:CoverletOutputFormat=opencover `
-            /p:CoverletOutput=./ScanPerson/TestResults/opencover.xml `
-            --results-directory ./ScanPerson/TestResults/opencover.xml `
+            /p:CoverletOutput=./ScanPerson/TestResults/ `
+            --results-directory ./ScanPerson/TestResults/ `
             ./ScanPerson/ScanPerson.sln
 
           .\.sonar\scanner\dotnet-sonarscanner end `

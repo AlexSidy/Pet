@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Person } from '../../models/items/person';
-import { PersonRequest } from '../../models/requests/person.request';
+import { PersonInfoRequest } from '../../models/requests/person.request';
 import { WebApi } from '../../constants/constants';
 import { ScanPersonResultResponse } from "../../models/responses/scan.person.result.response";
 
@@ -58,7 +58,7 @@ export class PersonComponent {
   }
 
   postItems(): Observable<ScanPersonResultResponse> {
-    return this.httpClient.post(`${this.url}/GetPersonAsync`, new PersonRequest('login', 'password', 'email')) as  Observable<ScanPersonResultResponse>;
+    return this.httpClient.post(`${this.url}/GetPersonAsync`, new PersonInfoRequest('login')) as  Observable<ScanPersonResultResponse>;
   }
 
   getItems(): Observable<ScanPersonResultResponse> {

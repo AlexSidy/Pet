@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-using FluentMigrator.Runner;
+﻿using FluentMigrator.Runner;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +6,7 @@ using ScanPerson.Auth.Api.Initializers.Interfaces;
 using ScanPerson.Auth.Api.Migrations._2024_12;
 using ScanPerson.Auth.Api.Services;
 using ScanPerson.Auth.Api.Services.Interfaces;
+using ScanPerson.Common.Extensions;
 
 namespace ScanPerson.Auth.Api
 {
@@ -82,19 +81,6 @@ namespace ScanPerson.Auth.Api
 			foreach (var initializer in initializers)
 			{
 				initializer.SeedAsync();
-			}
-		}
-
-		private static void AddAllImplementations<T>(this IServiceCollection services)
-		{
-			// Находим все типы, которые реализуют интерфейс T
-			var implementations = Assembly.GetExecutingAssembly().GetTypes()
-				.Where(type => typeof(T).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract);
-
-			foreach (var implementation in implementations)
-			{
-				// Регистрируем каждую реализацию
-				services.AddTransient(typeof(T), implementation);
 			}
 		}
 	}

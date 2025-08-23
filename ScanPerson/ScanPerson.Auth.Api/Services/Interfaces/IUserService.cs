@@ -13,13 +13,13 @@ namespace ScanPerson.Auth.Api.Services.Interfaces
 		/// </summary>
 		/// <param name="request">Register informaation.</param>
 		/// <returns>Operation result with erorr information.</returns>
-		Task<ScanPersonResponse> RegisterAsync(RegisterRequest request);
+		Task<ScanPersonResponseBase> RegisterAsync(RegisterRequest request);
 
 		/// <summary>
 		/// User Login.
 		/// </summary>
 		/// <param name="request">Login informaation.</param>
 		/// <returns>Operation result with erorr information.</returns>
-		Task<ScanPersonResponse> LoginAsync(LoginRequest request);
+		Task<ScanPersonResponseBase> LoginAsync(LoginRequest request);
 	}
 }

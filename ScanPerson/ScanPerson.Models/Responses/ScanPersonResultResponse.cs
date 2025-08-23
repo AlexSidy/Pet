@@ -5,13 +5,17 @@ namespace ScanPerson.Models.Responses
 	/// <summary>
 	/// Response from operation with result object.
 	/// </summary>
-	public class ScanPersonResultResponse<TResult> : ScanPersonResponse
+	public class ScanPersonResultResponse<TResult> : ScanPersonResponseBase
 		where TResult : class
 	{
 		/// <summary>
 		/// Parametreless constructor.
 		/// </summary>
 		public ScanPersonResultResponse() : base()
+		{
+		}
+
+		public ScanPersonResultResponse(string error = null) : base(error)
 		{
 		}
 

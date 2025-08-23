@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\ScanPerson.WebApi\ScanPerson.WebApi.csproj" />
+    <ProjectReference Include="..\ScanPerson.Common.Tests\ScanPerson.Common.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>

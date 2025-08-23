@@ -3,7 +3,8 @@ using Microsoft.Extensions.Logging;
 
 using Moq;
 
-using ScanPerson.BusinessLogic.Services;
+using ScanPerson.BusinessLogic.Services.Interfaces;
+using ScanPerson.Common.Tests;
 using ScanPerson.Models.Items;
 using ScanPerson.Models.Requests;
 using ScanPerson.Models.Responses;
@@ -18,13 +19,13 @@ namespace ScanPerson.Unit.Tests
 		private readonly PersonController _cut;
 
 		private readonly Mock<ILogger<PersonController>> _logger;
-		private readonly Mock<IPersonService> _personService;
+		private readonly Mock<IPersonInfoServicesAggregator> _servicesAggregator;
 
 		public PersonControllerTests()
 		{
 			_logger = new Mock<ILogger<PersonController>>();
-			_personService = new Mock<IPersonService>();
-			_cut = new PersonController(_logger.Object, _personService.Object);
+			_servicesAggregator = new Mock<IPersonInfoServicesAggregator>();
+			_cut = new PersonController(_logger.Object, _servicesAggregator.Object);
 		}
 
 		[TestMethod]
@@ -33,64 +34,54 @@ namespace ScanPerson.Unit.Tests
 			// Arrange
 
 			// Act
-			var cut = new PersonController(_logger.Object, _personService.Object);
+			var cut = new PersonController(_logger.Object, _servicesAggregator.Object);
 
 			// Assert
 			Assert.IsNotNull(cut);
 		}
 
 		[TestMethod]
-		public async Task FindAsync_PersonRequestIsCorrect_ReturnFailResult()
+		public async Task GetPersonAsync_PersonRequestIsCorrect_ReturnSeccessResult()
 		{
 			// Arrange
-			var personRequest = new PersonRequest
-			{
-				Email = "email",
-				Login = "login",
-				Password = "password"
-			};
-			var errorMessage = "error";
-			var personResponse = new ScanPersonResultResponse<PersonItem>([errorMessage]);
-			var taskResponse = Task.FromResult(personResponse);
-			_personService.Setup(x => x.FindAsync(It.IsAny<PersonRequest>())).Returns(taskResponse!);
+			var personRequest = new PersonInfoRequest { PhoneNumber = "12345" };
+			var personResponses = CreationHelper.GetPersonResponse();
+			var taskResponse = Task.FromResult<ScanPersonResponseBase[]>(personResponses);
+			_servicesAggregator.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Returns(taskResponse);
 
 			// Act
-			var result = (Microsoft.AspNetCore.Http.HttpResults.BadRequest<string>)await _cut.GetPersonAsync(personRequest);
+			var test = await _cut.GetScanPersonInfoAsync(personRequest);
+			var response = (Microsoft.AspNetCore.Http.HttpResults.Ok<ScanPersonResponseBase>)await _cut.GetScanPersonInfoAsync(personRequest);
+
+			// Assert
+			Assert.IsNotNull(response);
+			Assert.AreEqual(StatusCodes.Status200OK, response.StatusCode);
+			var result = (ScanPersonResultResponse<PersonInfoItem>)response.Value!;
+			Assert.IsNotNull(result);
+			Assert.IsNotNull(result.Result);
+			Assert.IsTrue(result.IsSuccess);
+			Assert.IsNull(result.Error);
+			AssertHelper.AssertResult(personResponses[0], result);
+		}
+
+		[TestMethod]
+		public async Task GetPersonAsync_PersonInfoIsCorrect_ReturnFailResult()
+		{
+			// Arrange
+			var personRequest = new PersonInfoRequest { PhoneNumber = "12345" };
+			var errorMessage = "error";
+			var personResponses = new[] { new ScanPersonResultResponse<PersonInfoItem>([errorMessage]) };
+			var taskResponse = Task.FromResult<ScanPersonResponseBase[]>(personResponses);
+			_servicesAggregator.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Returns(taskResponse);
+
+			// Act
+			var result = (Microsoft.AspNetCore.Http.HttpResults.BadRequest<string>)await _cut.GetScanPersonInfoAsync(personRequest);
 
 			// Assert
 			Assert.IsNotNull(result);
 			Assert.AreEqual(StatusCodes.Status400BadRequest, result.StatusCode);
 			Assert.IsNotNull(result.Value);
 			Assert.AreEqual(errorMessage, result.Value);
-		}
-
-		[TestMethod]
-		public async Task FindAsync_PersonRequestIsCorrect_ReturnSeccessResult()
-		{
-			// Arrange
-			var personRequest = new PersonRequest
-			{
-				Email = "email",
-				Login = "login",
-				Password = "password"
-			};
-			var personResponse = new ScanPersonResultResponse<PersonItem>(new PersonItem(1, "Test", "Mail"));
-			var taskResponse = Task.FromResult(personResponse);
-			_personService.Setup(x => x.FindAsync(It.IsAny<PersonRequest>())).Returns(taskResponse!);
-
-			// Act
-			var result = (Microsoft.AspNetCore.Http.HttpResults.Ok<ScanPersonResultResponse<PersonItem?>>)await _cut.GetPersonAsync(personRequest);
-
-			// Assert
-			Assert.IsNotNull(result);
-			Assert.AreEqual(StatusCodes.Status200OK, result.StatusCode);
-			Assert.IsNotNull(result.Value);
-			Assert.IsTrue(result.Value.IsSuccess);
-			Assert.IsNull(result.Value.Error);
-			Assert.IsNotNull(result.Value.Result);
-			Assert.AreEqual(personResponse.Result.Id, result.Value.Result.Id);
-			Assert.AreEqual(personResponse.Result.Name, result.Value.Result.Name);
-			Assert.AreEqual(personResponse.Result.Mail, result.Value.Result.Mail);
 		}
 	}
 }

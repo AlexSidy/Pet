@@ -1,4 +1,4 @@
-<Project Sdk="MSTest.Sdk/3.6.4">
+﻿<Project Sdk="MSTest.Sdk/3.6.4">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -18,8 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ScanPerson.WebApi\ScanPerson.WebApi.csproj" />
-    <ProjectReference Include="..\ScanPerson.Common.Tests\ScanPerson.Common.Tests.csproj" />
+    <ProjectReference Include="..\..\ScanPerson.Common\ScanPerson.Common.csproj" />
+    <ProjectReference Include="..\..\ScanPerson.Models\ScanPerson.Models.csproj" />
   </ItemGroup>
 
 </Project>

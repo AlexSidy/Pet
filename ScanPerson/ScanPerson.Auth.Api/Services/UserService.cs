@@ -2,8 +2,8 @@
 
 using Microsoft.AspNetCore.Identity;
 
-using ScanPerson.Auth.Api.Services.Base;
 using ScanPerson.Auth.Api.Services.Interfaces;
+using ScanPerson.Common.Operations.Base;
 using ScanPerson.Common.Resources;
 using ScanPerson.Models.Requests.Auth;
 using ScanPerson.Models.Responses;
@@ -15,7 +15,7 @@ namespace ScanPerson.Auth.Api.Services
 		UserManager<User> userManager,
 		ITokenProvider jwtProvider) : OperationBase, IUserService
 	{
-		public async Task<ScanPersonResponse> RegisterAsync(RegisterRequest request)
+		public async Task<ScanPersonResponseBase> RegisterAsync(RegisterRequest request)
 		{
 			logger.LogInformation(Messages.StartedMethod, MethodBase.GetCurrentMethod());
 
@@ -35,7 +35,7 @@ namespace ScanPerson.Auth.Api.Services
 			return GetFail(Messages.UserAlredyExist);
 		}
 
-		public async Task<ScanPersonResponse> LoginAsync(LoginRequest request)
+		public async Task<ScanPersonResponseBase> LoginAsync(LoginRequest request)
 		{
 			logger.LogInformation(Messages.StartedMethod, MethodBase.GetCurrentMethod());
 			var found = await userManager.FindByEmailAsync(request.Email);

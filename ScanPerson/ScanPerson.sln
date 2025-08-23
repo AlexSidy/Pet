@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.Integration.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.Unit.Tests", "Tests\ScanPerson.Unit.Tests\ScanPerson.Unit.Tests.csproj", "{F22DAFCD-9E20-43C0-AE2B-15B652BD9D02}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.Common.Tests", "Tests\ScanPerson.Common.Tests\ScanPerson.Common.Tests.csproj", "{0DF701DE-3F0B-4183-AF70-7F31D8FE5E7E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,9 +75,18 @@ Global
 		{F22DAFCD-9E20-43C0-AE2B-15B652BD9D02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F22DAFCD-9E20-43C0-AE2B-15B652BD9D02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F22DAFCD-9E20-43C0-AE2B-15B652BD9D02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DF701DE-3F0B-4183-AF70-7F31D8FE5E7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DF701DE-3F0B-4183-AF70-7F31D8FE5E7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DF701DE-3F0B-4183-AF70-7F31D8FE5E7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DF701DE-3F0B-4183-AF70-7F31D8FE5E7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AE1CE566-2737-46A3-8030-B4D2A7613CDC} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{F22DAFCD-9E20-43C0-AE2B-15B652BD9D02} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{0DF701DE-3F0B-4183-AF70-7F31D8FE5E7E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A569EC1C-6DDC-4C14-BB65-7ADB06C8832B}
