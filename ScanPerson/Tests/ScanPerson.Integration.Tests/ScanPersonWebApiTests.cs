@@ -25,7 +25,7 @@ namespace ScanPerson.Integration.Tests
 	[TestClass]
 	public class ScanPersonWebApiTests : Xunit.IClassFixture<WebApplicationFactory<Program>>
 	{
-		private const string PersonControllerName = "Person";
+		private const string PersonInfoControllerName = "PersonInfo";
 		private readonly HttpClient _httpClient;
 		private readonly WebApplicationFactory<Program> _factory;
 		private readonly Mock<IPersonInfoServicesAggregator> _personInfoServicesAggregator;
@@ -99,7 +99,7 @@ namespace ScanPerson.Integration.Tests
 			// Act
 			try
 			{
-				var response = await _httpClient.PostAsync($"{Program.WebApi}/{PersonControllerName}/{nameof(PersonInfoController.GetScanPersonInfoAsync)}", content);
+				var response = await _httpClient.PostAsync($"{Program.WebApi}/{PersonInfoControllerName}/{nameof(PersonInfoController.GetScanPersonInfoAsync)}", content);
 
 				// Assert
 				Assert.IsNotNull(response);
@@ -130,7 +130,7 @@ namespace ScanPerson.Integration.Tests
 			// Act
 			try
 			{
-				var response = await _httpClient.PostAsync($"{Program.WebApi}/{PersonControllerName}/{nameof(PersonInfoController.GetScanPersonInfoAsync)}", content);
+				var response = await _httpClient.PostAsync($"{Program.WebApi}/{PersonInfoControllerName}/{nameof(PersonInfoController.GetScanPersonInfoAsync)}", content);
 
 				// Assert
 				Assert.IsNotNull(response);

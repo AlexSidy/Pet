@@ -19,11 +19,11 @@ import { ScanPersonResultResponse } from '../../models/responses/scan.person.res
 })
 export class PersonComponent {
 
-  public title = 'ScanPerson.UI';
+  public readonly title = 'ScanPerson.UI';
   public items: PersonInfoItem[] = [ new PersonInfoItem(1, 'Test3', 'mail', new LocationItem()) ];
   public phoneNumber: string = '';
 
-  private url = '/' + WebApi + '/PersonInfo';
+  private readonly url = '/' + WebApi + '/PersonInfo';
 
   constructor(private readonly httpClient: HttpClient) {
     this.httpClient = httpClient;
