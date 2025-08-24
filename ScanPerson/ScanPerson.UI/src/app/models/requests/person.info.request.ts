@@ -1,4 +1,4 @@
 export class PersonInfoRequest {
     constructor(
-        public PhoneNumber?: string) { }
+        public phoneNumber?: string) { }
 }

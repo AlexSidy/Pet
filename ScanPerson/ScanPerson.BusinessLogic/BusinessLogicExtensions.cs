@@ -35,7 +35,7 @@ namespace ScanPerson.BusinessLogic
 		private static string GetViriableByName(string variableName)
 		{
 			return Environment.GetEnvironmentVariable(variableName)
-					?? throw new InvalidOperationException(string.Format(Messages.EnvironmentNotFound, variableName));
+							?? throw new InvalidOperationException(string.Format(Messages.EnvironmentNotFound, variableName));
 		}
 	}
 }

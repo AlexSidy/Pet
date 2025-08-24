@@ -9,7 +9,7 @@ namespace ScanPerson.WebApi.Controllers
 {
 	[ApiController]
 	[Route(Program.WebApi + "/[controller]")]
-	public class PersonController(ILogger<PersonController> logger, IPersonInfoServicesAggregator service) : ScanPersonControllerBase
+	public class PersonInfoController(ILogger<PersonInfoController> logger, IPersonInfoServicesAggregator service) : ScanPersonControllerBase
 	{
 		[HttpPost(nameof(GetScanPersonInfoAsync))]
 		public async Task<IResult> GetScanPersonInfoAsync([FromBody] PersonInfoRequest request)

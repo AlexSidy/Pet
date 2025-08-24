@@ -1,25 +1,34 @@
-<label for="title">Введите имя:</label>
-<input [(ngModel)]="title" id="title">
-<h2>Добро пожаловать {{title}}!</h2>
-<h1>Hello, {{ title }}</h1>
-<p>Congratulations! Your app is running. 🎉</p>
+<h2>Добро пожаловать в {{title}}!</h2>
+<label for="phoneNumber">Введите номер телефона:</label>
+<input [(ngModel)]="phoneNumber" id="phoneNumber"  placeholder="79991112233">
 
-<table>
+<table class="table table-striped">
   <thead>
     <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Mail</th>
+      <th scope="col">ID</th>
+      <th scope="col">Имя</th>
+      <th scope="col">Почта</th>      
+      <th scope="col">Страна</th>
+      <th scope="col">Текущее расположение</th>
+      <th scope="col">Округ</th>
+      <th scope="col">Город регистрации</th>
+      <th scope="col">Оператор</th>
+      <th scope="col">Город оператора</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let item of items">
-      <td>{{item?.id}}</td>
+    <tr *ngFor="let item of items" class="table table-striped">
+      <td scope="row">{{item?.id}}</td>
       <td>{{item?.name}}</td>
       <td>{{item?.mail}}</td>
+      <td>{{item?.location?.countryName}}</td>
+      <td>{{item?.location?.currentRegion}}</td>
+      <td>{{item?.location?.registrationOkrug}}</td>
+      <td>{{item?.location?.registrationCapital}}</td>
+      <td>{{item?.location?.operatorName}}</td>
+      <td>{{item?.location?.operatorCity}}</td>
       <td>
     </tr>
   </tbody>
 </table>
-<button class="btn btn-sm btn-danger" (click)="getLoad()">Load</button>
 <button class="btn btn-sm btn-danger" (click)="postLoad()">post Load</button>

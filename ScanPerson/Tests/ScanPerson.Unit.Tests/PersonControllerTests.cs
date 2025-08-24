@@ -16,16 +16,16 @@ namespace ScanPerson.Unit.Tests
 	public sealed class PersonControllerTests
 	{
 		// class under tests
-		private readonly PersonController _cut;
+		private readonly PersonInfoController _cut;
 
-		private readonly Mock<ILogger<PersonController>> _logger;
+		private readonly Mock<ILogger<PersonInfoController>> _logger;
 		private readonly Mock<IPersonInfoServicesAggregator> _servicesAggregator;
 
 		public PersonControllerTests()
 		{
-			_logger = new Mock<ILogger<PersonController>>();
+			_logger = new Mock<ILogger<PersonInfoController>>();
 			_servicesAggregator = new Mock<IPersonInfoServicesAggregator>();
-			_cut = new PersonController(_logger.Object, _servicesAggregator.Object);
+			_cut = new PersonInfoController(_logger.Object, _servicesAggregator.Object);
 		}
 
 		[TestMethod]
@@ -34,7 +34,7 @@ namespace ScanPerson.Unit.Tests
 			// Arrange
 
 			// Act
-			var cut = new PersonController(_logger.Object, _servicesAggregator.Object);
+			var cut = new PersonInfoController(_logger.Object, _servicesAggregator.Object);
 
 			// Assert
 			Assert.IsNotNull(cut);

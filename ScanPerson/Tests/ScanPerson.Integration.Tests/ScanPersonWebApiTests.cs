@@ -29,12 +29,12 @@ namespace ScanPerson.Integration.Tests
 		private readonly HttpClient _httpClient;
 		private readonly WebApplicationFactory<Program> _factory;
 		private readonly Mock<IPersonInfoServicesAggregator> _personInfoServicesAggregator;
-		private readonly Mock<ILogger<PersonController>> _logger;
+		private readonly Mock<ILogger<PersonInfoController>> _logger;
 
 		public ScanPersonWebApiTests()
 		{
 			_personInfoServicesAggregator = new Mock<IPersonInfoServicesAggregator>();
-			_logger = new Mock<ILogger<PersonController>>();
+			_logger = new Mock<ILogger<PersonInfoController>>();
 			_factory = new WebApplicationFactory<Program>()
 				.WithWebHostBuilder(builder =>
 				{
@@ -45,7 +45,7 @@ namespace ScanPerson.Integration.Tests
 					{
 						// Удаляем реальный сервис
 						var forRemovedescritors = new[] {
-							typeof(ILogger<PersonController>),
+							typeof(ILogger<PersonInfoController>),
 							typeof(ScanPersonDbContext),
 							typeof(IPersonInfoServicesAggregator)
 						};
@@ -99,7 +99,7 @@ namespace ScanPerson.Integration.Tests
 			// Act
 			try
 			{
-				var response = await _httpClient.PostAsync($"{Program.WebApi}/{PersonControllerName}/{nameof(PersonController.GetScanPersonInfoAsync)}", content);
+				var response = await _httpClient.PostAsync($"{Program.WebApi}/{PersonControllerName}/{nameof(PersonInfoController.GetScanPersonInfoAsync)}", content);
 
 				// Assert
 				Assert.IsNotNull(response);
@@ -130,7 +130,7 @@ namespace ScanPerson.Integration.Tests
 			// Act
 			try
 			{
-				var response = await _httpClient.PostAsync($"{Program.WebApi}/{PersonControllerName}/{nameof(PersonController.GetScanPersonInfoAsync)}", content);
+				var response = await _httpClient.PostAsync($"{Program.WebApi}/{PersonControllerName}/{nameof(PersonInfoController.GetScanPersonInfoAsync)}", content);
 
 				// Assert
 				Assert.IsNotNull(response);

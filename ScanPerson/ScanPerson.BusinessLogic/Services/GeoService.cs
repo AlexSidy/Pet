@@ -48,12 +48,12 @@ namespace ScanPerson.BusinessLogic.Services
 		{
 			var mapped = new LocationItem
 			{
-				CountryName = serializationItem.Country.Name,
-				CurrentRegion = serializationItem.Region.Name,
+				CountryName = serializationItem.Country?.Name,
+				CurrentRegion = serializationItem.Region?.Name,
 				RegistrationOkrug = serializationItem.Okrug,
-				RegistrationCapital = serializationItem.Capital.Name,
-				OperatorCity = serializationItem.Operator.Name,
-				OperatorName = serializationItem.Operator.OperBrand
+				RegistrationCapital = serializationItem.Capital?.Name,
+				OperatorCity = serializationItem.Operator?.Name,
+				OperatorName = serializationItem.Operator?.OperBrand
 			};
 
 			return mapped;
