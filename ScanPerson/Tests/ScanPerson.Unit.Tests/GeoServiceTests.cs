@@ -21,13 +21,21 @@ namespace ScanPerson.Unit.Tests
 		private readonly Mock<ILogger<GeoService>> _logger;
 		private Mock<IHttpClientFactory> _httpClientFactory;
 		private readonly ScanPersonSecrets _secrets = new() { HtmlWebRuApiKey = "key" };
-		private readonly ServicesOptions _servicesOptions = new() { UnUsingServices = ["TestUnusedService", "TestService"] };
+		private readonly ServicesOptions _servicesOptions;
 
 		public GeoServiceTests()
 		{
 			_logger = new Mock<ILogger<GeoService>>();
 			_httpClientFactory = new Mock<IHttpClientFactory>();
 			_httpClientFactory.MockHttpClientFactoryWithSuccessResponse();
+			_servicesOptions = new()
+			{
+				UnUsingServices = ["TestUnusedService", "TestService"],
+				GeoServiceOptions = new GeoServiceOptions
+				{
+					BaseUrl = "https://test.ru/geo"
+				}
+			};
 
 			_cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions);
 		}
@@ -88,6 +96,7 @@ namespace ScanPerson.Unit.Tests
 			var result = _cut.CanAccept();
 
 			// Assert
+			Assert.IsNotNull(result);
 			Assert.IsTrue(result);
 		}
 
