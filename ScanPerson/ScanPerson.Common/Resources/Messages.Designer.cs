@@ -61,6 +61,24 @@ namespace ScanPerson.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An error occurred while performing the operation..
+        /// </summary>
+        public static string ClientOperationError {
+            get {
+                return ResourceManager.GetString("ClientOperationError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Environment variable {0} not found..
+        /// </summary>
+        public static string EnvironmentNotFound {
+            get {
+                return ResourceManager.GetString("EnvironmentNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An error occurred while initializing data..
         /// </summary>
         public static string InitDataError {
@@ -79,6 +97,33 @@ namespace ScanPerson.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An error occurred while performing the operation of {0}..
+        /// </summary>
+        public static string OperationError {
+            get {
+                return ResourceManager.GetString("OperationError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The input of the operation contains the object: {0}..
+        /// </summary>
+        public static string OperationInput {
+            get {
+                return ResourceManager.GetString("OperationInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The result of the operation contains the object: {0}..
+        /// </summary>
+        public static string OperationResult {
+            get {
+                return ResourceManager.GetString("OperationResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Section {0} not found or have error..
         /// </summary>
         public static string SectionNotFound {
@@ -93,6 +138,15 @@ namespace ScanPerson.Common.Resources {
         public static string StartedMethod {
             get {
                 return ResourceManager.GetString("StartedMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method called {0} started with parameters {1}..
+        /// </summary>
+        public static string StartedMethodWithParameters {
+            get {
+                return ResourceManager.GetString("StartedMethodWithParameters", resourceCulture);
             }
         }
         

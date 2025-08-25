@@ -135,4 +135,22 @@
   <data name="InitDataError" xml:space="preserve">
     <value>An error occurred while initializing data.</value>
   </data>
+  <data name="EnvironmentNotFound" xml:space="preserve">
+    <value>Environment variable {0} not found.</value>
+  </data>
+  <data name="OperationError" xml:space="preserve">
+    <value>An error occurred while performing the operation of {0}.</value>
+  </data>
+  <data name="OperationResult" xml:space="preserve">
+    <value>The result of the operation contains the object: {0}.</value>
+  </data>
+  <data name="OperationInput" xml:space="preserve">
+    <value>The input of the operation contains the object: {0}.</value>
+  </data>
+  <data name="StartedMethodWithParameters" xml:space="preserve">
+    <value>Method called {0} started with parameters {1}.</value>
+  </data>
+  <data name="ClientOperationError" xml:space="preserve">
+    <value>An error occurred while performing the operation.</value>
+  </data>
 </root>

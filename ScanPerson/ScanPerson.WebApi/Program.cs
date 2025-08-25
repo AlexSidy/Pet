@@ -45,7 +45,7 @@ if (!builder.Environment.IsStaging())
 {
 	builder.Services.AddDalServices(connectionString);
 }
-builder.Services.AddBusinessLogicServices();
+builder.Services.AddBusinessLogicServices(builder.Configuration);
 
 var allowedHosts = builder.Configuration.GetValue<string>("Allowed_Hosts")?.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries) ?? [];
 builder.Services.AddCors(options =>
@@ -78,6 +78,7 @@ builder.Services
 		};
 	});
 builder.Services.AddAuthorization();
+builder.Services.AddHttpClient();
 #endregion [Add services]
 
 var app = builder.Build();

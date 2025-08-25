@@ -14,12 +14,12 @@ import { RegisterRequest } from '../models/requests/register.request';
 })
 export class AuthService {
 
-  private api: string = "/" + AuthApi + '/Auth';
+  private readonly api: string = "/" + AuthApi + '/Auth';
 
   constructor(
-    private httpClient: HttpClient,
-    private router: Router,
-    private jwtHelper: JwtHelperService) {}
+    private readonly httpClient: HttpClient,
+    private readonly router: Router,
+    private readonly jwtHelper: JwtHelperService) {}
 
   register(email: string, password: string) {
     let request = new RegisterRequest(password, email);

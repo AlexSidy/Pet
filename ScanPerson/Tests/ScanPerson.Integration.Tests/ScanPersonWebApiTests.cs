@@ -12,54 +12,44 @@ using Moq;
 
 using Newtonsoft.Json;
 
-using ScanPerson.BusinessLogic.Services;
+using ScanPerson.BusinessLogic.Services.Interfaces;
+using ScanPerson.Common.Tests;
 using ScanPerson.DAL.Contexts;
 using ScanPerson.Models.Items;
 using ScanPerson.Models.Requests;
 using ScanPerson.Models.Responses;
 using ScanPerson.WebApi.Controllers;
 
-namespace ScanPerson.WebApi.Integration.Tests
+namespace ScanPerson.Integration.Tests
 {
 	[TestClass]
 	public class ScanPersonWebApiTests : Xunit.IClassFixture<WebApplicationFactory<Program>>
 	{
-		private const string PersonControllerName = "Person";
+		private const string PersonInfoControllerName = "PersonInfo";
 		private readonly HttpClient _httpClient;
 		private readonly WebApplicationFactory<Program> _factory;
-		private readonly Mock<IPersonService> _personService;
-		private readonly Mock<ILogger<PersonController>> _logger;
+		private readonly Mock<IPersonInfoServicesAggregator> _personInfoServicesAggregator;
+		private readonly Mock<ILogger<PersonInfoController>> _logger;
 
 		public ScanPersonWebApiTests()
 		{
-			_personService = new Mock<IPersonService>();
-			_logger = new Mock<ILogger<PersonController>>();
+			_personInfoServicesAggregator = new Mock<IPersonInfoServicesAggregator>();
+			_logger = new Mock<ILogger<PersonInfoController>>();
 			_factory = new WebApplicationFactory<Program>()
 				.WithWebHostBuilder(builder =>
 				{
 					builder.UseEnvironment("Staging");
+					Environment.SetEnvironmentVariable("HTMLWEBRU_API_KEY", "value-does-not-matter");
+
 					builder.ConfigureServices(services =>
 					{
 						// Удаляем реальный сервис
-						var personServiceDescriptor = services.SingleOrDefault(
-							d => d.ServiceType == typeof(IPersonService));
-						if (personServiceDescriptor != null)
-						{
-							services.Remove(personServiceDescriptor);
-						}
-
-						var loggerDescriptor = services.SingleOrDefault(
-							d => d.ServiceType == typeof(ILogger<PersonController>));
-						if (loggerDescriptor != null)
-						{
-							services.Remove(loggerDescriptor);
-						}
-
-						var dbContextDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(ScanPersonDbContext));
-						if (dbContextDescriptor != null)
-						{
-							services.Remove(dbContextDescriptor);
-						}
+						var forRemovedescritors = new[] {
+							typeof(ILogger<PersonInfoController>),
+							typeof(ScanPersonDbContext),
+							typeof(IPersonInfoServicesAggregator)
+						};
+						RemoveFromServices(services, forRemovedescritors);
 
 						// Регистрируем InMemory базу данных
 						services.AddDbContext<ScanPersonDbContext>(options =>
@@ -68,8 +58,8 @@ namespace ScanPerson.WebApi.Integration.Tests
 						});
 
 						// Подменяем на мок сервис
-						services.AddTransient(_ => _personService.Object);
 						services.AddTransient(_ => _logger.Object);
+						services.AddSingleton(_ => _personInfoServicesAggregator.Object);
 					});
 				});
 			using (var scope = _factory.Services.CreateScope())
@@ -80,39 +70,45 @@ namespace ScanPerson.WebApi.Integration.Tests
 			_httpClient = _factory.CreateDefaultClient();
 		}
 
+		private static void RemoveFromServices(IServiceCollection services, IEnumerable<Type> types)
+		{
+			foreach (var type in types)
+			{
+				var personServiceDescriptor = services.SingleOrDefault(
+											d => d.ServiceType == type);
+				if (personServiceDescriptor != null)
+				{
+					services.Remove(personServiceDescriptor);
+				}
+			}
+		}
+
 		[TestMethod]
 		public async Task GetPersonAsync_CorrectRequest_ReturnSuccessResult()
 		{
 			// Arrange
-			var data = JsonConvert.SerializeObject(new PersonRequest
+			var data = JsonConvert.SerializeObject(new PersonInfoRequest
 			{
-				Email = "email",
-				Login = "login",
-				Password = "password"
-			}); ;
-			var personResponse = new ScanPersonResultResponse<PersonItem>(new PersonItem(1, "Test", "Mail"));
-			var taskResponse = Task.FromResult(personResponse);
+				PhoneNumber = "123456789"
+			});
+			var personResponses = CreationHelper.GetPersonResponse();
+			var taskResponse = CreationHelper.GetTaskResponse(personResponses);
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
-			_personService.Setup(x => x.FindAsync(It.IsAny<PersonRequest>())).Returns(taskResponse!);
+			_personInfoServicesAggregator.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Returns(taskResponse!);
 
 			// Act
 			try
 			{
-				var response = await _httpClient.PostAsync($"{Program.WebApi}/{PersonControllerName}/{nameof(PersonController.GetPersonAsync)}", content);
+				var response = await _httpClient.PostAsync($"{Program.WebApi}/{PersonInfoControllerName}/{nameof(PersonInfoController.GetScanPersonInfoAsync)}", content);
 
 				// Assert
 				Assert.IsNotNull(response);
 				response.EnsureSuccessStatusCode();
-				Assert.IsNotNull(response?.Content?.Headers?.ContentType);
-				Assert.AreEqual("application/json; charset=utf-8", response?.Content?.Headers?.ContentType?.ToString());
-				var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<PersonItem?>?>();
+				Assert.IsNotNull(response.Content.Headers.ContentType);
+				Assert.AreEqual("application/json; charset=utf-8", response.Content.Headers.ContentType.ToString());
+				var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<PersonInfoItem>>();
 				Assert.IsNotNull(result);
-				Assert.IsTrue(result.IsSuccess);
-				Assert.IsNull(result.Error);
-				Assert.IsNotNull(result.Result);
-				Assert.AreEqual(personResponse!.Result!.Name, result.Result.Name);
-				Assert.AreEqual(personResponse.Result.Id, result.Result.Id);
-				Assert.AreEqual(personResponse.Result.Mail, result.Result.Mail);
+				AssertHelper.AssertResult(personResponses[0], result);
 			}
 			catch (Exception ex)
 			{
@@ -124,19 +120,17 @@ namespace ScanPerson.WebApi.Integration.Tests
 		public async Task GetPersonAsync_PersonServiceThrowEception_ReturnFailResult()
 		{
 			// Arrange
-			var data = JsonConvert.SerializeObject(new PersonRequest
+			var data = JsonConvert.SerializeObject(new PersonInfoRequest
 			{
-				Email = "email",
-				Login = "login",
-				Password = "password"
+				PhoneNumber = "123456789"
 			});
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
-			_personService.Setup(x => x.FindAsync(It.IsAny<PersonRequest>())).Throws<InvalidOperationException>();
+			_personInfoServicesAggregator.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Throws<InvalidOperationException>();
 
 			// Act
 			try
 			{
-				var response = await _httpClient.PostAsync($"{Program.WebApi}/{PersonControllerName}/{nameof(PersonController.GetPersonAsync)}", content);
+				var response = await _httpClient.PostAsync($"{Program.WebApi}/{PersonInfoControllerName}/{nameof(PersonInfoController.GetScanPersonInfoAsync)}", content);
 
 				// Assert
 				Assert.IsNotNull(response);
