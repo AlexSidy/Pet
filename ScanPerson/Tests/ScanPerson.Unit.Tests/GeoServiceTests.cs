@@ -96,7 +96,6 @@ namespace ScanPerson.Unit.Tests
 			var result = _cut.CanAccept();
 
 			// Assert
-			Assert.IsNotNull(result);
 			Assert.IsTrue(result);
 		}
 
