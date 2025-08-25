@@ -14,6 +14,4 @@ export class LocationItem {
 		registrationCapital: string = '';
 		operatorName: string = '';
 		operatorCity: string = ''
-    constructor(
-    ) { }
 }

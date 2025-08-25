@@ -88,7 +88,6 @@ namespace ScanPerson.Unit.Tests
 			var result = _cut.CanAccept();
 
 			// Assert
-			Assert.IsNotNull(result);
 			Assert.IsTrue(result);
 		}
 
@@ -103,7 +102,6 @@ namespace ScanPerson.Unit.Tests
 			var result = cut.CanAccept();
 
 			// Assert
-			Assert.IsNotNull(result);
 			Assert.IsFalse(result);
 		}
 	}

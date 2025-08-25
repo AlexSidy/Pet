@@ -1,7 +1,6 @@
 ﻿using System.Data;
 using System.Reflection;
 
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ScanPerson.Common.Extensions

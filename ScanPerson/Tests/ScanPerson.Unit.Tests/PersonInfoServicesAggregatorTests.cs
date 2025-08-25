@@ -4,7 +4,6 @@ using Moq;
 
 using ScanPerson.BusinessLogic.Services;
 using ScanPerson.BusinessLogic.Services.Interfaces;
-using ScanPerson.Common.Resources;
 using ScanPerson.Common.Tests;
 using ScanPerson.Models.Items;
 using ScanPerson.Models.Requests;

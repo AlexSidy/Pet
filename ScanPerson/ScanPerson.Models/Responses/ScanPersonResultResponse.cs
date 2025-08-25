@@ -15,7 +15,7 @@ namespace ScanPerson.Models.Responses
 		{
 		}
 
-		public ScanPersonResultResponse(string error = null) : base(error)
+		public ScanPersonResultResponse(string error) : base(error)
 		{
 		}
 

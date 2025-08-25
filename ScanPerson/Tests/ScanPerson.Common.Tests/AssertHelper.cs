@@ -3,32 +3,43 @@ using ScanPerson.Models.Responses;
 
 namespace ScanPerson.Common.Tests
 {
-	[TestClass]
+	/// <summary>
+	/// Класс для проверки результатов, gjkextyys[ в тестах.
+	/// </summary>
 	public static class AssertHelper
 	{
-		public static void AssertResult(ScanPersonResultResponse<PersonInfoItem> personResponse, ScanPersonResultResponse<PersonInfoItem> result)
+		/// <summary>
+		/// Проверяет полученый результат с ожидаемым по информации о человеке.
+		/// </summary>
+		/// <param name="expected">Ожидаемый результат.</param>
+		/// <param name="result">Полученный результат.</param>
+		public static void AssertResult(ScanPersonResultResponse<PersonInfoItem> expected, ScanPersonResultResponse<PersonInfoItem> result)
 		{
 			Assert.IsTrue(result.IsSuccess);
 			Assert.IsNull(result.Error);
-			Assert.IsNotNull(result.Result);
-			Assert.AreEqual(personResponse!.Result!.Name, result.Result.Name);
-			Assert.AreEqual(personResponse!.Result!.Mail, result.Result.Mail);
-			Assert.AreEqual(personResponse!.Result!.Id, result.Result.Id);
-			AssertLocationResult(personResponse, result);
+			Assert.AreEqual(expected.Result.Name, result.Result.Name);
+			Assert.AreEqual(expected.Result.Mail, result.Result.Mail);
+			Assert.AreEqual(expected.Result.Id, result.Result.Id);
+			AssertLocationResult(expected, result);
 		}
 
-		public static void AssertLocationResult(ScanPersonResultResponse<PersonInfoItem> personResponse, ScanPersonResultResponse<PersonInfoItem> result)
+
+		/// <summary>
+		/// Проверяет полученый результат с ожидаемым по информации о локации человека.
+		/// </summary>
+		/// <param name="expected">Ожидаемый результат.</param>
+		/// <param name="result">Полученный результат.</param>
+		public static void AssertLocationResult(ScanPersonResultResponse<PersonInfoItem> expected, ScanPersonResultResponse<PersonInfoItem> result)
 		{
 			Assert.IsTrue(result.IsSuccess);
 			Assert.IsNull(result.Error);
-			Assert.IsNotNull(result.Result);
 			Assert.IsNotNull(result.Result.Location);
-			Assert.AreEqual(personResponse!.Result!.Location.CurrentRegion, result.Result.Location.CurrentRegion);
-			Assert.AreEqual(personResponse!.Result!.Location.OperatorName, result.Result.Location.OperatorName);
-			Assert.AreEqual(personResponse!.Result!.Location.CountryName, result.Result.Location.CountryName);
-			Assert.AreEqual(personResponse!.Result!.Location.OperatorCity, result.Result.Location.OperatorCity);
-			Assert.AreEqual(personResponse!.Result!.Location.RegistrationCapital, result.Result.Location.RegistrationCapital);
-			Assert.AreEqual(personResponse!.Result!.Location.RegistrationOkrug, result.Result.Location.RegistrationOkrug);
+			Assert.AreEqual(expected!.Result!.Location.CurrentRegion, result.Result.Location.CurrentRegion);
+			Assert.AreEqual(expected!.Result!.Location.OperatorName, result.Result.Location.OperatorName);
+			Assert.AreEqual(expected!.Result!.Location.CountryName, result.Result.Location.CountryName);
+			Assert.AreEqual(expected!.Result!.Location.OperatorCity, result.Result.Location.OperatorCity);
+			Assert.AreEqual(expected!.Result!.Location.RegistrationCapital, result.Result.Location.RegistrationCapital);
+			Assert.AreEqual(expected!.Result!.Location.RegistrationOkrug, result.Result.Location.RegistrationOkrug);
 		}
 	}
 }

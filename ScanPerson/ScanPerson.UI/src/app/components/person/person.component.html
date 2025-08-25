@@ -5,20 +5,20 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th scope="col">ID</th>
-      <th scope="col">Имя</th>
-      <th scope="col">Почта</th>      
-      <th scope="col">Страна</th>
-      <th scope="col">Текущее расположение</th>
-      <th scope="col">Округ</th>
-      <th scope="col">Город регистрации</th>
-      <th scope="col">Оператор</th>
-      <th scope="col">Город оператора</th>
+      <th>ID</th>
+      <th>Имя</th>
+      <th>Почта</th>      
+      <th>Страна</th>
+      <th>Текущее расположение</th>
+      <th>Округ</th>
+      <th>Город регистрации</th>
+      <th>Оператор</th>
+      <th>Город оператора</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let item of items" class="table table-striped">
-      <td scope="row">{{item?.id}}</td>
+      <td>{{item?.id}}</td>
       <td>{{item?.name}}</td>
       <td>{{item?.mail}}</td>
       <td>{{item?.location?.countryName}}</td>

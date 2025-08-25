@@ -15,7 +15,7 @@ namespace ScanPerson.BusinessLogic.Services
 	/// </summary>
 	public class GeoService : PersonInfoServiceBase
 	{
-		private const string BaseUrl = "http://htmlweb.ru/geo/api.php";
+		private readonly string _baseUrl;
 
 		public GeoService(
 			ILogger<GeoService> logger,
@@ -24,6 +24,7 @@ namespace ScanPerson.BusinessLogic.Services
 			ServicesOptions serviceOptions)
 			: base(logger, httpClientFactory, secrets, serviceOptions)
 		{
+			_baseUrl = serviceOptions.GeoServiceOptions.BaseUrl;
 		}
 
 		protected async override Task<ScanPersonResponseBase> GetPersonInfoAsync(PersonInfoRequest request)
@@ -34,7 +35,7 @@ namespace ScanPerson.BusinessLogic.Services
 				["telcod"] = request.PhoneNumber,
 				["api_key"] = Secrets.HtmlWebRuApiKey
 			};
-			var requestUrl = QueryHelpers.AddQueryString(BaseUrl, parameters!);
+			var requestUrl = QueryHelpers.AddQueryString(_baseUrl, parameters!);
 			var response = await HttpClient.GetAsync(requestUrl);
 			response.EnsureSuccessStatusCode();
 			var locationResult = await response!.Content.ReadFromJsonAsync<LocationSerialization>();
@@ -43,7 +44,7 @@ namespace ScanPerson.BusinessLogic.Services
 			return result;
 		}
 
-		[Obsolete("Will deleted in task #19")]
+		[Obsolete("Will be remove in task #19")]
 		private LocationItem GetMappedItem(LocationSerialization serializationItem)
 		{
 			var mapped = new LocationItem

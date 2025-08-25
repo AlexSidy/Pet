@@ -1,15 +1,36 @@
-﻿/// <summary>
-/// Настройки используемых сервисов.
-/// </summary>
-public class ServicesOptions
+﻿namespace ScanPerson.Models.Contracts
 {
 	/// <summary>
-	/// Название секции в appsettings.json
+	/// Настройки используемых сервисов.
 	/// </summary>
-	public const string AppSettingsSection = "ServicesOptions";
+	public class ServicesOptions
+	{
+		public ServicesOptions()
+		{
+			GeoServiceOptions = new GeoServiceOptions();
+		}
+
+		/// <summary>
+		/// Название секции в appsettings.json.
+		/// </summary>
+		public const string AppSettingsSection = "ServicesOptions";
+
+		/// <summary>
+		/// Список отключенных сервисов.
+		/// </summary>
+		public string[] UnUsingServices { get; set; }
+
+		public GeoServiceOptions GeoServiceOptions { get; set; }
+	}
 
 	/// <summary>
-	/// Список отключенных сервисов.
+	/// Настройки сервиса геолокации.
 	/// </summary>
-	public string[] UnUsingServices { get; set; }
+	public class GeoServiceOptions
+	{
+		/// <summary>
+		/// Базовый апи сервиса.
+		/// </summary>
+		public string BaseUrl { get; set; }
+	}
 }

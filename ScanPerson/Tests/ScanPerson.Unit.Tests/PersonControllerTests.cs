@@ -58,7 +58,6 @@ namespace ScanPerson.Unit.Tests
 			Assert.AreEqual(StatusCodes.Status200OK, response.StatusCode);
 			var result = (ScanPersonResultResponse<PersonInfoItem>)response.Value!;
 			Assert.IsNotNull(result);
-			Assert.IsNotNull(result.Result);
 			Assert.IsTrue(result.IsSuccess);
 			Assert.IsNull(result.Error);
 			AssertHelper.AssertResult(personResponses[0], result);
