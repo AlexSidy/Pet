@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
 using ScanPerson.BusinessLogic;
+using ScanPerson.Common.Helpers;
 using ScanPerson.Common.Resources;
 using ScanPerson.DAL;
 using ScanPerson.Models.Options.Auth;
@@ -25,6 +26,7 @@ var connectionString = builder.Configuration.GetConnectionString("ScanPersonDb")
 	throw new InvalidOperationException("Connection string 'ScanPersonDb' not found.");
 var jwtOptins = builder.Configuration.GetSection(JwtOptions.AppSettingsSection).Get<JwtOptions>()
 	?? throw new InvalidOperationException(string.Format(Messages.SectionNotFound, JwtOptions.AppSettingsSection));
+jwtOptins.SecretKey = EnviromentHelper.GetViriableByName("JWT_OPTIONS_SECRET_KEY");
 
 // Setup Serilog
 Log.Logger = new LoggerConfiguration()

@@ -20,7 +20,7 @@ namespace ScanPerson.Unit.Tests.Mapping
 		public DisplayProfileTests()
 		{
 			_loggerFactory = new Mock<ILoggerFactory>();
-			_loggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);	
+			_loggerFactory.Setup(x => x.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
 			var configuration = new MapperConfiguration(cfg =>
 			{
 				cfg.AddProfile<DisplayProfile>();

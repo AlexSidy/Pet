@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc.TagHelpers;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using ScanPerson.BusinessLogic.Services;
 using ScanPerson.BusinessLogic.Services.Interfaces;
 using ScanPerson.Common.Extensions;
 using ScanPerson.Common.Helpers;
-using ScanPerson.Common.Resources;
 using ScanPerson.Models.Options;
 
 namespace ScanPerson.BusinessLogic
