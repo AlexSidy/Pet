@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 using ScanPerson.Auth.Api.Services.Interfaces;
-using ScanPerson.Models.Contracts.Auth;
+using ScanPerson.Models.Options.Auth;
 
 namespace ScanPerson.Auth.Api.Services
 {

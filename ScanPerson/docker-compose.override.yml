@@ -16,6 +16,7 @@ services:
         - Allowed_Hosts=${Allowed_Hosts}
         - JwtOptions__SecretKey=${JwtOptions__SecretKey}
         - HTMLWEBRU_API_KEY=${HTMLWEBRU_API_KEY}
+        - AUTO_MAPPER_LICENSE_KEY=${AUTO_MAPPER_LICENSE_KEY}
 
   scanperson.auth.api:
     environment:

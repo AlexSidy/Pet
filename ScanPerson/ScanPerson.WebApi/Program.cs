@@ -6,7 +6,8 @@ using Microsoft.IdentityModel.Tokens;
 using ScanPerson.BusinessLogic;
 using ScanPerson.Common.Resources;
 using ScanPerson.DAL;
-using ScanPerson.Models.Contracts.Auth;
+using ScanPerson.Models.Options.Auth;
+using ScanPerson.WebApi.Extensions;
 using ScanPerson.WebApi.Middlewares.Exceptions;
 
 using Serilog;
@@ -79,6 +80,7 @@ builder.Services
 	});
 builder.Services.AddAuthorization();
 builder.Services.AddHttpClient();
+builder.Services.AddScanPersonAutoMapper();
 #endregion [Add services]
 
 var app = builder.Build();

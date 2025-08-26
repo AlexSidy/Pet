@@ -1,5 +1,9 @@
-﻿using Moq;
+﻿using AutoMapper;
+
+using Moq;
 using Moq.Protected;
+
+using ScanPerson.Models.Items;
 
 namespace ScanPerson.Common.Tests
 {
@@ -12,7 +16,7 @@ namespace ScanPerson.Common.Tests
 		/// <summary>
 		/// Настраивает общий Get метод Mock объект IHttpClientFactory для получения успешного ответа.
 		/// </summary>
-		public static void MockHttpClientFactoryWithSuccessResponse(this Mock<IHttpClientFactory> httpClientFactory)
+		public static void SetupHttpClientFactoryWithSuccessResponse(this Mock<IHttpClientFactory> httpClientFactory)
 		{
 			var mockHttpMessageHandler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
 			mockHttpMessageHandler
@@ -30,7 +34,7 @@ namespace ScanPerson.Common.Tests
 		/// <summary>
 		/// Настраивает общий Get метод Mock объект IHttpClientFactory для получения неуспешного ответа.
 		/// </summary>
-		public static void MockHttpClientFactoryWithErrorResponse(this Mock<IHttpClientFactory> httpClientFactory)
+		public static void SetupHttpClientFactoryWithErrorResponse(this Mock<IHttpClientFactory> httpClientFactory)
 		{
 			var mockHttpMessageHandler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
 			mockHttpMessageHandler
@@ -43,6 +47,12 @@ namespace ScanPerson.Common.Tests
 
 			var httpClient = new HttpClient(mockHttpMessageHandler.Object);
 			httpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+		}
+
+		public static void SetupAutoMapper(this Mock<IMapper> mapper)
+		{
+			mapper.Setup(x => x.Map<LocationItem>(It.IsAny<LocationDeserialized>()))
+				.Returns(CreationHelper.GetPersonResponse()[0].Result.Location);
 		}
 	}
 }

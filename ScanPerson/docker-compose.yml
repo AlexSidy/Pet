@@ -42,6 +42,7 @@ services:
         - Allowed_Hosts=${Allowed_Hosts}
         - JwtOptions__SecretKey=${JwtOptions__SecretKey}
         - HTMLWEBRU_API_KEY=${HTMLWEBRU_API_KEY}
+        - AUTO_MAPPER_LICENSE_KEY=${AUTO_MAPPER_LICENSE_KEY}
     ports:
         - 8080:8080 # HTTP
         - 8081:8081 # HTTPS

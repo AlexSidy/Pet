@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 
 using ScanPerson.Auth.Api;
 using ScanPerson.Common.Resources;
-using ScanPerson.Models.Contracts.Auth;
+using ScanPerson.Models.Options.Auth;
 
 using Serilog;
 using Serilog.Sinks.Graylog;
