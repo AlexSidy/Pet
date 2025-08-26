@@ -2,7 +2,7 @@
 
 namespace ScanPerson.Common.Helpers
 {
-	public class EnviromentHelper
+	public static class EnviromentHelper
 	{
 		public static string GetViriableByName(string variableName)
 		{
