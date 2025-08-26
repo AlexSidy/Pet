@@ -1,4 +1,4 @@
-﻿namespace ScanPerson.Models.Contracts.Auth
+﻿namespace ScanPerson.Models.Options.Auth
 {
 	/// <summary>
 	/// Описание настроек для токена аутентификации.

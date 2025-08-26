@@ -1,4 +1,4 @@
-﻿namespace ScanPerson.Models.Contracts
+﻿namespace ScanPerson.Models.Options
 {
 	/// <summary>
 	/// Настройки используемых сервисов.

@@ -1,12 +1,14 @@
 ﻿using System.Text.Json;
 
+using AutoMapper;
+
 using Microsoft.Extensions.Logging;
 
 using ScanPerson.BusinessLogic.Services.Interfaces;
 using ScanPerson.Common.Operations.Base;
 using ScanPerson.Common.Resources;
-using ScanPerson.Models.Contracts;
 using ScanPerson.Models.Items;
+using ScanPerson.Models.Options;
 using ScanPerson.Models.Requests;
 using ScanPerson.Models.Responses;
 
@@ -22,16 +24,20 @@ namespace ScanPerson.BusinessLogic.Services
 
 		protected ServicesOptions ServicesOptions { get; }
 
+		protected IMapper Mapper { get; }
+
 		protected PersonInfoServiceBase(
 			ILogger<PersonInfoServiceBase> logger,
 			IHttpClientFactory httpClientFactory,
 			ScanPersonSecrets secrets,
-			ServicesOptions servicesOptions)
+			ServicesOptions servicesOptions,
+			IMapper mapper)
 		{
 			Logger = logger;
 			HttpClient = httpClientFactory.CreateClient(nameof(PersonInfoServiceBase));
 			Secrets = secrets;
 			ServicesOptions = servicesOptions;
+			Mapper = mapper;
 		}
 
 		public async Task<ScanPersonResponseBase> GetInfoAsync(PersonInfoRequest request)

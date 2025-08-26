@@ -4,8 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using ScanPerson.BusinessLogic.Services;
 using ScanPerson.BusinessLogic.Services.Interfaces;
 using ScanPerson.Common.Extensions;
-using ScanPerson.Common.Resources;
-using ScanPerson.Models.Contracts;
+using ScanPerson.Common.Helpers;
+using ScanPerson.Models.Options;
 
 namespace ScanPerson.BusinessLogic
 {
@@ -27,15 +27,9 @@ namespace ScanPerson.BusinessLogic
 		{
 			var secrets = new ScanPersonSecrets
 			{
-				HtmlWebRuApiKey = GetViriableByName("HTMLWEBRU_API_KEY"),
+				HtmlWebRuApiKey = EnviromentHelper.GetViriableByName("HTMLWEBRU_API_KEY"),
 			};
 			services.AddSingleton(secrets);
-		}
-
-		private static string GetViriableByName(string variableName)
-		{
-			return Environment.GetEnvironmentVariable(variableName)
-							?? throw new InvalidOperationException(string.Format(Messages.EnvironmentNotFound, variableName));
 		}
 	}
 }

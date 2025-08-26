@@ -1,12 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper;
+
+using Microsoft.Extensions.Logging;
 
 using Moq;
 
 using ScanPerson.BusinessLogic.Services;
 using ScanPerson.Common.Resources;
 using ScanPerson.Common.Tests;
-using ScanPerson.Models.Contracts;
 using ScanPerson.Models.Items;
+using ScanPerson.Models.Options;
 using ScanPerson.Models.Requests;
 using ScanPerson.Models.Responses;
 
@@ -22,12 +24,14 @@ namespace ScanPerson.Unit.Tests
 		private Mock<IHttpClientFactory> _httpClientFactory;
 		private readonly ScanPersonSecrets _secrets = new() { HtmlWebRuApiKey = "key" };
 		private readonly ServicesOptions _servicesOptions;
+		private readonly Mock<IMapper> _mapper;
+
 
 		public GeoServiceTests()
 		{
 			_logger = new Mock<ILogger<GeoService>>();
 			_httpClientFactory = new Mock<IHttpClientFactory>();
-			_httpClientFactory.MockHttpClientFactoryWithSuccessResponse();
+			_httpClientFactory.SetupHttpClientFactoryWithSuccessResponse();
 			_servicesOptions = new()
 			{
 				UnUsingServices = ["TestUnusedService", "TestService"],
@@ -36,8 +40,10 @@ namespace ScanPerson.Unit.Tests
 					BaseUrl = "https://test.ru/geo"
 				}
 			};
+			_mapper = new Mock<IMapper>();
+			_mapper.SetupAutoMapper();
 
-			_cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions);
+			_cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions, _mapper.Object);
 		}
 
 		[TestMethod]
@@ -46,7 +52,7 @@ namespace ScanPerson.Unit.Tests
 			// Arrange
 
 			// Act
-			var cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions);
+			var cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions, _mapper.Object);
 
 			// Assert
 			Assert.IsNotNull(cut);
@@ -74,9 +80,9 @@ namespace ScanPerson.Unit.Tests
 			// Arrange
 			var personRequest = new PersonInfoRequest();
 			_httpClientFactory.Reset();
-			_httpClientFactory.MockHttpClientFactoryWithErrorResponse();
+			_httpClientFactory.SetupHttpClientFactoryWithErrorResponse();
 
-			var cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions);
+			var cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions, _mapper.Object);
 
 			// Act
 			var result = await cut.GetInfoAsync(personRequest);
@@ -106,7 +112,7 @@ namespace ScanPerson.Unit.Tests
 			var servicesOptions = new ServicesOptions() { UnUsingServices = ["GeoService", "TestUnusedService"] };
 
 			// Act
-			var cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, servicesOptions);
+			var cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, servicesOptions, _mapper.Object);
 			var result = cut.CanAccept();
 
 			// Assert

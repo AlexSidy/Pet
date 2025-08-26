@@ -5,7 +5,7 @@ namespace ScanPerson.Models.Items
 	/// <summary>
 	/// Объект для получения данных с сервиса https://htmlweb.ru/geo/telcod_api_example.php
 	/// </summary>
-	public class LocationSerialization
+	public class LocationDeserialized
 	{
 		/// <summary>
 		/// Страна регистрации номера телефона.

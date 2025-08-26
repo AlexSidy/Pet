@@ -1,10 +1,12 @@
 ﻿using System.Net.Http.Json;
 
+using AutoMapper;
+
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
-using ScanPerson.Models.Contracts;
 using ScanPerson.Models.Items;
+using ScanPerson.Models.Options;
 using ScanPerson.Models.Requests;
 using ScanPerson.Models.Responses;
 
@@ -21,8 +23,9 @@ namespace ScanPerson.BusinessLogic.Services
 			ILogger<GeoService> logger,
 			IHttpClientFactory httpClientFactory,
 			ScanPersonSecrets secrets,
-			ServicesOptions serviceOptions)
-			: base(logger, httpClientFactory, secrets, serviceOptions)
+			ServicesOptions serviceOptions,
+			IMapper mapper)
+			: base(logger, httpClientFactory, secrets, serviceOptions, mapper)
 		{
 			_baseUrl = serviceOptions.GeoServiceOptions.BaseUrl;
 		}
@@ -38,26 +41,10 @@ namespace ScanPerson.BusinessLogic.Services
 			var requestUrl = QueryHelpers.AddQueryString(_baseUrl, parameters!);
 			var response = await HttpClient.GetAsync(requestUrl);
 			response.EnsureSuccessStatusCode();
-			var locationResult = await response!.Content.ReadFromJsonAsync<LocationSerialization>();
-			var result = GetSuccess(new PersonInfoItem { Location = GetMappedItem(locationResult!) });
+			var locationResult = await response!.Content.ReadFromJsonAsync<LocationDeserialized>();
+			var result = GetSuccess(new PersonInfoItem { Location = Mapper.Map<LocationItem>(locationResult) });
 
 			return result;
-		}
-
-		[Obsolete("Will be remove in task #19")]
-		private LocationItem GetMappedItem(LocationSerialization serializationItem)
-		{
-			var mapped = new LocationItem
-			{
-				CountryName = serializationItem.Country?.Name,
-				CurrentRegion = serializationItem.Region?.Name,
-				RegistrationOkrug = serializationItem.Okrug,
-				RegistrationCapital = serializationItem.Capital?.Name,
-				OperatorCity = serializationItem.Operator?.Name,
-				OperatorName = serializationItem.Operator?.OperBrand
-			};
-
-			return mapped;
 		}
 	}
 }

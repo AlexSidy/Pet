@@ -1,4 +1,4 @@
-﻿namespace ScanPerson.Models.Contracts
+﻿namespace ScanPerson.Models.Options
 {
 	/// <summary>
 	/// Ключи доступа к различныи сервисам используемым приложением.
