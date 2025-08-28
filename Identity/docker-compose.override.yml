@@ -1,34 +1,24 @@
 services:
-  scanperson.ui:
-    environment:
-        - SCANPERSON_AUTH_API_DOMEN=${SCANPERSON_AUTH_API_DOMEN}
-        - SCANPERSON_WEBAPI_DOMEN=${SCANPERSON_WEBAPI_DOMEN}
-        - ASPNETCORE_ENVIRONMENT=Development
-        - CHOKIDAR_USEPOLLING=true 
-      
-  scanperson.webapi:
+  identity.api:
     environment:
         - ASPNETCORE_ENVIRONMENT=Development
-        - ASPNETCORE_HTTP_PORTS=8080
-        - ASPNETCORE_HTTPS_PORTS=8081
+        - ASPNETCORE_HTTP_PORTS=8090
+        - ASPNETCORE_HTTPS_PORTS=8091
         - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}
         - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}
         - Allowed_Hosts=${Allowed_Hosts}
         - JWT_OPTIONS_SECRET_KEY=${JWT_OPTIONS_SECRET_KEY}
-        - HTMLWEBRU_API_KEY=${HTMLWEBRU_API_KEY}
-        - AUTO_MAPPER_LICENSE_KEY=${AUTO_MAPPER_LICENSE_KEY}
 
-  scanpersondb:
+  identitydb:
     environment:
         POSTGRES_USER: ${POSTGRES_USER}
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         POSTGRES_DB: ${POSTGRES_DB}
         PGDATA: ${PGDATA}
 
-  pgadmin:
+  identitypgadmin:
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
       PGADMIN_CONFIG_SERVER_MODE: ${PGADMIN_CONFIG_SERVER_MODE}
-
       

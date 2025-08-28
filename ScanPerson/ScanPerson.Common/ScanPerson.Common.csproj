@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-	<Version>1.0.1</Version>
+	<Version>1.0.2</Version>
 	<PackageId>ScanPerson.Common.Sdk</PackageId>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>

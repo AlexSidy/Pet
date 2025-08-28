@@ -1,0 +1,88 @@
+﻿using FluentMigrator.Runner;
+
+using Identity.Api.Initializers.Interfaces;
+using Identity.Api.Migrations._2024_12;
+using Identity.Api.Services;
+using Identity.Api.Services.Interfaces;
+
+using Microsoft.EntityFrameworkCore;
+
+using ScanPerson.Common.Extensions;
+
+namespace Identity.Api
+{
+	public static class AuthExtensions
+	{
+		public static void AddScanPersonAuth(this IServiceCollection services, string connectionString)
+		{
+			services.AddAuthDbContexts(connectionString);
+			services.AddMigrations(connectionString);
+			services.UpdateDatabase();
+			services.AddIdentity();
+			services.AddInitializers();
+			services.InitData();
+			services.AddScoped<ITokenProvider, JwtProvider>();
+			services.AddScoped<IUserService, UserService>();
+		}
+
+		private static void AddAuthDbContexts(this IServiceCollection services, string connectionString)
+		{
+			services.AddDbContext<AuthDbContext>(options => options.UseNpgsql(connectionString));
+		}
+
+		private static void AddIdentity(this IServiceCollection services)
+		{
+			services.AddDefaultIdentity<User>(options =>
+				{
+					options.SignIn.RequireConfirmedAccount = false;
+					options.Lockout.MaxFailedAccessAttempts = 5;
+					options.SignIn.RequireConfirmedEmail = false;
+				})
+				.AddRoles<Role>()
+				.AddEntityFrameworkStores<AuthDbContext>();
+		}
+
+		public static void AddMigrations(this IServiceCollection services, string connectionString)
+		{
+			services
+				// Add common FluentMigrator services
+				.AddFluentMigratorCore()
+				.ConfigureRunner(runnerBuilder => runnerBuilder
+					// Add Postgres support to FluentMigrator
+					.AddPostgres()
+					// Set the connection string
+					.WithGlobalConnectionString(connectionString)
+					// Define the assembly containing the migrations
+					.ScanIn(typeof(InitiaIdentity).Assembly).For.Migrations()
+				)
+
+				// Enable logging to console in the FluentMigrator way
+				.AddLogging(lb => lb.AddFluentMigratorConsole())
+				.UpdateDatabase();
+		}
+
+		private static void UpdateDatabase(this IServiceCollection services)
+		{
+			// Get the service provider and execute the migrations
+			services.BuildServiceProvider(false)
+				.GetRequiredService<IMigrationRunner>()
+				.MigrateUp();
+		}
+
+		private static void AddInitializers(this IServiceCollection services)
+		{
+			services.AddAllImplementations<IInitializer>();
+		}
+
+		private static void InitData(this IServiceCollection services)
+		{
+			var serviceProvider = services.BuildServiceProvider(false);
+
+			var initializers = serviceProvider.GetServices<IInitializer>();
+			foreach (var initializer in initializers)
+			{
+				initializer.SeedAsync();
+			}
+		}
+	}
+}
