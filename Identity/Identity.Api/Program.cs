@@ -86,7 +86,7 @@ var app = builder.Build();
 
 #region [Usage services]
 // Configure the HTTP request pipeline.
-if (true || app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
 	app.UseSwagger();
 	app.UseSwaggerUI();
