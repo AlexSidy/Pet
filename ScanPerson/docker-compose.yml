@@ -10,7 +10,7 @@ services:
     depends_on:
         - scanperson.webapi
     environment:
-        - SCANPERSON_AUTH_API_DOMEN=${SCANPERSON_AUTH_API_DOMEN}
+        - IDENTITY_API_DOMEN=${SCANPERSON_AUTH_API_DOMEN}
         - SCANPERSON_WEBAPI_DOMEN=${SCANPERSON_WEBAPI_DOMEN}
         - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
         - CHOKIDAR_USEPOLLING=true 
@@ -48,32 +48,6 @@ services:
         - 8081:8081 # HTTPS
     volumes:
         - ./ScanPerson.WebApi/https/cert.pfx:/https/cert.pfx
-    networks:
-        - scanperson-network
-
-  scanperson.auth.api:
-    container_name:  scanpersonauthapi
-    image: scanpersonauthapi
-    restart: "no"
-    profiles: [all, webApi, auth]
-    build:
-      context: .
-      dockerfile: ScanPerson.Auth.Api/Dockerfile
-    depends_on:
-        - scanpersondb
-    environment:
-        - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-        - ASPNETCORE_HTTP_PORTS=8090
-        - ASPNETCORE_HTTPS_PORTS=8091
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}
-        - Allowed_Hosts=${Allowed_Hosts}
-        - JWT_OPTIONS_SECRET_KEY=${JWT_OPTIONS_SECRET_KEY}
-    ports:
-        - 8090:8090
-        - 8091:8091
-    volumes:
-        - ./ScanPerson.Auth.Api/https/cert.pfx:/https/cert.pfx
     networks:
         - scanperson-network
 

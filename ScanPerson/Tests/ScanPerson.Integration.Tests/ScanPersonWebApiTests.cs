@@ -63,11 +63,6 @@ namespace ScanPerson.Integration.Tests
 						services.AddSingleton(_ => _personInfoServicesAggregator.Object);
 					});
 				});
-			using (var scope = _factory.Services.CreateScope())
-			{
-				var context = scope.ServiceProvider.GetRequiredService<ScanPersonDbContext>();
-				context.Database.EnsureCreated();
-			}
 			_httpClient = _factory.CreateDefaultClient();
 		}
 

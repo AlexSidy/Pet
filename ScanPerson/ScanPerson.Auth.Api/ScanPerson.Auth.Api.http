@@ -1,6 +1,0 @@
-@ScanPerson.Auth.Api_HostAddress = http://localhost:8091
-
-GET {{ScanPerson.Auth.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

@@ -4,6 +4,7 @@
 
 /.vs
 /ScanPerson/.vs/
+/Identity/.vs/
 /Graylog/.vs/
 /ScanPerson/ScanPerson.WebApi/wwwroot
 */TestResults*

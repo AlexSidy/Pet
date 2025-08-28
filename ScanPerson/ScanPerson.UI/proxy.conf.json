@@ -6,7 +6,7 @@
     "logLevel": "debug"
   },
   "/authApi/*/*": {
-    "target": "https://scanperson.auth.api:8091",
+    "target": "https://identity.api:8091",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
