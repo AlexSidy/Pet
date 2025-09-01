@@ -10,7 +10,7 @@
     <DockerServiceName>graylog</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
-    <None Include=".env.graylog" />
+    <None Include=".env" />
     <None Include="docker-compose.override.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>

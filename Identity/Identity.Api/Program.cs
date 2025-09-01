@@ -47,7 +47,6 @@ if (!builder.Environment.IsStaging())
 	builder.Services.AddScanPersonAuth(connectionString);
 }
 var allowedHosts = builder.Configuration.GetValue<string>("ALLOWED_HOSTS")?.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries) ?? [];
-Log.Logger.Information(string.Join(',', allowedHosts));
 builder.Services.AddCors(options =>
 {
 	options.AddPolicy(CorsPolicy, builder =>
