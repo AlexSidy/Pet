@@ -26,21 +26,29 @@ jobs:
       with:
         dotnet-version: 9.0.x
 
-    # - name: Change directory to solution folder
-    #   run: cd ./ScanPerson
 
-    # - name: Clean build artifacts
-    #   run: |
-    #     find . -type d -name "bin" -exec rm -rf {} +
-    #     find . -type d -name "obj" -exec rm -rf {} +
-    # - name: Clear NuGet cache
-    #   run: dotnet nuget locals all --clear
+    # --- Шаги анализа SonarQube с использованием CLI ---
 
-    # - name: Clean solution
-    #   run: |
-    #       dotnet clean ./ScanPerson/ScanPerson.sln
-    #       dotnet clean ./Identity/Identity.sln
+    # Шаг 1: Установка SonarScanner CLI
+    - name: Install SonarScanner CLI
+      run: |
+        dotnet tool install --global dotnet-sonarscanner
 
+    # Шаг 2: Начало анализа
+    # Эта команда подготавливает среду для сканирования, но не отправляет данные.
+    - name: SonarQube Begin Analysis
+      run: |
+        dotnet sonarscanner begin \
+          /k:"${{ secrets.SONAR_PROJECT_KEY }}" \
+          /o:"${{ secrets.SONAR_ORGANIZATION }}" \
+          /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" \
+          /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+          /d:sonar.cs.opencover.reportsPaths=./TestResults/Cobertura.xml
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+    # Шаг 3: Сборка и тестирование (промежуточные шаги)
     - name: Restore dependencies
       run: |
         dotnet restore ./ScanPerson/ScanPerson.sln
@@ -55,67 +63,17 @@ jobs:
       run: |
         dotnet test ./ScanPerson/ScanPerson.sln --no-build --verbosity normal --collect "XPlat Code Coverage" --results-directory ".\TestResults"
         dotnet test ./Identity/Identity.sln --no-build --verbosity normal --collect "XPlat Code Coverage" --results-directory ".\TestResults"
-        
-          # dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger "trx;LogFileName=ScanPersonIntegration.trx" --results-directory "./TestResults" ./ScanPerson/Tests/ScanPerson.Integration.Tests/ScanPerson.Integration.Tests.csproj
-          # dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger "trx;LogFileName=ScanPersonUnit.trx" --results-directory "./TestResults" ./ScanPerson/Tests/ScanPerson.Unit.Tests/ScanPerson.Unit.Tests.csproj
-          # dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger "trx;LogFileName=IdentityIntegration.trx" --results-directory "./TestResults" ./Identity/Tests/Identity.Integration.Tests/Identity.Integration.Tests.csproj
-          # dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger "trx;LogFileName=IdentityUnit.trx" --results-directory "./TestResults" ./Identity/Tests/Identity.Unit.Tests/Identity.Unit.Tests.csproj
-
-          # # dotnet tool install --global dotnet-coverage && dotnet-coverage merge ./TestResults/*.cobertura.xml --recursive --output ./TestResults/merged.cobertura.xml --output-format cobertura --remove-input-files
-
+          
     - name: Merge Coverage Reports
       run: |
         dotnet tool install -g dotnet-reportgenerator-globaltool
         reportgenerator -reports:./TestResults/**/coverage.cobertura.xml -targetdir:./TestResults/ -reporttypes:Cobertura
-
-    # - name: Upload dotnet test results
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: dotnet-results
-    #     path: ./TestResults/merged.cobertura.xml
-    #   # Use always() to always run this step to publish test results when there are test failures
-    #   if: ${{ always() }
-
-    # - name: Cache SonarQube Cloud packages
-    #   uses: actions/cache@v4
-    #   with:
-    #     path: ~\sonar\cache
-    #     key: ${{ runner.os }}-sonar
-    #     restore-keys: ${{ runner.os }}-sonar
-    # - name: Cache SonarQube Cloud scanner
-    #   id: cache-sonar-scanner
-    #   uses: actions/cache@v4
-    #   with:
-    #     path: .\.sonar\scanner
-    #     key: ${{ runner.os }}-sonar-scanner
-    #     restore-keys: ${{ runner.os }}-sonar-scanner
-    # - name: Install SonarQube Cloud scanner
-    #   if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-    #   shell: powershell
-    #   run: |
-    #     New-Item -Path .\.sonar\scanner -ItemType Directory
-    #     dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
-    #     dir .\.sonar
-
-     # --- Шаги анализа SonarQube с использованием CLI ---
-    # Шаг 1: Установка SonarScanner CLI
-    - name: Install SonarScanner CLI
+        
+    # Шаг 4: Завершение анализа
+    # Эта команда отправляет все собранные данные (анализ кода и покрытие) на сервер.
+    - name: SonarQube End Analysis
       run: |
-        dotnet tool install -g dotnet-sonarscanner
-    - name: SonarScanner Build and Analysis
+        dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
-        SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
-      run: |
-        dotnet sonarscanner begin \
-          /k:${{ env.SONAR_PROJECT_KEY }} \
-          /o:${{ env.SONAR_ORGANIZATION }} \
-          /d:sonar.host.url="https://sonarcloud.io" \
-          /d:sonar.token="${{ env.SONAR_TOKEN }}" \
-          /d:sonar.cs.opencover.reportsPaths="./TestResults/Cobertura.xml"
-          # /d:sonar.cs.opencover.reportsPaths="./TestResults/merged-coverage/Cobertura.xml" `
-          # /d:sonar.coverage.exclusions="**/*.cs"
-        dotnet sonarscanner end \
-          /d:sonar.token="${{ env.SONAR_TOKEN }}"
 
