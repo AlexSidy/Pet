@@ -62,10 +62,8 @@ jobs:
 
     - name: Run Tests and Generate Coverage
       run: |
-        # dotnet test ./ScanPerson/ScanPerson.sln --no-build --verbosity normal --collect "XPlat Code Coverage" --results-directory ".\TestResults"
-        # dotnet test ./Identity/Identity.sln --no-build --verbosity normal --collect "XPlat Code Coverage" --results-directory ".\TestResults"
         dotnet-coverage collect "dotnet test ./ScanPerson/ScanPerson.sln --no-build --verbosity normal" -f xml -o ".\TestResults\ScanPerson.coverage.xml"
-        dotnet-coverage collect "dotnet test ./Identity/Identity.sln --no-build --verbosity normal" -f xml -o ".\TestResults\Identity.coverage2.xml"
+        dotnet-coverage collect "dotnet test ./Identity/Identity.sln --no-build --verbosity normal" -f xml -o ".\TestResults\Identity.coverage.xml"
           
     - name: Merge Coverage Reports
       run: |
