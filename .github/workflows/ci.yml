@@ -109,7 +109,6 @@ jobs:
         SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
       run: |
         dotnet sonarscanner begin \
-
           /k:${{ env.SONAR_PROJECT_KEY }} \
           /o:${{ env.SONAR_ORGANIZATION }} \
           /d:sonar.host.url="https://sonarcloud.io" \
@@ -117,7 +116,6 @@ jobs:
           /d:sonar.cs.opencover.reportsPaths="./TestResults/Cobertura.xml"
           # /d:sonar.cs.opencover.reportsPaths="./TestResults/merged-coverage/Cobertura.xml" `
           # /d:sonar.coverage.exclusions="**/*.cs"
-
         dotnet sonarscanner end \
           /d:sonar.token="${{ env.SONAR_TOKEN }}"
 
