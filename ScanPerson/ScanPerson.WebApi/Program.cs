@@ -109,7 +109,9 @@ app.MapControllers();
 await app.RunAsync();
 
 [SuppressMessage("SonarQube", "RSPEC-1118:Method should be static", Justification = "Public modificator needs for integration tests")]
+[SuppressMessage("SonarQube", "S1118:Method should be static", Justification = "Public modificator needs for integration tests")]
 #pragma warning disable 1118
+#pragma warning disable S1118
 public partial class Program
 {
 	public const string WebApi = "webApi";
@@ -117,4 +119,5 @@ public partial class Program
 	public const string DbSection = "ScanPersonDb";
 	public const string CorsPolicy = "MyTrustedHosts";
 }
+#pragma warning restore S1118
 #pragma warning restore 1118
