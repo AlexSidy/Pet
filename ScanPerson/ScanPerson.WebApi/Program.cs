@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -107,6 +108,7 @@ app.MapControllers();
 
 await app.RunAsync();
 
+[SuppressMessage("SonarQube", "RSPEC-1118:Method should be static", Justification = "Public modificator needs for integration tests")]
 public partial class Program
 {
 	public const string WebApi = "webApi";
