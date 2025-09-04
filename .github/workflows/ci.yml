@@ -26,7 +26,6 @@ jobs:
       with:
         dotnet-version: 9.0.x
 
-
     # --- Шаги анализа SonarQube с использованием CLI ---
 
     # Шаг 1: Установка SonarScanner CLI
@@ -39,14 +38,16 @@ jobs:
     - name: SonarQube Begin Analysis
       run: |
         dotnet sonarscanner begin \
-          /k:"${{ secrets.SONAR_PROJECT_KEY }}" \
-          /o:"${{ secrets.SONAR_ORGANIZATION }}" \
-          /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" \
-          /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+          /k:"${{ env.SONAR_PROJECT_KEY }}" \
+          /o:"${{ env.SONAR_ORGANIZATION }}" \
+          /d:sonar.host.url="${{ env.SONAR_HOST_URL }}" \
+          /d:sonar.token="${{ env.SONAR_TOKEN }}" \
           /d:sonar.cs.opencover.reportsPaths=./TestResults/Cobertura.xml
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+        SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
 
     # Шаг 3: Сборка и тестирование (промежуточные шаги)
     - name: Restore dependencies
@@ -73,7 +74,7 @@ jobs:
     # Эта команда отправляет все собранные данные (анализ кода и покрытие) на сервер.
     - name: SonarQube End Analysis
       run: |
-        dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+        dotnet sonarscanner end /d:sonar.token="${{ env.SONAR_TOKEN }}"
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 

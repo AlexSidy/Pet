@@ -22,7 +22,6 @@ builder.Configuration
 	.AddJsonFile(configPath)
 	.AddEnvironmentVariables();
 
-var test = EnviromentHelper.GetViriableByName("JWT_OPTIONS_SECRET_KEY");
 var connectionString = builder.Configuration.GetConnectionString(DbSection) ??
 	throw new InvalidOperationException(string.Format(Messages.SectionNotFound, DbSection));
 var jwtOptins = builder.Configuration.GetSection(JwtOptions.AppSettingsSection).Get<JwtOptions>()
@@ -81,7 +80,7 @@ builder.Services
 			ValidateIssuerSigningKey = true
 		};
 	});
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorizationBuilder();
 builder.Services.AddHttpClient();
 builder.Services.AddScanPersonAutoMapper();
 #endregion [Add services]

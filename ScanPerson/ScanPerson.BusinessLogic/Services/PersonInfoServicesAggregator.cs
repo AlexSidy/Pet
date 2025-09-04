@@ -33,7 +33,6 @@ namespace ScanPerson.BusinessLogic.Services
 			try
 			{
 				_logger.LogInformation(Messages.StartedMethodWithParameters, nameof(GetScanPersonInfoAsync), JsonSerializer.Serialize(request));
-				_logger.LogInformation(Messages.StartedMethodWithParameters, nameof(GetScanPersonInfoAsync), string.Join(", ", _personInfoServices.Select(x => x.GetType().Name)));
 				var result = await Task.WhenAll(_personInfoServices.Select(x => x.GetInfoAsync(request)));
 				_logger.LogInformation(Messages.OperationResult, JsonSerializer.Serialize(result));
 

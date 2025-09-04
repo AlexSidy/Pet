@@ -26,6 +26,8 @@ namespace ScanPerson.Integration.Tests
 	[TestClass]
 	public class IdentityApiTests
 	{
+		public TestContext TestContext { get; set; }
+
 		private const string AuthControllerName = "Auth";
 		private readonly HttpClient _httpClient;
 		private readonly WebApplicationFactory<Program> _factory;
@@ -97,7 +99,10 @@ namespace ScanPerson.Integration.Tests
 			// Act
 			try
 			{
-				var response = await _httpClient.PostAsync($"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.RegisterAsync)}", content);
+				var response = await _httpClient.PostAsync(
+					$"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.RegisterAsync)}",
+					content,
+					TestContext.CancellationTokenSource.Token);
 
 				// Assert
 				Assert.IsNotNull(response);
@@ -132,7 +137,10 @@ namespace ScanPerson.Integration.Tests
 			// Act
 			try
 			{
-				var response = await _httpClient.PostAsync($"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.RegisterAsync)}", content);
+				var response = await _httpClient.PostAsync(
+					$"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.RegisterAsync)}",
+					content,
+					TestContext.CancellationTokenSource.Token);
 
 				// Assert
 				Assert.IsNotNull(response);
@@ -159,7 +167,10 @@ namespace ScanPerson.Integration.Tests
 
 			// Act & Assert
 			await Assert.ThrowsExactlyAsync<InvalidOperationException>(
-					() => _httpClient.PostAsync($"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.RegisterAsync)}", content));
+					() => _httpClient.PostAsync(
+						$"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.RegisterAsync)}",
+						content,
+						TestContext.CancellationTokenSource.Token));
 		}
 
 		[TestMethod]
@@ -180,7 +191,10 @@ namespace ScanPerson.Integration.Tests
 			// Act
 			try
 			{
-				var response = await _httpClient.PostAsync($"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.LoginAsync)}", content);
+				var response = await _httpClient.PostAsync(
+					$"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.LoginAsync)}",
+					content,
+					TestContext.CancellationTokenSource.Token);
 
 				// Assert
 				Assert.IsNotNull(response);
@@ -215,7 +229,10 @@ namespace ScanPerson.Integration.Tests
 			// Act
 			try
 			{
-				var response = await _httpClient.PostAsync($"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.LoginAsync)}", content);
+				var response = await _httpClient.PostAsync(
+					$"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.LoginAsync)}",
+					content,
+					TestContext.CancellationTokenSource.Token);
 
 				// Assert
 				Assert.IsNotNull(response);
@@ -242,7 +259,10 @@ namespace ScanPerson.Integration.Tests
 
 			// Act & Assert
 			await Assert.ThrowsExactlyAsync<InvalidOperationException>(
-					() => _httpClient.PostAsync($"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.LoginAsync)}", content));
+					() => _httpClient.PostAsync(
+						$"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.LoginAsync)}",
+						content,
+						TestContext.CancellationTokenSource.Token));
 		}
 	}
 }

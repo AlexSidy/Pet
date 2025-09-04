@@ -27,6 +27,8 @@ namespace ScanPerson.Integration.Tests
 	[TestClass]
 	public class ScanPersonWebApiTests
 	{
+		public TestContext TestContext { get; set; }
+
 		private const string PersonInfoControllerName = "PersonInfo";
 		private readonly HttpClient _httpClient;
 		private readonly WebApplicationFactory<Program> _factory;
@@ -69,13 +71,11 @@ namespace ScanPerson.Integration.Tests
 							.AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
 
 						// Заменяем политику авторизации, чтобы всегда пропускать
-						services.AddAuthorization(options =>
-						{
-							options.AddPolicy("DefaultPolicy", policy =>
+						services.AddAuthorizationBuilder()
+							.AddPolicy("DefaultPolicy", policy =>
 							{
 								policy.RequireAuthenticatedUser();
 							});
-						});
 					});
 				});
 			_httpClient = _factory.CreateDefaultClient();
@@ -110,7 +110,10 @@ namespace ScanPerson.Integration.Tests
 			// Act
 			try
 			{
-				var response = await _httpClient.PostAsync($"{Program.WebApi}/{PersonInfoControllerName}/{nameof(PersonInfoController.GetScanPersonInfoAsync)}", content);
+				var response = await _httpClient.PostAsync(
+					$"{Program.WebApi}/{PersonInfoControllerName}/{nameof(PersonInfoController.GetScanPersonInfoAsync)}",
+					content,
+					TestContext.CancellationTokenSource.Token);
 
 				// Assert
 				Assert.IsNotNull(response);
@@ -141,7 +144,10 @@ namespace ScanPerson.Integration.Tests
 			// Act
 			try
 			{
-				var response = await _httpClient.PostAsync($"{Program.WebApi}/{PersonInfoControllerName}/{nameof(PersonInfoController.GetScanPersonInfoAsync)}", content);
+				var response = await _httpClient.PostAsync(
+					$"{Program.WebApi}/{PersonInfoControllerName}/{nameof(PersonInfoController.GetScanPersonInfoAsync)}",
+					content,
+					TestContext.CancellationTokenSource.Token);
 
 				// Assert
 				Assert.IsNotNull(response);

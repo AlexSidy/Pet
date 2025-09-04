@@ -61,7 +61,7 @@ builder.Services.AddControllers();
 builder.Services
 	.AddEndpointsApiExplorer()
 	.AddSwaggerGen()
-	.AddAuthorization();
+	.AddAuthorizationBuilder();
 
 builder.Services
 	.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
