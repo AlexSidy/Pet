@@ -62,13 +62,15 @@ jobs:
 
     - name: Run Tests and Generate Coverage
       run: |
-        dotnet test ./ScanPerson/ScanPerson.sln --no-build --verbosity normal --collect "XPlat Code Coverage" --results-directory ".\TestResults"
-        dotnet test ./Identity/Identity.sln --no-build --verbosity normal --collect "XPlat Code Coverage" --results-directory ".\TestResults"
+        # dotnet test ./ScanPerson/ScanPerson.sln --no-build --verbosity normal --collect "XPlat Code Coverage" --results-directory ".\TestResults"
+        # dotnet test ./Identity/Identity.sln --no-build --verbosity normal --collect "XPlat Code Coverage" --results-directory ".\TestResults"
+        dotnet-coverage collect "dotnet test ./ScanPerson/ScanPerson.sln --no-build --verbosity normal" -f xml -o ".\TestResults\ScanPerson.coverage.xml"
+        dotnet-coverage collect "dotnet test ./Identity/Identity.sln --no-build --verbosity normal" -f xml -o ".\TestResults\Identity.coverage2.xml"
           
     - name: Merge Coverage Reports
       run: |
         dotnet tool install -g dotnet-reportgenerator-globaltool
-        reportgenerator -reports:./TestResults/**/coverage.cobertura.xml -targetdir:./TestResults/ -reporttypes:Cobertura
+        reportgenerator -reports:./TestResults/**/*.xml -targetdir:./TestResults/ -reporttypes:Cobertura
         
     # Step 4: Analyze end
     # This command sends all collected data (code analysis and coverage) to the server.
@@ -76,5 +78,4 @@ jobs:
       run: |
         dotnet sonarscanner end /d:sonar.token="${{ env.SONAR_TOKEN }}"
       env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}        
