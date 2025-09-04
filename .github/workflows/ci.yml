@@ -42,7 +42,7 @@ jobs:
           /o:"${{ env.SONAR_ORGANIZATION }}" \
           /d:sonar.host.url="${{ env.SONAR_HOST_URL }}" \
           /d:sonar.token="${{ env.SONAR_TOKEN }}" \
-          /d:sonar.cs.opencover.reportsPaths=./TestResults/Cobertura.xml
+          /d:sonar.coverage.cobertura.cs.reportsPaths=./TestResults/Cobertura.xml
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
