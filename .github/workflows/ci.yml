@@ -29,12 +29,6 @@ jobs:
     # - name: Change directory to solution folder
     #   run: cd ./ScanPerson
 
-    # - name: Setup JDK 17
-    #   uses: actions/setup-java@v4
-    #   with:
-    #     java-version: 17
-    #     distribution: 'zulu'
-
     # - name: Clean build artifacts
     #   run: |
     #     find . -type d -name "bin" -exec rm -rf {} +
@@ -102,20 +96,25 @@ jobs:
     #     New-Item -Path .\.sonar\scanner -ItemType Directory
     #     dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
     #     dir .\.sonar
+
+     # --- Шаги анализа SonarQube с использованием CLI ---
+    # Шаг 1: Установка SonarScanner CLI
+    - name: Install SonarScanner CLI
+      run: |
+        dotnet tool install -g dotnet-sonarscanner
     - name: SonarScanner Build and Analysis
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
         SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
       run: |
-        dotnet tool install -g dotnet-sonarscanner
         dotnet sonarscanner begin \
 
           /k:${{ env.SONAR_PROJECT_KEY }} \
           /o:${{ env.SONAR_ORGANIZATION }} \
           /d:sonar.host.url="https://sonarcloud.io" \
           /d:sonar.token="${{ env.SONAR_TOKEN }}" \
-          /d:sonar.cs.opencover.reportsPaths="./TestResults/merged-coverage/Cobertura.xml"
+          /d:sonar.cs.opencover.reportsPaths="./TestResults/Cobertura.xml"
           # /d:sonar.cs.opencover.reportsPaths="./TestResults/merged-coverage/Cobertura.xml" `
           # /d:sonar.coverage.exclusions="**/*.cs"
 
