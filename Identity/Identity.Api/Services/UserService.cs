@@ -18,42 +18,60 @@ namespace Identity.Api.Services
 	{
 		public async Task<ScanPersonResponseBase> RegisterAsync(RegisterRequest request)
 		{
-			logger.LogInformation(Messages.StartedMethod, MethodBase.GetCurrentMethod());
-
-			var found = await userManager.FindByEmailAsync(request.Email);
-			if (found == null)
+			try
 			{
-				var newUser = new User { UserName = request.Email, Email = request.Email, SecurityStamp = Guid.NewGuid().ToString() };
-				var createResult = await userManager.CreateAsync(newUser, request.Password);
-				if (createResult.Succeeded)
+				logger.LogInformation(Messages.StartedMethod, MethodBase.GetCurrentMethod());
+
+				var found = await userManager.FindByEmailAsync(request.Email);
+				if (found == null)
 				{
-					return GetSuccess(createResult);
+					var newUser = new User { UserName = request.Email, Email = request.Email, SecurityStamp = Guid.NewGuid().ToString() };
+					var createResult = await userManager.CreateAsync(newUser, request.Password);
+					if (createResult.Succeeded)
+					{
+						return GetSuccess(createResult);
+					}
+
+					return GetFail(string.Join(", ", createResult.Errors.Select(x => x.Description)));
 				}
 
-				return GetFail(string.Join(", ", createResult.Errors.Select(x => x.Description)));
+				return GetFail(Messages.UserAlredyExist);
 			}
+			catch (Exception ex)
+			{
+				logger.LogError(ex, Messages.OperationError, GetType().Name);
 
-			return GetFail(Messages.UserAlredyExist);
+				return GetFail(Messages.ClientOperationError);
+			}
 		}
 
 		public async Task<ScanPersonResponseBase> LoginAsync(LoginRequest request)
 		{
-			logger.LogInformation(Messages.StartedMethod, MethodBase.GetCurrentMethod());
-			var found = await userManager.FindByEmailAsync(request.Email);
-			if (found == null)
+			try
 			{
+				logger.LogInformation(Messages.StartedMethod, MethodBase.GetCurrentMethod());
+				var found = await userManager.FindByEmailAsync(request.Email);
+				if (found == null)
+				{
+					return GetFail(Messages.LoginOrPasswordHasError);
+				}
+
+				var isVerify = await userManager.CheckPasswordAsync(found, request.Password);
+				if (isVerify)
+				{
+					var jwt = await jwtProvider.GenerateTokenAsync(found);
+
+					return GetSuccess(jwt);
+				}
+
 				return GetFail(Messages.LoginOrPasswordHasError);
 			}
-
-			var isVerify = await userManager.CheckPasswordAsync(found, request.Password);
-			if (isVerify)
+			catch (Exception ex)
 			{
-				var jwt = await jwtProvider.GenerateTokenAsync(found);
+				logger.LogError(ex, Messages.OperationError, GetType().Name);
 
-				return GetSuccess(jwt);
+				return GetFail(Messages.ClientOperationError);
 			}
-
-			return GetFail(Messages.LoginOrPasswordHasError);
 		}
 	}
 }

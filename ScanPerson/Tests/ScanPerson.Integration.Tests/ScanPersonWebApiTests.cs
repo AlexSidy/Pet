@@ -2,6 +2,7 @@
 using System.Net.Http.Json;
 using System.Text;
 
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ using Newtonsoft.Json;
 using ScanPerson.BusinessLogic.Services.Interfaces;
 using ScanPerson.Common.Tests;
 using ScanPerson.DAL.Contexts;
+using ScanPerson.Integration.Tests.Configure;
 using ScanPerson.Models.Items;
 using ScanPerson.Models.Requests;
 using ScanPerson.Models.Responses;
@@ -23,7 +25,7 @@ using ScanPerson.WebApi.Controllers;
 namespace ScanPerson.Integration.Tests
 {
 	[TestClass]
-	public class ScanPersonWebApiTests : Xunit.IClassFixture<WebApplicationFactory<Program>>
+	public class ScanPersonWebApiTests
 	{
 		private const string PersonInfoControllerName = "PersonInfo";
 		private readonly HttpClient _httpClient;
@@ -61,6 +63,19 @@ namespace ScanPerson.Integration.Tests
 						// Подменяем на мок сервис
 						services.AddTransient(_ => _logger.Object);
 						services.AddSingleton(_ => _personInfoServicesAggregator.Object);
+
+						// Удаляем реальную аутентификацию
+						services.AddAuthentication("Test")
+							.AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
+
+						// Заменяем политику авторизации, чтобы всегда пропускать
+						services.AddAuthorization(options =>
+						{
+							options.AddPolicy("DefaultPolicy", policy =>
+							{
+								policy.RequireAuthenticatedUser();
+							});
+						});
 					});
 				});
 			_httpClient = _factory.CreateDefaultClient();

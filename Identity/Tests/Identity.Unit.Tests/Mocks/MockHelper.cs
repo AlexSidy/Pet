@@ -6,6 +6,7 @@ namespace Identity.Unit.Tests.Mocks
 {
 	public class MockHelper
 	{
+#pragma warning disable CS8625
 		public static Mock<UserManager<TUser>> GetMockUserManager<TUser>(Mock<IUserStore<TUser>>? store = null)
 		where TUser : class
 		{
@@ -25,5 +26,6 @@ namespace Identity.Unit.Tests.Mocks
 
 			return mockUserManager;
 		}
+#pragma warning restore CS8625
 	}
 }

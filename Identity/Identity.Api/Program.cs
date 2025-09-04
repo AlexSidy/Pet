@@ -21,7 +21,7 @@ builder.Configuration
 	.AddEnvironmentVariables();
 
 var connectionString = builder.Configuration.GetConnectionString(DbSection)
-	?? throw new InvalidOperationException(string.Format(Messages.SectionNotFound, DbSection));
+		?? throw new InvalidOperationException(string.Format(Messages.SectionNotFound, DbSection));
 var jwtOptins = builder.Configuration.GetSection(JwtOptions.AppSettingsSection).Get<JwtOptions>()
 	?? throw new InvalidOperationException(string.Format(Messages.SectionNotFound, JwtOptions.AppSettingsSection));
 jwtOptins.SecretKey = EnviromentHelper.GetViriableByName("JWT_OPTIONS_SECRET_KEY");
@@ -30,9 +30,9 @@ jwtOptins.SecretKey = EnviromentHelper.GetViriableByName("JWT_OPTIONS_SECRET_KEY
 Log.Logger = new LoggerConfiguration()
 	.WriteTo.Graylog(new GraylogSinkOptions
 	{
-		HostnameOrAddress = builder.Configuration.GetSection("Graylog").GetValue<string>("Host") ?? "graylog", // graylog`s hostname
-		Port = builder.Configuration.GetSection("Graylog").GetValue<int?>("Port") ?? 12201, // port GELF UDP/TCP (ussualy 12201)
-		Facility = ProjectName, // project name
+		HostnameOrAddress = builder.Configuration.GetSection("Graylog").GetValue<string>("Host") ?? "graylog",
+		Port = builder.Configuration.GetSection("Graylog").GetValue<int?>("Port") ?? 12201,
+		Facility = ProjectName,
 		MinimumLogEventLevel = Serilog.Events.LogEventLevel.Information,
 		TransportType = TransportType.Tcp
 	})

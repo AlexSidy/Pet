@@ -24,7 +24,7 @@ namespace ScanPerson.BusinessLogic.Services
 			IEnumerable<IPersonInfoService> personInfoServices)
 		{
 			_logger = logger;
-			_personInfoServices = [.. personInfoServices.Where(x => x.CanAccept())];
+			_personInfoServices = [.. (personInfoServices ?? []).Where(x => x.CanAccept())];
 			_logger.LogInformation(Messages.OperationInput, string.Join(", ", _personInfoServices.Select(x => x.GetType().Name)));
 		}
 
@@ -33,6 +33,7 @@ namespace ScanPerson.BusinessLogic.Services
 			try
 			{
 				_logger.LogInformation(Messages.StartedMethodWithParameters, nameof(GetScanPersonInfoAsync), JsonSerializer.Serialize(request));
+				_logger.LogInformation(Messages.StartedMethodWithParameters, nameof(GetScanPersonInfoAsync), string.Join(", ", _personInfoServices.Select(x => x.GetType().Name)));
 				var result = await Task.WhenAll(_personInfoServices.Select(x => x.GetInfoAsync(request)));
 				_logger.LogInformation(Messages.OperationResult, JsonSerializer.Serialize(result));
 

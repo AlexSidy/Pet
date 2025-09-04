@@ -1,49 +1,46 @@
 services:
-
   identity.api:
-    container_name:  identityapi
+    container_name: identityapi
     image: identityapi
-    restart: "no"
-    profiles: [all, api]
+    restart: no
     build:
       context: .
       dockerfile: ./Identity.Api/Dockerfile
     depends_on:
       identitydb:
-        condition: service_healthy # Wait for the healthcheck to pass
+        condition: service_healthy
     environment:
-        - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-        - ASPNETCORE_HTTP_PORTS=8090
-        - ASPNETCORE_HTTPS_PORTS=8091
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}
-        - ALLOWED_HOSTS=${ALLOWED_HOSTS}
-        - JWT_OPTIONS_SECRET_KEY=${JWT_OPTIONS_SECRET_KEY}
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_HTTP_PORTS=8090
+      - ASPNETCORE_HTTPS_PORTS=8091
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - JWT_OPTIONS_SECRET_KEY=${JWT_OPTIONS_SECRET_KEY}
+      - IDENTITY_CONNECTION_STRING=${IDENTITY_CONNECTION_STRING}
     ports:
-        - 8090:8090
-        - 8091:8091
+      - 8090:8090
+      - 8091:8091
     volumes:
-        - ./Identity.Api/https/cert.pfx:/https/cert.pfx
+      - ./Identity.Api/https/cert.pfx:/https/cert.pfx
     networks:
-        - scanperson-network
+      - scanperson-network
 
   identitydb:
     container_name: identitydb
     image: postgres
-    restart: "no"
-    profiles: [all, postgres, api]
+    restart: no
     environment:
-        POSTGRES_USER: ${POSTGRES_USER}
-        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-        POSTGRES_DB: ${POSTGRES_DB}
-        PGDATA: ${PGDATA}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: ${PGDATA}
     ports:
-        - 5434:5432
+      - 5434:5432
     volumes:
-        - identitydb:/data/identitydb
-        - identitydb:/var/lib/postgresql/data
+      - identitydb:${PGDATA}
     networks:
-        - scanperson-network
+      - scanperson-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -53,22 +50,21 @@ services:
   identitypgadmin:
     container_name: identitypgadmin
     image: dpage/pgadmin4
-    restart: "no"
-    profiles: [all, postgres, api]
+    restart: no
     depends_on:
       identitydb:
-        condition: service_healthy # Wait for the healthcheck to pass
+        condition: service_healthy
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
       PGADMIN_CONFIG_SERVER_MODE: ${PGADMIN_CONFIG_SERVER_MODE}
     volumes:
-        - identitydb:/data/identitydb
-        - identitypgadmin:/var/lib/identitypgadmin
+      - identitydb:/data/identitydb
+      - identitypgadmin:/var/lib/identitypgadmin
     ports:
-        - 8001:80
+      - 8001:80
     networks:
-        - scanperson-network
+      - scanperson-network
 
 networks:
   scanperson-network:
@@ -76,7 +72,5 @@ networks:
     driver: bridge
 
 volumes:
-    identitydb:
-    identitypgadmin:
-
-      
+  identitydb:
+  identitypgadmin:

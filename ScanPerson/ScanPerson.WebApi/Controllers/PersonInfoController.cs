@@ -21,5 +21,14 @@ namespace ScanPerson.WebApi.Controllers
 
 			return GetResult(result.ToHashSet().FirstOrDefault());
 		}
+
+		[HttpPost(nameof(GetSimpleAsync))]
+		public async Task<IResult> GetSimpleAsync([FromBody] PersonInfoRequest request)
+		{
+			logger.LogInformation(Messages.StartedMethod, ControllerContext?.RouteData?.Values["action"]);
+			var result = await Task.FromResult(request);
+
+			return Results.Ok(result);
+		}
 	}
 }

@@ -6,10 +6,11 @@
       "composeLaunchAction": "LaunchBrowser",
       "composeLaunchServiceName": "scanperson.webapi",
       "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger",
-      "composeProfile": {
-        "includes": [
-          "all"
-        ]
+      "serviceActions": {
+        "pgadmin": "StartWithoutDebugging",
+        "scanperson.ui": "StartWithoutDebugging",
+        "scanperson.webapi": "StartDebugging",
+        "scanpersondb": "StartWithoutDebugging"
       }
     },
     "Release Compose": {
@@ -18,10 +19,11 @@
       "composeLaunchAction": "LaunchBrowser",
       "composeLaunchServiceName": "scanperson.webapi",
       "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger",
-      "composeProfile": {
-        "includes": [
-          "webApi"
-        ]
+      "serviceActions": {
+        "pgadmin": "StartWithoutDebugging",
+        "scanperson.ui": "StartWithoutDebugging",
+        "scanperson.webapi": "StartDebugging",
+        "scanpersondb": "StartWithoutDebugging"
       }
     }
   }

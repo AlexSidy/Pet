@@ -116,6 +116,37 @@ namespace Identity.Unit.Tests
 		}
 
 		[TestMethod]
+		public async Task RegisterAsync_CreateAsyncThrowsError_ReturnFailedResult()
+		{
+			// Arrange
+			_userManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
+			_userManager.Setup(x => x.CreateAsync(It.IsAny<User>(), It.IsAny<string>())).Throws<InvalidOperationException>();
+
+			// Act
+			var result = await _cut.RegisterAsync(_registerRequest);
+
+			// Assert
+			Assert.IsNotNull(result);
+			Assert.IsFalse(result.IsSuccess);
+			Assert.AreEqual(Messages.ClientOperationError, result.Error);
+		}
+
+		[TestMethod]
+		public async Task RegisterAsync_FindByEmailThrowsError_ReturnFailedResult()
+		{
+			// Arrange
+			_userManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).Throws<InvalidOperationException>();
+
+			// Act
+			var result = await _cut.RegisterAsync(_registerRequest);
+
+			// Assert
+			Assert.IsNotNull(result);
+			Assert.IsFalse(result.IsSuccess);
+			Assert.AreEqual(Messages.ClientOperationError, result.Error);
+		}
+
+		[TestMethod]
 		public async Task LoginAsync_UserNotFound_ReturnFailResult()
 		{
 			// Arrange
@@ -166,6 +197,55 @@ namespace Identity.Unit.Tests
 			Assert.IsNotNull(result);
 			Assert.IsTrue(result.IsSuccess);
 			Assert.AreEqual(token, result.Result);
+		}
+
+		[TestMethod]
+		public async Task LoginAsync_FindByEmailAsyncThrowsException_ReturnFailedResult()
+		{
+			// Arrange
+			_userManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).Throws<InvalidOperationException>();
+
+
+			// Act
+			var result = await _cut.LoginAsync(_loginRequest);
+
+			// Assert
+			Assert.IsNotNull(result);
+			Assert.IsFalse(result.IsSuccess);
+			Assert.AreEqual(Messages.ClientOperationError, result.Error);
+		}
+
+		[TestMethod]
+		public async Task LoginAsync_CheckPasswordAsyncThrowsException_ReturnFailedResult()
+		{
+			// Arrange
+			_userManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(new User());
+			_userManager.Setup(x => x.CheckPasswordAsync(It.IsAny<User>(), It.IsAny<string>())).Throws<InvalidOperationException>();
+
+			// Act
+			var result = await _cut.LoginAsync(_loginRequest);
+
+			// Assert
+			Assert.IsNotNull(result);
+			Assert.IsFalse(result.IsSuccess);
+			Assert.AreEqual(Messages.ClientOperationError, result.Error);
+		}
+
+		[TestMethod]
+		public async Task LoginAsync_GenerateTokenAsyncThrowsException_ReturnFailedResult()
+		{
+			// Arrange
+			_userManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(new User());
+			_userManager.Setup(x => x.CheckPasswordAsync(It.IsAny<User>(), It.IsAny<string>())).ReturnsAsync(true);
+			_tokenProvider.Setup(x => x.GenerateTokenAsync(It.IsAny<User>())).Throws<InvalidOperationException>();
+
+			// Act
+			var result = await _cut.LoginAsync(_loginRequest);
+
+			// Assert
+			Assert.IsNotNull(result);
+			Assert.IsFalse(result.IsSuccess);
+			Assert.AreEqual(Messages.ClientOperationError, result.Error);
 		}
 	}
 }
