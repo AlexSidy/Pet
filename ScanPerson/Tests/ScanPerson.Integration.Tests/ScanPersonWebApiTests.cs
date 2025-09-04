@@ -120,7 +120,8 @@ namespace ScanPerson.Integration.Tests
 				response.EnsureSuccessStatusCode();
 				Assert.IsNotNull(response.Content.Headers.ContentType);
 				Assert.AreEqual("application/json; charset=utf-8", response.Content.Headers.ContentType.ToString());
-				var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<PersonInfoItem>>();
+				var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<PersonInfoItem>>(
+					TestContext.CancellationTokenSource.Token);
 				Assert.IsNotNull(result);
 				AssertHelper.AssertResult(personResponses[0], result);
 			}

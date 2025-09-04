@@ -26,15 +26,15 @@ jobs:
       with:
         dotnet-version: 9.0.x
 
-    # --- Шаги анализа SonarQube с использованием CLI ---
+    # --- Steps of SonarQube with CLI ---
 
-    # Шаг 1: Установка SonarScanner CLI
+    # Step 1: Install SonarScanner CLI
     - name: Install SonarScanner CLI
       run: |
         dotnet tool install --global dotnet-sonarscanner
 
-    # Шаг 2: Начало анализа
-    # Эта команда подготавливает среду для сканирования, но не отправляет данные.
+    # Step 2: Analyze begin
+    # This command prepares the environment for scanning, but does not send any data.
     - name: SonarQube Begin Analysis
       run: |
         dotnet sonarscanner begin \
@@ -49,7 +49,7 @@ jobs:
         SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
         SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
 
-    # Шаг 3: Сборка и тестирование (промежуточные шаги)
+    # Step 3: Restore, build and testing (intermediate steps)
     - name: Restore dependencies
       run: |
         dotnet restore ./ScanPerson/ScanPerson.sln
@@ -70,8 +70,8 @@ jobs:
         dotnet tool install -g dotnet-reportgenerator-globaltool
         reportgenerator -reports:./TestResults/**/coverage.cobertura.xml -targetdir:./TestResults/ -reporttypes:Cobertura
         
-    # Шаг 4: Завершение анализа
-    # Эта команда отправляет все собранные данные (анализ кода и покрытие) на сервер.
+    # Step 4: Analyze end
+    # This command sends all collected data (code analysis and coverage) to the server.
     - name: SonarQube End Analysis
       run: |
         dotnet sonarscanner end /d:sonar.token="${{ env.SONAR_TOKEN }}"
