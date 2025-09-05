@@ -101,6 +101,7 @@ app.MapControllers();
 
 await app.RunAsync();
 
+#pragma warning disable S1118
 public partial class Program
 {
 	public const string DbSection = "IdentityDb";
@@ -108,3 +109,4 @@ public partial class Program
 	public const string ProjectName = "Identity.Api";
 	public const string CorsPolicy = "MyTrustedHosts";
 }
+#pragma warning restore S1118
