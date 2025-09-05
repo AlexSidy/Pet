@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using ScanPerson.BusinessLogic.Services.Interfaces;
@@ -11,6 +12,7 @@ namespace ScanPerson.WebApi.Controllers
 	[Route(Program.WebApi + "/[controller]")]
 	public class PersonInfoController(ILogger<PersonInfoController> logger, IPersonInfoServicesAggregator service) : ScanPersonControllerBase
 	{
+		[Authorize]
 		[HttpPost(nameof(GetScanPersonInfoAsync))]
 		public async Task<IResult> GetScanPersonInfoAsync([FromBody] PersonInfoRequest request)
 		{

@@ -8,10 +8,10 @@ namespace ScanPerson.Common.Extensions
 	public static class ServiceExtensions
 	{
 		/// <summary>
-		/// Добавление всех реализаций интерфейса.
+		/// Adding all types that implement the interface.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="services"></param>
+		/// <typeparam name="T">Type for registration.</typeparam>
+		/// <param name="services">Aplication services.</param>
 		public static void AddAllImplementations<T>(this IServiceCollection services)
 		{
 			var implementations = Assembly
@@ -21,7 +21,6 @@ namespace ScanPerson.Common.Extensions
 
 			foreach (var implementation in implementations)
 			{
-				// Регистрируем каждую реализацию
 				services.AddTransient(typeof(T), implementation);
 			}
 		}

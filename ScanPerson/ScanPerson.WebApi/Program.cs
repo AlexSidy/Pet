@@ -22,8 +22,8 @@ builder.Configuration
 	.AddJsonFile(configPath)
 	.AddEnvironmentVariables();
 
-var connectionString = builder.Configuration.GetConnectionString("ScanPersonDb") ??
-	throw new InvalidOperationException("Connection string 'ScanPersonDb' not found.");
+var connectionString = builder.Configuration.GetConnectionString(DbSection) ??
+	throw new InvalidOperationException(string.Format(Messages.SectionNotFound, DbSection));
 var jwtOptins = builder.Configuration.GetSection(JwtOptions.AppSettingsSection).Get<JwtOptions>()
 	?? throw new InvalidOperationException(string.Format(Messages.SectionNotFound, JwtOptions.AppSettingsSection));
 jwtOptins.SecretKey = EnviromentHelper.GetViriableByName("JWT_OPTIONS_SECRET_KEY");
@@ -32,9 +32,9 @@ jwtOptins.SecretKey = EnviromentHelper.GetViriableByName("JWT_OPTIONS_SECRET_KEY
 Log.Logger = new LoggerConfiguration()
 	.WriteTo.Graylog(new GraylogSinkOptions
 	{
-		HostnameOrAddress = builder.Configuration.GetSection("Graylog").GetValue<string>("Host") ?? "graylog", // graylog`s hostname
-		Port = builder.Configuration.GetSection("Graylog").GetValue<int?>("Port") ?? 12201, // port GELF UDP/TCP (ussualy 12201)
-		Facility = ProjectName, // project name
+		HostnameOrAddress = builder.Configuration.GetSection("Graylog").GetValue<string>("Host") ?? "graylog",
+		Port = builder.Configuration.GetSection("Graylog").GetValue<int?>("Port") ?? 12201,
+		Facility = ProjectName,
 		MinimumLogEventLevel = Serilog.Events.LogEventLevel.Information,
 		TransportType = TransportType.Tcp
 	})
@@ -50,14 +50,14 @@ if (!builder.Environment.IsStaging())
 }
 builder.Services.AddBusinessLogicServices(builder.Configuration);
 
-var allowedHosts = builder.Configuration.GetValue<string>("Allowed_Hosts")?.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries) ?? [];
+var allowedHosts = builder.Configuration.GetValue<string>("ALLOWED_HOSTS")?.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries) ?? [];
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy("MyTrustedHosts", builder =>
+	options.AddPolicy(CorsPolicy, builder =>
 	{
 		builder.WithOrigins(allowedHosts)
-			   .AllowAnyHeader() // Разрешаем любые заголовки
-			   .AllowAnyMethod(); // Разрешаем любые методы
+			   .AllowAnyHeader()
+			   .AllowAnyMethod();
 	});
 });
 
@@ -80,7 +80,7 @@ builder.Services
 			ValidateIssuerSigningKey = true
 		};
 	});
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorizationBuilder();
 builder.Services.AddHttpClient();
 builder.Services.AddScanPersonAutoMapper();
 #endregion [Add services]
@@ -89,7 +89,7 @@ var app = builder.Build();
 
 #region [Usage services]
 // Configure middleware pipeline.
-if (app.Environment.IsDevelopment())
+if (!app.Environment.IsProduction())
 {
 	app.UseSwagger();
 	app.UseSwaggerUI();
@@ -99,7 +99,7 @@ app.UseExceptionHandlerMiddleware();
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseCors("MyTrustedHosts");
+app.UseCors(CorsPolicy);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
@@ -107,8 +107,12 @@ app.MapControllers();
 
 await app.RunAsync();
 
+#pragma warning disable S1118
 public partial class Program
 {
 	public const string WebApi = "webApi";
 	public const string ProjectName = "ScanPerson.WebApi";
+	public const string DbSection = "ScanPersonDb";
+	public const string CorsPolicy = "MyTrustedHosts";
 }
+#pragma warning restore S1118

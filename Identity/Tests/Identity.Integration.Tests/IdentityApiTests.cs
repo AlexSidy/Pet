@@ -24,8 +24,10 @@ using ScanPerson.Models.Responses;
 namespace ScanPerson.Integration.Tests
 {
 	[TestClass]
-	public class IdentityApiTests : Xunit.IClassFixture<WebApplicationFactory<Program>>
+	public class IdentityApiTests
 	{
+		public TestContext TestContext { get; set; }
+
 		private const string AuthControllerName = "Auth";
 		private readonly HttpClient _httpClient;
 		private readonly WebApplicationFactory<Program> _factory;
@@ -97,14 +99,18 @@ namespace ScanPerson.Integration.Tests
 			// Act
 			try
 			{
-				var response = await _httpClient.PostAsync($"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.RegisterAsync)}", content);
+				var response = await _httpClient.PostAsync(
+					$"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.RegisterAsync)}",
+					content,
+					TestContext.CancellationTokenSource.Token);
 
 				// Assert
 				Assert.IsNotNull(response);
 				response.EnsureSuccessStatusCode();
 				Assert.IsNotNull(response.Content.Headers.ContentType);
 				Assert.AreEqual("application/json; charset=utf-8", response.Content.Headers.ContentType.ToString());
-				var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<IdentityResult>>();
+				var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<IdentityResult>>(
+					TestContext.CancellationTokenSource.Token);
 				Assert.IsNotNull(result);
 				Assert.IsTrue(result.IsSuccess);
 			}
@@ -115,7 +121,41 @@ namespace ScanPerson.Integration.Tests
 		}
 
 		[TestMethod]
-		public async Task RegisterAsync_UserServiceThrowException_ReturnFailResult()
+		public async Task RegisterAsync_UserServiceReturnFailResult_ReturnFailResult()
+		{
+			// Arrange
+			var data = JsonConvert.SerializeObject(new RegisterRequest
+			{
+				Password = "123456789",
+				Email = "3uQ5f@example.com"
+			});
+			var error = "Error";
+			var expectedResponse = new ScanPersonResultResponse<IdentityResult>(error);
+			var taskResponse = Task.FromResult<ScanPersonResponseBase>(expectedResponse);
+			var content = new StringContent(data, Encoding.UTF8, "application/json");
+			_userService.Setup(x => x.RegisterAsync(It.IsAny<RegisterRequest>())).Returns(taskResponse);
+
+			// Act
+			try
+			{
+				var response = await _httpClient.PostAsync(
+					$"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.RegisterAsync)}",
+					content,
+					TestContext.CancellationTokenSource.Token);
+
+				// Assert
+				Assert.IsNotNull(response);
+				Assert.IsFalse(response.IsSuccessStatusCode);
+				Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
+			}
+			catch (Exception ex)
+			{
+				throw new InvalidOperationException(ex.Message);
+			}
+		}
+
+		[TestMethod]
+		public async Task RegisterAsync_UserServiceThrowException_ThrowsException()
 		{
 			// Arrange
 			var data = JsonConvert.SerializeObject(new RegisterRequest
@@ -126,20 +166,12 @@ namespace ScanPerson.Integration.Tests
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
 			_userService.Setup(x => x.RegisterAsync(It.IsAny<RegisterRequest>())).Throws<InvalidOperationException>();
 
-			// Act
-			try
-			{
-				var response = await _httpClient.PostAsync($"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.RegisterAsync)}", content);
-
-				// Assert
-				Assert.IsNotNull(response);
-				Assert.IsFalse(response.IsSuccessStatusCode);
-				Assert.AreEqual(HttpStatusCode.InternalServerError, response.StatusCode);
-			}
-			catch (Exception ex)
-			{
-				throw new InvalidOperationException(ex.Message);
-			}
+			// Act & Assert
+			await Assert.ThrowsExactlyAsync<InvalidOperationException>(
+					() => _httpClient.PostAsync(
+						$"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.RegisterAsync)}",
+						content,
+						TestContext.CancellationTokenSource.Token));
 		}
 
 		[TestMethod]
@@ -160,14 +192,18 @@ namespace ScanPerson.Integration.Tests
 			// Act
 			try
 			{
-				var response = await _httpClient.PostAsync($"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.LoginAsync)}", content);
+				var response = await _httpClient.PostAsync(
+					$"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.LoginAsync)}",
+					content,
+					TestContext.CancellationTokenSource.Token);
 
 				// Assert
 				Assert.IsNotNull(response);
 				response.EnsureSuccessStatusCode();
 				Assert.IsNotNull(response.Content.Headers.ContentType);
 				Assert.AreEqual("application/json; charset=utf-8", response.Content.Headers.ContentType.ToString());
-				var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<IdentityResult>>();
+				var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<IdentityResult>>(
+					TestContext.CancellationTokenSource.Token);
 				Assert.IsNotNull(result);
 				Assert.IsTrue(result.IsSuccess);
 			}
@@ -178,7 +214,41 @@ namespace ScanPerson.Integration.Tests
 		}
 
 		[TestMethod]
-		public async Task LoginAsync_UserServiceThrowException_ReturnFailResult()
+		public async Task LoginAsync_UserServiceReturnFailResult_ReturnFailResult()
+		{
+			// Arrange
+			var data = JsonConvert.SerializeObject(new RegisterRequest
+			{
+				Password = "123456789",
+				Email = "3uQ5f@example.com"
+			});
+			var error = "Error";
+			var expectedResponse = new ScanPersonResultResponse<IdentityResult>(error);
+			var taskResponse = Task.FromResult<ScanPersonResponseBase>(expectedResponse);
+			var content = new StringContent(data, Encoding.UTF8, "application/json");
+			_userService.Setup(x => x.LoginAsync(It.IsAny<LoginRequest>())).Returns(taskResponse);
+
+			// Act
+			try
+			{
+				var response = await _httpClient.PostAsync(
+					$"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.LoginAsync)}",
+					content,
+					TestContext.CancellationTokenSource.Token);
+
+				// Assert
+				Assert.IsNotNull(response);
+				Assert.IsFalse(response.IsSuccessStatusCode);
+				Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+			}
+			catch (Exception ex)
+			{
+				throw new InvalidOperationException(ex.Message);
+			}
+		}
+
+		[TestMethod]
+		public async Task LoginAsync_UserServiceThrowException_ThrowsException()
 		{
 			// Arrange
 			var data = JsonConvert.SerializeObject(new LoginRequest
@@ -189,20 +259,12 @@ namespace ScanPerson.Integration.Tests
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
 			_userService.Setup(x => x.LoginAsync(It.IsAny<LoginRequest>())).Throws<InvalidOperationException>();
 
-			// Act
-			try
-			{
-				var response = await _httpClient.PostAsync($"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.LoginAsync)}", content);
-
-				// Assert
-				Assert.IsNotNull(response);
-				Assert.IsFalse(response.IsSuccessStatusCode);
-				Assert.AreEqual(HttpStatusCode.InternalServerError, response.StatusCode);
-			}
-			catch (Exception ex)
-			{
-				throw new InvalidOperationException(ex.Message);
-			}
+			// Act & Assert
+			await Assert.ThrowsExactlyAsync<InvalidOperationException>(
+					() => _httpClient.PostAsync(
+						$"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.LoginAsync)}",
+						content,
+						TestContext.CancellationTokenSource.Token));
 		}
 	}
 }

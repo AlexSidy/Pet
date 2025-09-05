@@ -8,12 +8,13 @@
 		public ServicesOptions()
 		{
 			GeoServiceOptions = new GeoServiceOptions();
+			UnUsingServices = new string[] { };
 		}
 
 		/// <summary>
 		/// Название секции в appsettings.json.
 		/// </summary>
-		public const string AppSettingsSection = "ServicesOptions";
+		public const string AppSettingsSection = "ServiceOptions";
 
 		/// <summary>
 		/// Список отключенных сервисов.

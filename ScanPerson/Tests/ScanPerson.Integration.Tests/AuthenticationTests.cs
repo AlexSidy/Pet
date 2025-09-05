@@ -1,13 +1,15 @@
-﻿using System.Net;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Security.Claims;
 using System.Text;
 
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 using Moq;
 
@@ -15,10 +17,9 @@ using Newtonsoft.Json;
 
 using ScanPerson.BusinessLogic.Services.Interfaces;
 using ScanPerson.Common.Tests;
-using ScanPerson.DAL.Contexts;
 using ScanPerson.Integration.Tests.Base;
-using ScanPerson.Integration.Tests.Configure;
 using ScanPerson.Models.Items;
+using ScanPerson.Models.Options.Auth;
 using ScanPerson.Models.Requests;
 using ScanPerson.Models.Responses;
 using ScanPerson.WebApi.Controllers;
@@ -26,59 +27,68 @@ using ScanPerson.WebApi.Controllers;
 namespace ScanPerson.Integration.Tests
 {
 	[TestClass]
-	public class ScanPersonWebApiTests : IntegrationTestsBase
+	public class AuthenticationTests : IntegrationTestsBase
 	{
+		private const string JwtSecretKey = "value-does-not-matterButIneedtowriteastringlargerthan256bits";
+		private readonly JwtOptions? _jwtOptions;
 		private readonly Mock<IPersonInfoServicesAggregator> _personInfoServicesAggregator;
 		private readonly Mock<ILogger<PersonInfoController>> _logger;
 
-		public ScanPersonWebApiTests()
+		public AuthenticationTests()
 		{
 			_personInfoServicesAggregator = new Mock<IPersonInfoServicesAggregator>();
 			_logger = new Mock<ILogger<PersonInfoController>>();
 			Factory = new WebApplicationFactory<Program>()
-				.WithWebHostBuilder(builder =>
+			.WithWebHostBuilder(builder =>
+			{
+				builder.UseEnvironment("Staging");
+				Environment.SetEnvironmentVariable("HTMLWEBRU_API_KEY", "value-does-not-matter");
+				Environment.SetEnvironmentVariable("JWT_OPTIONS_SECRET_KEY", JwtSecretKey);
+				builder.ConfigureServices(services =>
 				{
-					builder.UseEnvironment("Staging");
-					Environment.SetEnvironmentVariable("HTMLWEBRU_API_KEY", "value-does-not-matter");
-					Environment.SetEnvironmentVariable("JWT_OPTIONS_SECRET_KEY", "value-does-not-matter");
-
-					builder.ConfigureServices(services =>
-					{
-						// Удаляем реальный сервис
-						var forRemoveDescriptors = new[] {
+					var forRemoveDescriptors = new[] {
 							typeof(ILogger<PersonInfoController>),
-							typeof(ScanPersonDbContext),
 							typeof(IPersonInfoServicesAggregator)
 						};
-						RemoveFromServices(services, forRemoveDescriptors);
+					RemoveFromServices(services, forRemoveDescriptors);
 
-						// Регистрируем InMemory базу данных
-						services.AddDbContext<ScanPersonDbContext>(options =>
-						{
-							options.UseInMemoryDatabase("ScanPersonDb");
-						});
-
-						// Подменяем на мок сервис
-						services.AddTransient(_ => _logger.Object);
-						services.AddSingleton(_ => _personInfoServicesAggregator.Object);
-
-						// Удаляем реальную аутентификацию
-						services.AddAuthentication("Test")
-							.AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
-
-						// Заменяем политику авторизации, чтобы всегда пропускать
-						services.AddAuthorizationBuilder()
-							.AddPolicy("DefaultPolicy", policy =>
-							{
-								policy.RequireAuthenticatedUser();
-							});
-					});
+					services.AddTransient(_ => _logger.Object);
+					services.AddSingleton(_ => _personInfoServicesAggregator.Object);
 				});
+			});
+
+			using var scope = Factory.Services.CreateScope();
+			var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+			_jwtOptions = configuration.GetSection(JwtOptions.AppSettingsSection).Get<JwtOptions>();
 			HttpClient = Factory!.CreateDefaultClient();
 		}
 
+		/// <summary>
+		/// Helper method for generating JWT token
+		/// </summary>
+		/// <param name="username">User`s name.</param>
+		/// <returns>Token as string.</returns>
+		private string GenerateJwtToken(string username)
+		{
+			var claims = new[]
+			{
+				new Claim(ClaimTypes.Name, username),
+			};
+
+			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtSecretKey));
+			var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+			var token = new JwtSecurityToken(
+				_jwtOptions?.Issuer,
+				_jwtOptions?.Audience,
+				claims,
+				expires: DateTime.Now.AddMinutes(30),
+				signingCredentials: credentials);
+
+			return new JwtSecurityTokenHandler().WriteToken(token);
+		}
+
 		[TestMethod]
-		public async Task GetPersonAsync_CorrectRequest_ReturnSuccessResult()
+		public async Task ProtectedEndpoint_WithValidJwtToken_ReturnsOk()
 		{
 			// Arrange
 			var data = JsonConvert.SerializeObject(new PersonInfoRequest
@@ -89,6 +99,9 @@ namespace ScanPerson.Integration.Tests
 			var taskResponse = CreationHelper.GetTaskResponse(personResponses);
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
 			_personInfoServicesAggregator.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Returns(taskResponse!);
+			var token = GenerateJwtToken("testuser");
+
+			HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 			// Act
 			try
@@ -115,15 +128,17 @@ namespace ScanPerson.Integration.Tests
 		}
 
 		[TestMethod]
-		public async Task GetPersonAsync_PersonServiceThrowEception_ReturnFailResult()
+		public async Task ProtectedEndpoint_WithInvalidJwtToken_ReturnsUnauthorized()
 		{
 			// Arrange
+			HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "invalid-token");
 			var data = JsonConvert.SerializeObject(new PersonInfoRequest
 			{
 				PhoneNumber = "123456789"
 			});
+			var personResponses = CreationHelper.GetPersonResponse();
+			var taskResponse = CreationHelper.GetTaskResponse(personResponses);
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
-			_personInfoServicesAggregator.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Throws<InvalidOperationException>();
 
 			// Act
 			try
@@ -135,8 +150,7 @@ namespace ScanPerson.Integration.Tests
 
 				// Assert
 				Assert.IsNotNull(response);
-				Assert.IsFalse(response.IsSuccessStatusCode);
-				Assert.AreEqual(HttpStatusCode.InternalServerError, response.StatusCode);
+				Assert.AreEqual(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
 			}
 			catch (Exception ex)
 			{

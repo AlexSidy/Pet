@@ -2,8 +2,7 @@ services:
   scanperson.ui:
     container_name: scanpersonui
     image: scanpersonui
-    restart: "no"
-    profiles: [all, ui]
+    restart: no
     build:
       context: ./ScanPerson.UI
       dockerfile: Dockerfile
@@ -26,23 +25,24 @@ services:
   scanperson.webapi:
     container_name: scanpersonwebapi
     image: scanpersonwebapi
-    restart: "no"
-    profiles: [all, webApi, postgres]
+    restart: no
     build:
       context: .
       dockerfile: ./ScanPerson.WebApi/Dockerfile
     depends_on:
-        - scanpersondb
+        scanpersondb:
+            condition: service_healthy
     environment:
         - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
         - ASPNETCORE_HTTP_PORTS=8080
         - ASPNETCORE_HTTPS_PORTS=8081
         - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}
         - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}
-        - Allowed_Hosts=${Allowed_Hosts}
+        - ALLOWED_HOSTS=${ALLOWED_HOSTS}
         - JWT_OPTIONS_SECRET_KEY=${JWT_OPTIONS_SECRET_KEY}
         - HTMLWEBRU_API_KEY=${HTMLWEBRU_API_KEY}
         - AUTO_MAPPER_LICENSE_KEY=${AUTO_MAPPER_LICENSE_KEY}
+        - ConnectionStrings__ScanPersonDb=${ConnectionStrings__ScanPersonDb}
     ports:
         - 8080:8080 # HTTP
         - 8081:8081 # HTTPS
@@ -54,8 +54,7 @@ services:
   scanpersondb:
     container_name: scanpersondb
     image: postgres
-    restart: "no"
-    profiles: [all, postgres, webApi]
+    restart: no
     environment:
         POSTGRES_USER: ${POSTGRES_USER}
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -64,16 +63,19 @@ services:
     ports:
         - 5433:5432
     volumes:
-        - postgres:/data/postgres
-        - postgres:/var/lib/postgresql/data
+        - postgres:${PGDATA}
     networks:
         - scanperson-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
  
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4
-    restart: "no"
-    profiles: [all, postgres, webApi]
+    restart: no
     depends_on:
       - scanpersondb
     environment:

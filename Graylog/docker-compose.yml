@@ -29,15 +29,13 @@ services:
 
   graylog:
     container_name: graylog
-    image: "${GRAYLOG_IMAGE:-graylog/graylog:4.3}"
+    image: ${GRAYLOG_IMAGE}
     depends_on:
       elasticsearch:
         condition: "service_started"
       mongodb:
         condition: "service_started"
     entrypoint: "/usr/bin/tini -- wait-for-it elasticsearch:9200 --  /docker-entrypoint.sh"
-    env_file:
-        - ./.env.graylog
     environment:
       GRAYLOG_NODE_ID_FILE: "/usr/share/graylog/data/config/node-id"
       GRAYLOG_PASSWORD_SECRET: ${GRAYLOG_PASSWORD_SECRET}

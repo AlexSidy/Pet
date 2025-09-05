@@ -1,15 +1,15 @@
 ﻿################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
-
+/.sonarqube
 /.vs
 /ScanPerson/.vs/
 /Identity/.vs/
 /Graylog/.vs/
 /ScanPerson/ScanPerson.WebApi/wwwroot
-*/TestResults*
-*/*/TestResults*
+**/TestResults/
 .env
+*.pfx
 
 
 

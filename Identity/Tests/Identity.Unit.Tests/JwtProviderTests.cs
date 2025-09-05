@@ -24,7 +24,8 @@ namespace Identity.Unit.Tests
 
 		public JwtProviderTests()
 		{
-			jwtOptions = new JwtOptions {
+			jwtOptions = new JwtOptions
+			{
 				Audience = "test",
 				ExpireHours = 10,
 				Issuer = "test",
@@ -70,7 +71,7 @@ namespace Identity.Unit.Tests
 			_userManager.Setup(x => x.GetClaimsAsync(It.IsAny<User>())).ThrowsAsync(exceptedError);
 
 			// Act Assert
-			var result = await Assert.ThrowsExceptionAsync<InvalidOperationException>(() => _cut.GenerateTokenAsync(new User()));
+			var result = await Assert.ThrowsExactlyAsync<InvalidOperationException>(() => _cut.GenerateTokenAsync(new User()));
 
 			Assert.IsNotNull(result);
 			Assert.AreEqual(error, result.Message);

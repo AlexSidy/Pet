@@ -12,7 +12,7 @@ using ScanPerson.Models.Responses;
 namespace ScanPerson.BusinessLogic.Services
 {
 	/// <summary>
-	/// Сервис получения информации о местонахождении человека по номеру телефона с сервиса https://htmlweb.ru/geo/telcod_api_example.php
+	/// Service for aggregation of services for getting information about a person.
 	/// </summary>
 	public class PersonInfoServicesAggregator : OperationBase, IPersonInfoServicesAggregator
 	{
@@ -24,7 +24,7 @@ namespace ScanPerson.BusinessLogic.Services
 			IEnumerable<IPersonInfoService> personInfoServices)
 		{
 			_logger = logger;
-			_personInfoServices = [.. personInfoServices.Where(x => x.CanAccept())];
+			_personInfoServices = [.. (personInfoServices ?? []).Where(x => x.CanAccept())];
 			_logger.LogInformation(Messages.OperationInput, string.Join(", ", _personInfoServices.Select(x => x.GetType().Name)));
 		}
 

@@ -6,10 +6,10 @@
       "composeLaunchAction": "LaunchBrowser",
       "composeLaunchServiceName": "identity.api",
       "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger",
-      "composeProfile": {
-        "includes": [
-          "all"
-        ]
+      "serviceActions": {
+        "identity.api": "StartDebugging",
+        "identitydb": "StartWithoutDebugging",
+        "identitypgadmin": "StartWithoutDebugging"
       }
     },
     "Release Compose": {
@@ -18,10 +18,10 @@
       "composeLaunchAction": "LaunchBrowser",
       "composeLaunchServiceName": "identity.api",
       "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger",
-      "composeProfile": {
-        "includes": [
-          "all"
-        ]
+      "serviceActions": {
+        "identity.api": "StartDebugging",
+        "identitydb": "StartWithoutDebugging",
+        "identitypgadmin": "StartWithoutDebugging"
       }
     }
   }
