@@ -1,11 +1,11 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: Push to VM, Build and UP Docker Compose
+name: Build Docker Compose and Push to VM
 
 on:
   workflow_run:
-    workflows: ["Full CI and SonarQube Analysis"]
+    workflows: ["Full CI and SonarQube Analysis", "CI and SonarQube Analysis"]
     types: [completed]
   workflow_call:
   # can be triggered manually
@@ -36,7 +36,6 @@ jobs:
             PGADMIN_DEFAULT_EMAIL: ${{ secrets.PGADMIN_DEFAULT_EMAIL }}
             PGADMIN_DEFAULT_PASSWORD: ${{ secrets.PGADMIN_DEFAULT_PASSWORD }}
             PGADMIN_CONFIG_SERVER_MODE: ${{ vars.PGADMIN_CONFIG_SERVER_MODE }}
-            SSH_PRIVATE_KEY: ${{ vars.SSH_PRIVATE_KEY }}
 
             # Graylog solution
             GRAYLOG_PASSWORD_SECRET: ${{ secrets.GRAYLOG_PASSWORD_SECRET }}
@@ -62,7 +61,6 @@ jobs:
             ASPNETCORE_Kestrel__Certificates__Default__Path
             ASPNETCORE_Kestrel__Certificates__Default__Password
             JWT_OPTIONS_SECRET_KEY
-            SSH_PRIVATE_KEY
             POSTGRES_USER
             POSTGRES_PASSWORD
             PGDATA
@@ -92,28 +90,21 @@ jobs:
 
       # Add step for clean directory in task #50
 
-      # Configure the SSH agent to work securely with the key.
-      # This action adds your private SSH key to the environment so that subsequent commands can use it.
-      - name: Set up SSH Agent
-        uses: webfactory/ssh-agent@v0.8.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
       # Copy files to VM
       - name: Copy files to VM
-        env:
-          #Common
-          VM_USER: ${{ secrets.VM_USER }}
-          VM_HOST: ${{ secrets.VM_HOST }}
-        run: |
-          scp -r -o StrictHostKeyChecking=no . ${{ secrets.VM_USER }}@${{ secrets.VM_HOST }}:/Repositories/Pet
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "."
+          target: "/Repositories/Pet"
 
       # Deploy to VM and build containers
       - name: Deploy to VM and build containers
+        uses: appleboy/ssh-action@v1.2.2
         env:
           #Common
-          VM_USER: ${{ secrets.VM_USER }}
-          VM_HOST: ${{ secrets.VM_HOST }}
           ASPNETCORE_ENVIRONMENT: ${{ vars.ASPNETCORE_ENVIRONMENT }}
           ASPNETCORE_Kestrel__Certificates__Default__Path: ${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PATH }}
           ASPNETCORE_Kestrel__Certificates__Default__Password: ${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD }}
@@ -142,8 +133,11 @@ jobs:
           IDENTITY_ALLOWED_HOSTS: ${{ vars.IDENTITY_ALLOWED_HOSTS }}
           ConnectionStrings__IdentityDb: ${{ secrets.CONNECTIONSTRINGS__IDENTITYDB }}
           IDENTITY_POSTGRES_DB: ${{ vars.IDENTITY_POSTGRES_DB }}
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ env.VM_USER }}@${{ env.VM_HOST }} '
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
             # Add step for clone repository for first deploy in task #50
             
             # Navigate to the project directory on the VM
@@ -200,4 +194,3 @@ jobs:
             echo "PGADMIN_CONFIG_SERVER_MODE=${PGADMIN_CONFIG_SERVER_MODE}" >> .env
             docker compose up -d --build
             rm .env
-          '
