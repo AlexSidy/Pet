@@ -90,6 +90,14 @@ jobs:
             # Rebuild and restart the Docker Compose services for all solutions.
             # The --build flag forces Docker Compose to rebuild the images locally.
 
+            # Configure docker before start
+            if ! docker network ls | grep -q 'scanperson-network'; then
+            echo "Create docker-network..."
+            docker network create -d bridge scanperson-network
+            else
+            echo "Сеть docker-network is exists."
+            fi
+
             # Graylog
             echo "Graylog build and up."
             cd Graylog
