@@ -107,7 +107,7 @@ jobs:
 
             cd ..
 
-            # echo "Identity build and up."
+            echo "Identity build and up."
             cd Identity
             ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
             ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}" \
@@ -120,8 +120,8 @@ jobs:
             PGADMIN_CONFIG_SERVER_MODE="${{ env.PGADMIN_CONFIG_SERVER_MODE }}" \
             ALLOWED_HOSTS="${{ env.IDENTITY_ALLOWED_HOSTS }}" \
             ConnectionStrings__IdentityDb="${{ env.ConnectionStrings__IdentityDb }}" \
-            IDENTITY_POSTGRES_DB="${{ env.IDENTITY_POSTGRES_DB }}" \
-            IDENTITY_PGDATA="${{ env.IDENTITY_PGDATA }}" \
+            POSTGRES_DB="${{ env.IDENTITY_POSTGRES_DB }}" \
+            PGDATA="${{ env.IDENTITY_PGDATA }}" \
             docker compose up -d --build
 
             cd ..
@@ -141,8 +141,8 @@ jobs:
             PGADMIN_CONFIG_SERVER_MODE="${{ env.PGADMIN_CONFIG_SERVER_MODE }}" \
             ALLOWED_HOSTS="${{ env.SCANPERSON_ALLOWED_HOSTS }}" \
             ConnectionStrings__ScanPersonDb="${{ env.ConnectionStrings__ScanPersonDb }}" \
-            SCANPERSON_POSTGRES_DB="${{ env.SCANPERSON_POSTGRES_DB }}" \
+            POSTGRES_DB="${{ env.SCANPERSON_POSTGRES_DB }}" \
             HTMLWEBRU_API_KEY="${{ env.HTMLWEBRU_API_KEY }}" \
             AUTO_MAPPER_LICENSE_KEY="${{ env.AUTO_MAPPER_LICENSE_KEY }}" \
-            SCANPERSON_PGDATA="${{ env.SCANPERSON_PGDATA }}" \
+            PGDATA="${{ env.SCANPERSON_PGDATA }}" \
             docker compose up -d --build
