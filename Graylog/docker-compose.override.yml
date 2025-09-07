@@ -1,6 +1,5 @@
 services:
   mongodb:
-    environment:
 
   elasticsearch:
 

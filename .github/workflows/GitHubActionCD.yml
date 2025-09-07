@@ -54,7 +54,6 @@ jobs:
           JWT_OPTIONS_SECRET_KEY: ${{ secrets.JWT_OPTIONS_SECRET_KEY }}
           POSTGRES_USER: ${{ vars.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          PGDATA: ${{ vars.PGDATA }}
           PGADMIN_DEFAULT_EMAIL: ${{ secrets.PGADMIN_DEFAULT_EMAIL }}
           PGADMIN_DEFAULT_PASSWORD: ${{ secrets.PGADMIN_DEFAULT_PASSWORD }}
           PGADMIN_CONFIG_SERVER_MODE: ${{ vars.PGADMIN_CONFIG_SERVER_MODE }}
@@ -71,11 +70,13 @@ jobs:
           SCANPERSON_WEBAPI_DOMEN: ${{ vars.SCANPERSON_WEBAPI_DOMEN }}
           HTMLWEBRU_API_KEY: ${{ secrets.HTMLWEBRU_API_KEY }}
           AUTO_MAPPER_LICENSE_KEY: ${{ secrets.AUTO_MAPPER_LICENSE_KEY }}
+          SCANPERSON_PGDATA: ${{ vars.SCANPERSON_PGDATA }}
 
           # Identity solution
           IDENTITY_ALLOWED_HOSTS: ${{ vars.IDENTITY_ALLOWED_HOSTS }}
           ConnectionStrings__IdentityDb: ${{ secrets.CONNECTIONSTRINGS__IDENTITYDB }}
           IDENTITY_POSTGRES_DB: ${{ vars.IDENTITY_POSTGRES_DB }}
+          IDENTITY_PGDATA: ${{ vars.IDENTITY_PGDATA }}
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
@@ -90,6 +91,7 @@ jobs:
             # The --build flag forces Docker Compose to rebuild the images locally.
 
             # Graylog
+            echo "Graylog build and up."
             cd Graylog
             echo "GRAYLOG_PASSWORD_SECRET=${GRAYLOG_PASSWORD_SECRET}" >> .env
             echo "GRAYLOG_ROOT_PASSWORD_SHA2=${GRAYLOG_ROOT_PASSWORD_SHA2}" >> .env
@@ -98,6 +100,7 @@ jobs:
 
             cd ..
 
+            echo "Identity build and up."
             cd Identity
             echo "ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}" >> .env
             echo "ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}" >> .env
@@ -108,7 +111,7 @@ jobs:
             echo "POSTGRES_USER=${POSTGRES_USER}" >> .env
             echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> .env
             echo "POSTGRES_DB=${POSTGRES_DB}" >> .env
-            echo "PGDATA=${PGDATA}" >> .env
+            echo "PGDATA=${IDENTITY_PGDATA}" >> .env
             echo "PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}" >> .env
             echo "PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}" >> .env
             echo "PGADMIN_CONFIG_SERVER_MODE=${PGADMIN_CONFIG_SERVER_MODE}" >> .env
@@ -117,6 +120,7 @@ jobs:
 
             cd ..
 
+            echo "ScanPerson build and up."
             cd ScanPerson
             echo "IDENTITY_API_DOMEN=${IDENTITY_API_DOMEN}" >> .env
             echo "SCANPERSON_WEBAPI_DOMEN=${SCANPERSON_WEBAPI_DOMEN}" >> .env
@@ -131,7 +135,7 @@ jobs:
             echo "POSTGRES_USER=${POSTGRES_USER}" >> .env
             echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> .env
             echo "POSTGRES_DB=${POSTGRES_DB}" >> .env
-            echo "PGDATA=${PGDATA}" >> .env
+            echo "PGDATA=${SCANPERSON_PGDATA}" >> .env
             echo "PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}" >> .env
             echo "PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}" >> .env
             echo "PGADMIN_CONFIG_SERVER_MODE=${PGADMIN_CONFIG_SERVER_MODE}" >> .env
