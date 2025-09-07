@@ -95,7 +95,7 @@ jobs:
             echo "Create docker-network..."
             docker network create -d bridge scanperson-network
             else
-            echo "Сеть docker-network is exists."
+            echo "Network docker-network is exists."
             fi
 
             # Graylog

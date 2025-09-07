@@ -8,6 +8,8 @@ on:
     branches: [ "dev", "prod" ]
   push:
     branches: [ "dev", "prod" ]
+  workflow_call:
+  workflow_dispatch:
 
 jobs:
   build-and-analyze:
