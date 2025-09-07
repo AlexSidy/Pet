@@ -2,14 +2,14 @@ services:
   scanperson.ui:
     container_name: scanpersonui
     image: scanpersonui
-    restart: no
+    restart: always
     build:
       context: ./ScanPerson.UI
       dockerfile: Dockerfile
     depends_on:
         - scanperson.webapi
     environment:
-        - IDENTITY_API_DOMEN=${SCANPERSON_AUTH_API_DOMEN}
+        - IDENTITY_API_DOMEN=${IDENTITY_API_DOMEN}
         - SCANPERSON_WEBAPI_DOMEN=${SCANPERSON_WEBAPI_DOMEN}
         - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
         - CHOKIDAR_USEPOLLING=true 
@@ -25,7 +25,7 @@ services:
   scanperson.webapi:
     container_name: scanpersonwebapi
     image: scanpersonwebapi
-    restart: no
+    restart: always
     build:
       context: .
       dockerfile: ./ScanPerson.WebApi/Dockerfile
@@ -54,7 +54,7 @@ services:
   scanpersondb:
     container_name: scanpersondb
     image: postgres
-    restart: no
+    restart: always
     environment:
         POSTGRES_USER: ${POSTGRES_USER}
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -75,7 +75,7 @@ services:
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4
-    restart: no
+    restart: always
     depends_on:
       - scanpersondb
     environment:

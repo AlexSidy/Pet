@@ -101,7 +101,7 @@ namespace ScanPerson.Integration.Tests
 			_personInfoServicesAggregator.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Returns(taskResponse!);
 			var token = GenerateJwtToken("testuser");
 
-			HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+			HttpClient!.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
 			// Act
 			try
@@ -131,7 +131,7 @@ namespace ScanPerson.Integration.Tests
 		public async Task ProtectedEndpoint_WithInvalidJwtToken_ReturnsUnauthorized()
 		{
 			// Arrange
-			HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "invalid-token");
+			HttpClient!.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "invalid-token");
 			var data = JsonConvert.SerializeObject(new PersonInfoRequest
 			{
 				PhoneNumber = "123456789"

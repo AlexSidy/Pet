@@ -1,0 +1,11 @@
+services:
+  mongodb:
+    environment:
+
+  elasticsearch:
+
+  graylog:
+    environment:
+      GRAYLOG_PASSWORD_SECRET: ${GRAYLOG_PASSWORD_SECRET}
+      GRAYLOG_ROOT_PASSWORD_SHA2: ${GRAYLOG_ROOT_PASSWORD_SHA2}
+      
