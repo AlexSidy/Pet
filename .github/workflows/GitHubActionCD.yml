@@ -101,48 +101,48 @@ jobs:
             # Graylog
             echo "Graylog build and up."
             cd Graylog
-            GRAYLOG_PASSWORD_SECRET=${GRAYLOG_PASSWORD_SECRET} \
-            GRAYLOG_ROOT_PASSWORD_SHA2=${GRAYLOG_ROOT_PASSWORD_SHA2} \
+            # GRAYLOG_PASSWORD_SECRET=${GRAYLOG_PASSWORD_SECRET} \
+            # GRAYLOG_ROOT_PASSWORD_SHA2=${GRAYLOG_ROOT_PASSWORD_SHA2} \
             docker compose up -d --build
 
             cd ..
 
-            echo "Identity build and up."
-            cd Identity
-            ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT} \
-            ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path} \
-            ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password} \
-            ALLOWED_HOSTS=${IDENTITY_ALLOWED_HOSTS} \
-            JWT_OPTIONS_SECRET_KEY=${JWT_OPTIONS_SECRET_KEY} \
-            ConnectionStrings__IdentityDb=${ConnectionStrings__IdentityDb} \
-            POSTGRES_USER=${POSTGRES_USER} \
-            POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
-            POSTGRES_DB=${IDENTITY_POSTGRES_DB} \
-            PGDATA=${IDENTITY_PGDATA} \
-            PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL} \
-            PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD} \
-            PGADMIN_CONFIG_SERVER_MODE=${PGADMIN_CONFIG_SERVER_MODE} \
-            docker compose up -d --build
+            # echo "Identity build and up."
+            # cd Identity
+            # ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT} \
+            # ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path} \
+            # ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password} \
+            # ALLOWED_HOSTS=${IDENTITY_ALLOWED_HOSTS} \
+            # JWT_OPTIONS_SECRET_KEY=${JWT_OPTIONS_SECRET_KEY} \
+            # ConnectionStrings__IdentityDb=${ConnectionStrings__IdentityDb} \
+            # POSTGRES_USER=${POSTGRES_USER} \
+            # POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
+            # POSTGRES_DB=${IDENTITY_POSTGRES_DB} \
+            # PGDATA=${IDENTITY_PGDATA} \
+            # PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL} \
+            # PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD} \
+            # PGADMIN_CONFIG_SERVER_MODE=${PGADMIN_CONFIG_SERVER_MODE} \
+            # docker compose up -d --build
 
-            cd ..
+            # cd ..
 
-            echo "ScanPerson build and up."
-            cd ScanPerson
-            IDENTITY_API_DOMEN=${IDENTITY_API_DOMEN} \
-            SCANPERSON_WEBAPI_DOMEN=${SCANPERSON_WEBAPI_DOMEN} \
-            ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT} \
-            ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path} \
-            ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password} \
-            ALLOWED_HOSTS=${SCANPERSON_ALLOWED_HOSTS} \
-            JWT_OPTIONS_SECRET_KEY=${JWT_OPTIONS_SECRET_KEY} \
-            HTMLWEBRU_API_KEY=${HTMLWEBRU_API_KEY} \
-            AUTO_MAPPER_LICENSE_KEY=${AUTO_MAPPER_LICENSE_KEY} \
-            ConnectionStrings__ScanPersonDb=${ConnectionStrings__ScanPersonDb} \
-            POSTGRES_USER=${POSTGRES_USER} \
-            POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
-            POSTGRES_DB=${SCANPERSON_POSTGRES_DB} \
-            PGDATA=${PGDATA} \
-            PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL} \
-            PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD} \
-            PGADMIN_CONFIG_SERVER_MODE=${PGADMIN_CONFIG_SERVER_MODE} \
-            docker compose up -d --build
+            # echo "ScanPerson build and up."
+            # cd ScanPerson
+            # IDENTITY_API_DOMEN=${IDENTITY_API_DOMEN} \
+            # SCANPERSON_WEBAPI_DOMEN=${SCANPERSON_WEBAPI_DOMEN} \
+            # ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT} \
+            # ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path} \
+            # ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password} \
+            # ALLOWED_HOSTS=${SCANPERSON_ALLOWED_HOSTS} \
+            # JWT_OPTIONS_SECRET_KEY=${JWT_OPTIONS_SECRET_KEY} \
+            # HTMLWEBRU_API_KEY=${HTMLWEBRU_API_KEY} \
+            # AUTO_MAPPER_LICENSE_KEY=${AUTO_MAPPER_LICENSE_KEY} \
+            # ConnectionStrings__ScanPersonDb=${ConnectionStrings__ScanPersonDb} \
+            # POSTGRES_USER=${POSTGRES_USER} \
+            # POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
+            # POSTGRES_DB=${SCANPERSON_POSTGRES_DB} \
+            # PGDATA=${PGDATA} \
+            # PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL} \
+            # PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD} \
+            # PGADMIN_CONFIG_SERVER_MODE=${PGADMIN_CONFIG_SERVER_MODE} \
+            # docker compose up -d --build
