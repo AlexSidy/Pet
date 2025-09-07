@@ -5,7 +5,7 @@ name: Build Docker Compose and Push to VM
 
 on:
   workflow_run:
-    workflows: ["Full CI and SonarQube Analysis", "CI and SonarQube Analysis"]
+    workflows: ["Full CI and SonarQube Analysis"]
     types: [completed]
   workflow_call:
   # can be triggered manually
