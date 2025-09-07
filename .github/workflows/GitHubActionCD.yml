@@ -1,15 +1,13 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: Build Docker Compose and Push to VM
+name: Build Docker Compose and Push to VM2
 
 on:
-  workflow_run:
-    workflows: ["Full CI and SonarQube Analysis"]
-    types: [completed]
-  workflow_call:
-  # can be triggered manually
-  workflow_dispatch:
+  pull_request:
+    branches: [ "dev", "prod" ]
+  push:
+    branches: [ "dev", "prod" ]
 jobs:
   continuous-delivery:
   # add conditional only merged pull requests to prod
