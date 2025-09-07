@@ -41,6 +41,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "."
           target: "/Repositories/Pet"
+          tar_dereference: true
+          rm: true
 
       # Deploy to VM and build containers
       - name: Deploy to VM and build containers
