@@ -8,6 +8,9 @@ on:
     branches: [ "dev", "prod" ]
   push:
     branches: [ "dev", "prod" ]
+  workflow_call:
+  # can be triggered manually
+  workflow_dispatch:
 jobs:
   continuous-delivery:
   # add conditional only merged pull requests to prod
@@ -23,83 +26,18 @@ jobs:
         run: echo github.event.workflow_run.head_branch - ${{ github.event.workflow_run.head_branch }}
       - name: Print a github.event_name 
         run: echo github.event_name - ${{ github.event_name }}
+  
       - name: Checkout to the branch
         uses: actions/checkout@v4
-
-      # Validate required secrets
-      - name: Validate required secrets
-        env:
-            #Common
-            ASPNETCORE_ENVIRONMENT: ${{ vars.ASPNETCORE_ENVIRONMENT }}
-            ASPNETCORE_Kestrel__Certificates__Default__Path: ${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PATH }}
-            ASPNETCORE_Kestrel__Certificates__Default__Password: ${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD }}
-            JWT_OPTIONS_SECRET_KEY: ${{ secrets.JWT_OPTIONS_SECRET_KEY }}
-            POSTGRES_USER: ${{ vars.POSTGRES_USER }}
-            POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-            PGDATA: ${{ vars.PGDATA }}
-            PGADMIN_DEFAULT_EMAIL: ${{ secrets.PGADMIN_DEFAULT_EMAIL }}
-            PGADMIN_DEFAULT_PASSWORD: ${{ secrets.PGADMIN_DEFAULT_PASSWORD }}
-            PGADMIN_CONFIG_SERVER_MODE: ${{ vars.PGADMIN_CONFIG_SERVER_MODE }}
-
-            # Graylog solution
-            GRAYLOG_PASSWORD_SECRET: ${{ secrets.GRAYLOG_PASSWORD_SECRET }}
-            GRAYLOG_ROOT_PASSWORD_SHA2: ${{ secrets.GRAYLOG_ROOT_PASSWORD_SHA2 }}
-
-            # ScanPerson solution
-            SCANPERSON_ALLOWED_HOSTS: ${{ vars.SCANPERSON_ALLOWED_HOSTS }}
-            ConnectionStrings__ScanPersonDb: ${{ secrets.CONNECTIONSTRINGS__SCANPERSONDB }}
-            SCANPERSON_POSTGRES_DB: ${{ vars.SCANPERSON_POSTGRES_DB }}
-            IDENTITY_API_DOMEN: ${{ vars.IDENTITY_API_DOMEN }}
-            SCANPERSON_WEBAPI_DOMEN: ${{ vars.SCANPERSON_WEBAPI_DOMEN }}
-            HTMLWEBRU_API_KEY: ${{ secrets.HTMLWEBRU_API_KEY }}
-            AUTO_MAPPER_LICENSE_KEY: ${{ secrets.AUTO_MAPPER_LICENSE_KEY }}
-
-            # Identity solution
-            IDENTITY_ALLOWED_HOSTS: ${{ vars.IDENTITY_ALLOWED_HOSTS }}
-            ConnectionStrings__IdentityDb: ${{ secrets.CONNECTIONSTRINGS__SCANPERSONDB }}
-            IDENTITY_POSTGRES_DB: ${{ vars.IDENTITY_POSTGRES_DB }}
-        run: |
-          echo "Validating environment variables..."
-          REQUIRED_ENV=(
-            ASPNETCORE_ENVIRONMENT
-            ASPNETCORE_Kestrel__Certificates__Default__Path
-            ASPNETCORE_Kestrel__Certificates__Default__Password
-            JWT_OPTIONS_SECRET_KEY
-            POSTGRES_USER
-            POSTGRES_PASSWORD
-            PGDATA
-            PGADMIN_DEFAULT_EMAIL
-            PGADMIN_DEFAULT_PASSWORD
-            PGADMIN_CONFIG_SERVER_MODE
-            GRAYLOG_PASSWORD_SECRET
-            GRAYLOG_ROOT_PASSWORD_SHA2
-            SCANPERSON_ALLOWED_HOSTS
-            ConnectionStrings__ScanPersonDb
-            SCANPERSON_POSTGRES_DB
-            IDENTITY_API_DOMEN
-            SCANPERSON_WEBAPI_DOMEN
-            HTMLWEBRU_API_KEY
-            AUTO_MAPPER_LICENSE_KEY
-            IDENTITY_ALLOWED_HOSTS
-            ConnectionStrings__IdentityDb
-            IDENTITY_POSTGRES_DB
-          )
-
-          for env_name in "${REQUIRED_ENV[@]}"; do
-            if [[ -z "${!env_name}" ]]; then
-              echo "Error: Secret $env_name is not set. Aborting."
-              exit 1
-            fi
-          done
 
       # Add step for clean directory in task #50
 
       # Copy files to VM
       - name: Copy files to VM
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@v1.0.0
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "."
           target: "/Repositories/Pet"
