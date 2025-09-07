@@ -123,7 +123,6 @@ jobs:
             PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD} \
             PGADMIN_CONFIG_SERVER_MODE=${PGADMIN_CONFIG_SERVER_MODE} \
             docker compose up -d --build
-            rm .env
 
             cd ..
 
@@ -147,4 +146,3 @@ jobs:
             PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD} \
             PGADMIN_CONFIG_SERVER_MODE=${PGADMIN_CONFIG_SERVER_MODE} \
             docker compose up -d --build
-            rm .env
