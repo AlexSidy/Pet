@@ -101,8 +101,8 @@ jobs:
             # Graylog
             echo "Graylog build and up."
             cd Graylog
-            # GRAYLOG_PASSWORD_SECRET=${GRAYLOG_PASSWORD_SECRET} \
-            # GRAYLOG_ROOT_PASSWORD_SHA2=${GRAYLOG_ROOT_PASSWORD_SHA2} \
+            GRAYLOG_PASSWORD_SECRET=${{ env.GRAYLOG_PASSWORD_SECRET }} \
+            GRAYLOG_ROOT_PASSWORD_SHA2=${{ env.GRAYLOG_ROOT_PASSWORD_SHA2 }} \
             docker compose up -d --build
 
             cd ..
