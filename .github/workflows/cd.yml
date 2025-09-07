@@ -1,0 +1,16 @@
+name: Simple Message Action
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  print-message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print a greeting message
+        run: echo "Привет! Этот action запущен для ветки dev."
