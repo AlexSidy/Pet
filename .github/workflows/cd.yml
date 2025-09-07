@@ -34,7 +34,7 @@ jobs:
             ASPNETCORE_Kestrel__Certificates__Default__Password: ${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD }}
             JWT_OPTIONS_SECRET_KEY: ${{ secrets.JWT_OPTIONS_SECRET_KEY }}
             POSTGRES_USER: ${{ vars.POSTGRES_USER }}
-            POSTGRES_PASSWORD: ${{ vars.POSTGRES_PASSWORD }}
+            POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
             PGDATA: ${{ vars.PGDATA }}
             PGADMIN_DEFAULT_EMAIL: ${{ secrets.PGADMIN_DEFAULT_EMAIL }}
             PGADMIN_DEFAULT_PASSWORD: ${{ secrets.PGADMIN_DEFAULT_PASSWORD }}
@@ -46,7 +46,7 @@ jobs:
 
             # ScanPerson solution
             SCANPERSON_ALLOWED_HOSTS: ${{ vars.SCANPERSON_ALLOWED_HOSTS }}
-            ConnectionStrings__ScanPersonDb: ${{ vars.CONNECTIONSTRINGS__SCANPERSONDB }}
+            ConnectionStrings__ScanPersonDb: ${{ secrets.CONNECTIONSTRINGS__SCANPERSONDB }}
             SCANPERSON_POSTGRES_DB: ${{ vars.SCANPERSON_POSTGRES_DB }}
             IDENTITY_API_DOMEN: ${{ vars.IDENTITY_API_DOMEN }}
             SCANPERSON_WEBAPI_DOMEN: ${{ vars.SCANPERSON_WEBAPI_DOMEN }}
@@ -55,7 +55,7 @@ jobs:
 
             # Identity solution
             IDENTITY_ALLOWED_HOSTS: ${{ vars.IDENTITY_ALLOWED_HOSTS }}
-            ConnectionStrings__IdentityDb: ${{ vars.CONNECTIONSTRINGS__SCANPERSONDB }}
+            ConnectionStrings__IdentityDb: ${{ secrets.CONNECTIONSTRINGS__SCANPERSONDB }}
             IDENTITY_POSTGRES_DB: ${{ vars.IDENTITY_POSTGRES_DB }}
         run: |
     
@@ -121,7 +121,7 @@ jobs:
             ASPNETCORE_Kestrel__Certificates__Default__Password: ${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD }}
             JWT_OPTIONS_SECRET_KEY: ${{ secrets.JWT_OPTIONS_SECRET_KEY }}
             POSTGRES_USER: ${{ vars.POSTGRES_USER }}
-            POSTGRES_PASSWORD: ${{ vars.POSTGRES_PASSWORD }}
+            POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
             PGDATA: ${{ vars.PGDATA }}
             PGADMIN_DEFAULT_EMAIL: ${{ secrets.PGADMIN_DEFAULT_EMAIL }}
             PGADMIN_DEFAULT_PASSWORD: ${{ secrets.PGADMIN_DEFAULT_PASSWORD }}
@@ -133,7 +133,7 @@ jobs:
 
             # ScanPerson solution
             SCANPERSON_ALLOWED_HOSTS: ${{ vars.SCANPERSON_ALLOWED_HOSTS }}
-            ConnectionStrings__ScanPersonDb: ${{ vars.CONNECTIONSTRINGS__SCANPERSONDB }}
+            ConnectionStrings__ScanPersonDb: ${{ secrets.CONNECTIONSTRINGS__SCANPERSONDB }}
             SCANPERSON_POSTGRES_DB: ${{ vars.SCANPERSON_POSTGRES_DB }}
             IDENTITY_API_DOMEN: ${{ vars.IDENTITY_API_DOMEN }}
             SCANPERSON_WEBAPI_DOMEN: ${{ vars.SCANPERSON_WEBAPI_DOMEN }}
@@ -142,7 +142,7 @@ jobs:
 
             # Identity solution
             IDENTITY_ALLOWED_HOSTS: ${{ vars.IDENTITY_ALLOWED_HOSTS }}
-            ConnectionStrings__IdentityDb: ${{ vars.CONNECTIONSTRINGS__SCANPERSONDB }}
+            ConnectionStrings__IdentityDb: ${{ secrets.CONNECTIONSTRINGS__IDENTITYDB }}
             IDENTITY_POSTGRES_DB: ${{ vars.IDENTITY_POSTGRES_DB }}
           script: |
             # Add step for clone repository for first deploy in task #50
