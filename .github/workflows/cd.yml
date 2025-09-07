@@ -110,7 +110,7 @@ jobs:
       # Deploy to VM and build containers
       - name: Deploy to VM and build containers
         uses: appleboy/ssh-action@v1.2.2
-                env:
+        env:
           #Common
           ASPNETCORE_ENVIRONMENT: ${{ vars.ASPNETCORE_ENVIRONMENT }}
           ASPNETCORE_Kestrel__Certificates__Default__Path: ${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PATH }}
@@ -144,60 +144,60 @@ jobs:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            # Add step for clone repository for first deploy in task #50
-            
-            # Navigate to the project directory on the VM
-            cd Repositories/Pet
-            
-            # Rebuild and restart the Docker Compose services for all solutions.
-            # The --build flag forces Docker Compose to rebuild the images locally.
+        script: |
+          # Add step for clone repository for first deploy in task #50
+          
+          # Navigate to the project directory on the VM
+          cd Repositories/Pet
+          
+          # Rebuild and restart the Docker Compose services for all solutions.
+          # The --build flag forces Docker Compose to rebuild the images locally.
 
-            # Graylog
-            cd Graylog
-            echo "GRAYLOG_PASSWORD_SECRET=${GRAYLOG_PASSWORD_SECRET}" >> .env
-            echo "GRAYLOG_ROOT_PASSWORD_SHA2=${GRAYLOG_ROOT_PASSWORD_SHA2}" >> .env
-            docker compose up -d --build
-            rm .env
+          # Graylog
+          cd Graylog
+          echo "GRAYLOG_PASSWORD_SECRET=${GRAYLOG_PASSWORD_SECRET}" >> .env
+          echo "GRAYLOG_ROOT_PASSWORD_SHA2=${GRAYLOG_ROOT_PASSWORD_SHA2}" >> .env
+          docker compose up -d --build
+          rm .env
 
-            cd ..
+          cd ..
 
-            cd Identity
-            echo "ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}" >> .env
-            echo "ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}" >> .env
-            echo "ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}" >> .env
-            echo "ALLOWED_HOSTS=${ALLOWED_HOSTS}" >> .env
-            echo "JWT_OPTIONS_SECRET_KEY=${JWT_OPTIONS_SECRET_KEY}" >> .env
-            echo "ConnectionStrings__IdentityDb=${ConnectionStrings__IdentityDb}" >> .env
-            echo "POSTGRES_USER=${POSTGRES_USER}" >> .env
-            echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> .env
-            echo "POSTGRES_DB=${POSTGRES_DB}" >> .env
-            echo "PGDATA=${PGDATA}" >> .env
-            echo "PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}" >> .env
-            echo "PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}" >> .env
-            echo "PGADMIN_CONFIG_SERVER_MODE=${PGADMIN_CONFIG_SERVER_MODE}" >> .env
-            docker compose up -d --build
-            rm .env
+          cd Identity
+          echo "ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}" >> .env
+          echo "ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}" >> .env
+          echo "ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}" >> .env
+          echo "ALLOWED_HOSTS=${ALLOWED_HOSTS}" >> .env
+          echo "JWT_OPTIONS_SECRET_KEY=${JWT_OPTIONS_SECRET_KEY}" >> .env
+          echo "ConnectionStrings__IdentityDb=${ConnectionStrings__IdentityDb}" >> .env
+          echo "POSTGRES_USER=${POSTGRES_USER}" >> .env
+          echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> .env
+          echo "POSTGRES_DB=${POSTGRES_DB}" >> .env
+          echo "PGDATA=${PGDATA}" >> .env
+          echo "PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}" >> .env
+          echo "PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}" >> .env
+          echo "PGADMIN_CONFIG_SERVER_MODE=${PGADMIN_CONFIG_SERVER_MODE}" >> .env
+          docker compose up -d --build
+          rm .env
 
-            cd ..
+          cd ..
 
-            cd ScanPerson
-            echo "IDENTITY_API_DOMEN=${IDENTITY_API_DOMEN}" >> .env
-            echo "SCANPERSON_WEBAPI_DOMEN=${SCANPERSON_WEBAPI_DOMEN}" >> .env
-            echo "ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}" >> .env
-            echo "ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}" >> .env
-            echo "ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}" >> .env
-            echo "ALLOWED_HOSTS=${ALLOWED_HOSTS}" >> .env
-            echo "JWT_OPTIONS_SECRET_KEY=${JWT_OPTIONS_SECRET_KEY}" >> .env
-            echo "HTMLWEBRU_API_KEY=${HTMLWEBRU_API_KEY}" >> .env
-            echo "AUTO_MAPPER_LICENSE_KEY=${AUTO_MAPPER_LICENSE_KEY}" >> .env
-            echo "ConnectionStrings__ScanPersonDb=${ConnectionStrings__ScanPersonDb}" >> .env
-            echo "POSTGRES_USER=${POSTGRES_USER}" >> .env
-            echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> .env
-            echo "POSTGRES_DB=${POSTGRES_DB}" >> .env
-            echo "PGDATA=${PGDATA}" >> .env
-            echo "PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}" >> .env
-            echo "PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}" >> .env
-            echo "PGADMIN_CONFIG_SERVER_MODE=${PGADMIN_CONFIG_SERVER_MODE}" >> .env
-            docker compose up -d --build
-            rm .env
+          cd ScanPerson
+          echo "IDENTITY_API_DOMEN=${IDENTITY_API_DOMEN}" >> .env
+          echo "SCANPERSON_WEBAPI_DOMEN=${SCANPERSON_WEBAPI_DOMEN}" >> .env
+          echo "ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}" >> .env
+          echo "ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}" >> .env
+          echo "ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}" >> .env
+          echo "ALLOWED_HOSTS=${ALLOWED_HOSTS}" >> .env
+          echo "JWT_OPTIONS_SECRET_KEY=${JWT_OPTIONS_SECRET_KEY}" >> .env
+          echo "HTMLWEBRU_API_KEY=${HTMLWEBRU_API_KEY}" >> .env
+          echo "AUTO_MAPPER_LICENSE_KEY=${AUTO_MAPPER_LICENSE_KEY}" >> .env
+          echo "ConnectionStrings__ScanPersonDb=${ConnectionStrings__ScanPersonDb}" >> .env
+          echo "POSTGRES_USER=${POSTGRES_USER}" >> .env
+          echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> .env
+          echo "POSTGRES_DB=${POSTGRES_DB}" >> .env
+          echo "PGDATA=${PGDATA}" >> .env
+          echo "PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}" >> .env
+          echo "PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}" >> .env
+          echo "PGADMIN_CONFIG_SERVER_MODE=${PGADMIN_CONFIG_SERVER_MODE}" >> .env
+          docker compose up -d --build
+          rm .env
