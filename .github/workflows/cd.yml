@@ -1,16 +1,193 @@
-name: Simple Message Action
+name: Build Docker Compose and Push to VM
 
 on:
-  push:
-    branches:
-      - dev
-  pull_request:
-    branches:
-      - dev
-
+  workflow_run:
+    workflows: ["Full CI and SonarQube Analysis"]
+    types: [completed]
+  workflow_call:
+  # can be triggered manually
+  workflow_dispatch:
 jobs:
-  print-message:
+  cd:
+  # add conditional only merged pull requests to prod
+    if: |
+      ${{ (github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.head_branch == 'dev') ||
+        github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Print a greeting message
-        run: echo "Привет! Этот action запущен для ветки dev."
+      - name: Checkout to the branch
+        uses: actions/checkout@v4
+
+      # Validate required secrets
+      - name: Validate required secrets
+        env:
+            #Common
+            ASPNETCORE_ENVIRONMENT: ${{ vars.ASPNETCORE_ENVIRONMENT }}
+            ASPNETCORE_Kestrel__Certificates__Default__Path: ${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PATH }}
+            ASPNETCORE_Kestrel__Certificates__Default__Password: ${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD }}
+            JWT_OPTIONS_SECRET_KEY: ${{ secrets.JWT_OPTIONS_SECRET_KEY }}
+            POSTGRES_USER: ${{ vars.POSTGRES_USER }}
+            POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+            PGDATA: ${{ vars.PGDATA }}
+            PGADMIN_DEFAULT_EMAIL: ${{ secrets.PGADMIN_DEFAULT_EMAIL }}
+            PGADMIN_DEFAULT_PASSWORD: ${{ secrets.PGADMIN_DEFAULT_PASSWORD }}
+            PGADMIN_CONFIG_SERVER_MODE: ${{ vars.PGADMIN_CONFIG_SERVER_MODE }}
+
+            # Graylog solution
+            GRAYLOG_PASSWORD_SECRET: ${{ secrets.GRAYLOG_PASSWORD_SECRET }}
+            GRAYLOG_ROOT_PASSWORD_SHA2: ${{ secrets.GRAYLOG_ROOT_PASSWORD_SHA2 }}
+
+            # ScanPerson solution
+            SCANPERSON_ALLOWED_HOSTS: ${{ vars.SCANPERSON_ALLOWED_HOSTS }}
+            ConnectionStrings__ScanPersonDb: ${{ secrets.CONNECTIONSTRINGS__SCANPERSONDB }}
+            SCANPERSON_POSTGRES_DB: ${{ vars.SCANPERSON_POSTGRES_DB }}
+            IDENTITY_API_DOMEN: ${{ vars.IDENTITY_API_DOMEN }}
+            SCANPERSON_WEBAPI_DOMEN: ${{ vars.SCANPERSON_WEBAPI_DOMEN }}
+            HTMLWEBRU_API_KEY: ${{ secrets.HTMLWEBRU_API_KEY }}
+            AUTO_MAPPER_LICENSE_KEY: ${{ secrets.AUTO_MAPPER_LICENSE_KEY }}
+
+            # Identity solution
+            IDENTITY_ALLOWED_HOSTS: ${{ vars.IDENTITY_ALLOWED_HOSTS }}
+            ConnectionStrings__IdentityDb: ${{ secrets.CONNECTIONSTRINGS__SCANPERSONDB }}
+            IDENTITY_POSTGRES_DB: ${{ vars.IDENTITY_POSTGRES_DB }}
+        run: |
+          echo "Validating environment variables..."
+          REQUIRED_ENV=(
+            ASPNETCORE_ENVIRONMENT
+            ASPNETCORE_Kestrel__Certificates__Default__Path
+            ASPNETCORE_Kestrel__Certificates__Default__Password
+            JWT_OPTIONS_SECRET_KEY
+            POSTGRES_USER
+            POSTGRES_PASSWORD
+            PGDATA
+            PGADMIN_DEFAULT_EMAIL
+            PGADMIN_DEFAULT_PASSWORD
+            PGADMIN_CONFIG_SERVER_MODE
+            GRAYLOG_PASSWORD_SECRET
+            GRAYLOG_ROOT_PASSWORD_SHA2
+            SCANPERSON_ALLOWED_HOSTS
+            ConnectionStrings__ScanPersonDb
+            SCANPERSON_POSTGRES_DB
+            IDENTITY_API_DOMEN
+            SCANPERSON_WEBAPI_DOMEN
+            HTMLWEBRU_API_KEY
+            AUTO_MAPPER_LICENSE_KEY
+            IDENTITY_ALLOWED_HOSTS
+            ConnectionStrings__IdentityDb
+            IDENTITY_POSTGRES_DB
+          )
+
+          for env_name in "${REQUIRED_ENV[@]}"; do
+            if [[ -z "${!env_name}" ]]; then
+              echo "Error: Secret $env_name is not set. Aborting."
+              exit 1
+            fi
+          done
+
+      # Add step for clean directory in task #50
+
+      # Copy files to VM
+      - name: Copy files to VM
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "."
+          target: "/Repositories/Pet"
+
+      # Deploy to VM and build containers
+      - name: Deploy to VM and build containers
+        uses: appleboy/ssh-action@v1.2.2
+        env:
+          #Common
+          ASPNETCORE_ENVIRONMENT: ${{ vars.ASPNETCORE_ENVIRONMENT }}
+          ASPNETCORE_Kestrel__Certificates__Default__Path: ${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PATH }}
+          ASPNETCORE_Kestrel__Certificates__Default__Password: ${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD }}
+          JWT_OPTIONS_SECRET_KEY: ${{ secrets.JWT_OPTIONS_SECRET_KEY }}
+          POSTGRES_USER: ${{ vars.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          PGDATA: ${{ vars.PGDATA }}
+          PGADMIN_DEFAULT_EMAIL: ${{ secrets.PGADMIN_DEFAULT_EMAIL }}
+          PGADMIN_DEFAULT_PASSWORD: ${{ secrets.PGADMIN_DEFAULT_PASSWORD }}
+          PGADMIN_CONFIG_SERVER_MODE: ${{ vars.PGADMIN_CONFIG_SERVER_MODE }}
+
+          # Graylog solution
+          GRAYLOG_PASSWORD_SECRET: ${{ secrets.GRAYLOG_PASSWORD_SECRET }}
+          GRAYLOG_ROOT_PASSWORD_SHA2: ${{ secrets.GRAYLOG_ROOT_PASSWORD_SHA2 }}
+
+          # ScanPerson solution
+          SCANPERSON_ALLOWED_HOSTS: ${{ vars.SCANPERSON_ALLOWED_HOSTS }}
+          ConnectionStrings__ScanPersonDb: ${{ secrets.CONNECTIONSTRINGS__SCANPERSONDB }}
+          SCANPERSON_POSTGRES_DB: ${{ vars.SCANPERSON_POSTGRES_DB }}
+          IDENTITY_API_DOMEN: ${{ vars.IDENTITY_API_DOMEN }}
+          SCANPERSON_WEBAPI_DOMEN: ${{ vars.SCANPERSON_WEBAPI_DOMEN }}
+          HTMLWEBRU_API_KEY: ${{ secrets.HTMLWEBRU_API_KEY }}
+          AUTO_MAPPER_LICENSE_KEY: ${{ secrets.AUTO_MAPPER_LICENSE_KEY }}
+
+          # Identity solution
+          IDENTITY_ALLOWED_HOSTS: ${{ vars.IDENTITY_ALLOWED_HOSTS }}
+          ConnectionStrings__IdentityDb: ${{ secrets.CONNECTIONSTRINGS__IDENTITYDB }}
+          IDENTITY_POSTGRES_DB: ${{ vars.IDENTITY_POSTGRES_DB }}
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Add step for clone repository for first deploy in task #50
+            
+            # Navigate to the project directory on the VM
+            cd Repositories/Pet
+            
+            # Rebuild and restart the Docker Compose services for all solutions.
+            # The --build flag forces Docker Compose to rebuild the images locally.
+
+            # Graylog
+            cd Graylog
+            echo "GRAYLOG_PASSWORD_SECRET=${GRAYLOG_PASSWORD_SECRET}" >> .env
+            echo "GRAYLOG_ROOT_PASSWORD_SHA2=${GRAYLOG_ROOT_PASSWORD_SHA2}" >> .env
+            docker compose up -d --build
+            rm .env
+
+            cd ..
+
+            cd Identity
+            echo "ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}" >> .env
+            echo "ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}" >> .env
+            echo "ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}" >> .env
+            echo "ALLOWED_HOSTS=${ALLOWED_HOSTS}" >> .env
+            echo "JWT_OPTIONS_SECRET_KEY=${JWT_OPTIONS_SECRET_KEY}" >> .env
+            echo "ConnectionStrings__IdentityDb=${ConnectionStrings__IdentityDb}" >> .env
+            echo "POSTGRES_USER=${POSTGRES_USER}" >> .env
+            echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> .env
+            echo "POSTGRES_DB=${POSTGRES_DB}" >> .env
+            echo "PGDATA=${PGDATA}" >> .env
+            echo "PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}" >> .env
+            echo "PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}" >> .env
+            echo "PGADMIN_CONFIG_SERVER_MODE=${PGADMIN_CONFIG_SERVER_MODE}" >> .env
+            docker compose up -d --build
+            rm .env
+
+            cd ..
+
+            cd ScanPerson
+            echo "IDENTITY_API_DOMEN=${IDENTITY_API_DOMEN}" >> .env
+            echo "SCANPERSON_WEBAPI_DOMEN=${SCANPERSON_WEBAPI_DOMEN}" >> .env
+            echo "ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}" >> .env
+            echo "ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}" >> .env
+            echo "ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}" >> .env
+            echo "ALLOWED_HOSTS=${ALLOWED_HOSTS}" >> .env
+            echo "JWT_OPTIONS_SECRET_KEY=${JWT_OPTIONS_SECRET_KEY}" >> .env
+            echo "HTMLWEBRU_API_KEY=${HTMLWEBRU_API_KEY}" >> .env
+            echo "AUTO_MAPPER_LICENSE_KEY=${AUTO_MAPPER_LICENSE_KEY}" >> .env
+            echo "ConnectionStrings__ScanPersonDb=${ConnectionStrings__ScanPersonDb}" >> .env
+            echo "POSTGRES_USER=${POSTGRES_USER}" >> .env
+            echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> .env
+            echo "POSTGRES_DB=${POSTGRES_DB}" >> .env
+            echo "PGDATA=${PGDATA}" >> .env
+            echo "PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}" >> .env
+            echo "PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}" >> .env
+            echo "PGADMIN_CONFIG_SERVER_MODE=${PGADMIN_CONFIG_SERVER_MODE}" >> .env
+            docker compose up -d --build
+            rm .env
