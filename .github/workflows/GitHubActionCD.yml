@@ -33,7 +33,7 @@ jobs:
       # Add step for clean directory in task #50
 
       # Prepare before Deploy to VM and build containers
-      - name: Deploy to VM and build containers
+      - name: Prepare before deploy to VM and build containers
         uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.VM_HOST }}
@@ -122,7 +122,7 @@ jobs:
             cd Identity
             ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
             ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}" \
-            ASPNETCORE_Kestrel__Certificates__Default__Password="${{ env.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD }}" \
+            ASPNETCORE_Kestrel__Certificates__Default__Password="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}" \
             JWT_OPTIONS_SECRET_KEY="${{ env.JWT_OPTIONS_SECRET_KEY }}" \
             POSTGRES_USER="${{ env.POSTGRES_USER }}" \
             POSTGRES_PASSWORD="${{ env.POSTGRES_PASSWORD }}" \
@@ -142,8 +142,8 @@ jobs:
             IDENTITY_API_DOMEN="${{ env.IDENTITY_API_DOMEN }}" \
             SCANPERSON_WEBAPI_DOMEN="${{ env.SCANPERSON_WEBAPI_DOMEN }}" \
             ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
-            ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PATH }}" \
-            ASPNETCORE_Kestrel__Certificates__Default__Password="${{ env.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD }}" \
+            ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}" \
+            ASPNETCORE_Kestrel__Certificates__Default__Password="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}" \
             JWT_OPTIONS_SECRET_KEY="${{ env.JWT_OPTIONS_SECRET_KEY }}" \
             POSTGRES_USER="${{ env.POSTGRES_USER }}" \
             POSTGRES_PASSWORD="${{ env.POSTGRES_PASSWORD }}" \

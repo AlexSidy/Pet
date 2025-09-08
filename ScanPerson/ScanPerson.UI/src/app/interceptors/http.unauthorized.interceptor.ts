@@ -17,8 +17,7 @@ export class HttpUnauthorizedInterceptor implements HttpInterceptor {
                 return next.handle(request);
             }
 
-            const error = err.message || err.statusText;
-            return throwError(error);
+            return throwError(err);
         }))
     }
 }
