@@ -109,6 +109,9 @@ jobs:
             echo "Network docker-network is exists."
             fi
 
+            dotnet dev-certs https -ep ScanPerson\ScanPerson.WebApi\${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
+            dotnet dev-certs https -ep Identity\Identity.Api\${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
+
             # Graylog
             echo "Graylog build and up."
             cd Graylog
