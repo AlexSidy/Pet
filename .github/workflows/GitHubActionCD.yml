@@ -115,6 +115,7 @@ jobs:
             # Graylog
             echo "Graylog build and up."
             cd Graylog
+            docker compose down --rmi all -v
             GRAYLOG_PASSWORD_SECRET="${{ env.GRAYLOG_PASSWORD_SECRET }}" \
             GRAYLOG_ROOT_PASSWORD_SHA2="${{ env.GRAYLOG_ROOT_PASSWORD_SHA2 }}" \
             docker compose up -d --build
@@ -123,6 +124,7 @@ jobs:
 
             echo "Identity build and up."
             cd Identity
+            docker compose down --rmi all -v
             ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
             ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}" \
             ASPNETCORE_Kestrel__Certificates__Default__Password="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}" \
@@ -142,6 +144,7 @@ jobs:
 
             # echo "ScanPerson build and up."
             cd ScanPerson
+            docker compose down --rmi all -v
             IDENTITY_API_DOMEN="${{ env.IDENTITY_API_DOMEN }}" \
             SCANPERSON_WEBAPI_DOMEN="${{ env.SCANPERSON_WEBAPI_DOMEN }}" \
             ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
