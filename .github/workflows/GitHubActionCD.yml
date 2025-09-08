@@ -32,6 +32,16 @@ jobs:
 
       # Add step for clean directory in task #50
 
+      # Prepare before Deploy to VM and build containers
+      - name: Deploy to VM and build containers
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo chown -R alexsi:alexsi Repositories
+
       # Copy files to VM
       - name: Copy files to VM
         uses: appleboy/scp-action@v1.0.0
