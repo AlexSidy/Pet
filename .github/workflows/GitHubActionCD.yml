@@ -141,20 +141,9 @@ jobs:
             cd Repositories/Pet
 
             echo "Generating development certificates..."
-            mkdir -p /home/${{ env.VM_USER }}/Repositories/Pet/ScanPerson/ScanPerson.WebApi/https
-            mkdir -p /home/${{ env.VM_USER }}/Repositories/Pet/Identity/Identity.Api/https
-            dotnet dev-certs https -ep /home/${{ env.VM_USER }}/Repositories/Pet/ScanPerson/ScanPerson.WebApi/${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
-            dotnet dev-certs https -ep /home/${{ env.VM_USER }}/Repositories/Pet/Identity/Identity.Api/${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
+            mkdir -p /home/${{ env.VM_USER }}/https
+            dotnet dev-certs https -ep /home/${{ env.VM_USER }}/Repositories/Pet/ScanPerson/ScanPerson.WebApi${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
             sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories
-            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories/Pet
-            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories/Pet/Identity
-            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories/Pet/Identity/Identity.Api
-            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories/Pet/Identity/Identity.Api/https
-            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories/Pet/Identity/Identity.Api/https/cert.pfx
-            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories/Pet/ScanPerson
-            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories/Pet/ScanPerson/ScanPerson.WebApi
-            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories/Pet/ScanPerson/ScanPerson.WebApi/https
-            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories/Pet/ScanPerson/ScanPerson.WebApi/https/cert.pfx
             
             # Rebuild and restart the Docker Compose services for all solutions.
             # The --build flag forces Docker Compose to rebuild the images locally.

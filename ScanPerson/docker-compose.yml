@@ -44,12 +44,12 @@ services:
         - AUTO_MAPPER_LICENSE_KEY=${AUTO_MAPPER_LICENSE_KEY}
         - ConnectionStrings__ScanPersonDb=${ConnectionStrings__ScanPersonDb}
         - APP_UID=${APP_UID}
-        - HOST_MAIN_PATH=${HOST_MAIN_PATH}
+        - HOST_HTTPS_PATH=${HOST_HTTPS_PATH}
     ports:
         - 8080:8080 # HTTP
         - 8081:8081 # HTTPS
     volumes:
-        - ${HOST_MAIN_PATH}/ScanPerson/ScanPerson.WebApi/${ASPNETCORE_Kestrel__Certificates__Default__Path}:${ASPNETCORE_Kestrel__Certificates__Default__Path}
+        - ${HOST_HTTPS_PATH}:${ASPNETCORE_Kestrel__Certificates__Default__Path}
     networks:
         - scanperson-network
 

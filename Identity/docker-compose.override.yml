@@ -10,7 +10,7 @@ services:
         - JWT_OPTIONS_SECRET_KEY=${JWT_OPTIONS_SECRET_KEY}
         - ConnectionStrings__IdentityDb=${ConnectionStrings__IdentityDb}
         - APP_UID=${APP_UID}
-        - HOST_MAIN_PATH=${HOST_MAIN_PATH}
+        - HOST_HTTPS_PATH=${HOST_HTTPS_PATH}
 
   identitydb:
     environment:

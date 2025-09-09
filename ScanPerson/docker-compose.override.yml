@@ -19,7 +19,7 @@ services:
         - AUTO_MAPPER_LICENSE_KEY=${AUTO_MAPPER_LICENSE_KEY}
         - ConnectionStrings__ScanPersonDb=${ConnectionStrings__ScanPersonDb}
         - APP_UID=${APP_UID}
-        - HOST_MAIN_PATH=${HOST_MAIN_PATH}
+        - HOST_HTTPS_PATH=${HOST_HTTPS_PATH}
 
   scanpersondb:
     environment:
