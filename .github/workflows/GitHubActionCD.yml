@@ -35,12 +35,17 @@ jobs:
       # Prepare before Deploy to VM and build containers
       - name: Prepare before deploy to VM and build containers
         uses: appleboy/ssh-action@v1.2.2
+        env:
+          #Common
+          VM_HOST: ${{ secrets.VM_HOST }}
+          VM_USER: ${{ secrets.VM_USER }}
+          IS_REMOVE_IMAGE: false
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Check and stop running containers
+            echo "Check and stop running containers (short alternative docker stop $(docker ps -qa) || true)"
             if [ -n "$(docker ps -qa)" ]; then
               echo "Stopping running containers..."
               docker stop $(docker ps -qa)
@@ -48,7 +53,7 @@ jobs:
               echo "No running containers to stop."
             fi
 
-            # Check and remove stopped containers
+            echo "Check and remove stopped containers (short alternative docker rm $(docker ps -qa) || true)"
             if [ -n "$(docker ps -a -q)" ]; then
               echo "Removing stopped containers..."
               docker rm $(docker ps -a -q)
@@ -56,22 +61,27 @@ jobs:
               echo "No stopped containers to remove."
             fi
 
-            # Check and remove dangling images (optional, but good for cleanup)
-            # if [ -n "$(docker images -f dangling=true -q)" ]; then
-            #   echo "Removing dangling images..."
-            #   docker image prune -f
-            # fi
+            echo "Check and remove dangling images (optional, but good for cleanup)"
+            if [ ${{ env.IS_REMOVE_IMAGE }} && -n "$(docker images -f dangling=true -q)" ]; then
+              echo "Removing dangling images..."
+              docker image prune -f
+            fi
 
-            # Ensure network exists or create it
+            echo "Ensure network exists or create it"
             if ! docker network ls | grep -q 'scanperson-network'; then
-              echo "Creating docker network: scanperson-network..."
-              docker network create -d bridge scanperson-network
+            echo "Create docker network - scanperson-network."
+            docker network create -d bridge scanperson-network
             else
-              echo "Network 'scanperson-network' already exists."
+            echo "Network 'scanperson-network' is exists."
             fi
 
             echo "Change permission for Repositories folder."
-            sudo chown -R alexsi:alexsi Repositories
+            if [ ! -d "/home/${{ env.VM_USER }}/Repositories/Pet" ]; then
+              echo "Creating Pet directory..."
+              mkdir -p /home/${{ env.VM_USER }}/Repositories/Pet
+            fi
+            echo "Directory structure prepared."
+            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories
 
       # Copy files to VM
       - name: Copy files to VM
@@ -128,8 +138,8 @@ jobs:
             cd Repositories/Pet
 
             echo "Generating development certificates..."
-            dotnet dev-certs https -ep ScanPerson\ScanPerson.WebApi\${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
-            dotnet dev-certs https -ep Identity\Identity.Api\${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
+            dotnet dev-certs https -ep ScanPerson/ScanPerson.WebApi/${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
+            dotnet dev-certs https -ep Identity/Identity.Api/${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
             sudo chown -R alexsi:alexsi Repositories
             
             # Rebuild and restart the Docker Compose services for all solutions.
