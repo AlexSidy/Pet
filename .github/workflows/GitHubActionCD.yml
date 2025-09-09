@@ -99,6 +99,7 @@ jobs:
         uses: appleboy/ssh-action@v1.2.2
         env:
           #Common
+          VM_USER: ${{ secrets.VM_USER }}
           ASPNETCORE_ENVIRONMENT: ${{ vars.ASPNETCORE_ENVIRONMENT }}
           ASPNETCORE_Kestrel__Certificates__Default__Path: ${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PATH }}
           ASPNETCORE_Kestrel__Certificates__Default__Password: ${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PASSWORD }}
@@ -140,7 +141,7 @@ jobs:
             echo "Generating development certificates..."
             dotnet dev-certs https -ep ScanPerson/ScanPerson.WebApi/${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
             dotnet dev-certs https -ep Identity/Identity.Api/${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
-            sudo chown -R alexsi:alexsi Repositories
+            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories
             
             # Rebuild and restart the Docker Compose services for all solutions.
             # The --build flag forces Docker Compose to rebuild the images locally.
@@ -148,9 +149,9 @@ jobs:
             # Graylog
             echo "Graylog build and up."
             cd Graylog
-            echo "down Graylog"
-            docker compose down --rmi all -v
-            echo "up Graylog"
+
+            echo "Check my enviroments - ASPNETCORE_ENVIRONMENT = ${{ env.ASPNETCORE_ENVIRONMENT }}"
+            echo "Check my enviroments - IDENTITY_ALLOWED_HOSTS = ${{ env.IDENTITY_ALLOWED_HOSTS }}"
 
             GRAYLOG_PASSWORD_SECRET="${{ env.GRAYLOG_PASSWORD_SECRET }}" \
             GRAYLOG_ROOT_PASSWORD_SHA2="${{ env.GRAYLOG_ROOT_PASSWORD_SHA2 }}" \
@@ -160,12 +161,6 @@ jobs:
 
             echo "Identity build and up."
             cd Identity
-            echo "down Identity"
-            docker compose down --rmi all -v
-            echo "up Identity"
-
-            echo "Check my enviroments - ASPNETCORE_ENVIRONMENT = ${{ env.ASPNETCORE_ENVIRONMENT }}"
-            echo "Check my enviroments - IDENTITY_ALLOWED_HOSTS = ${{ env.IDENTITY_ALLOWED_HOSTS }}"
 
             ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
             ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}" \
@@ -184,11 +179,8 @@ jobs:
 
             cd ..
 
-            # echo "ScanPerson build and up."
+            echo "ScanPerson build and up."
             cd ScanPerson
-            echo "down ScanPerson"
-            docker compose down --rmi all -v
-            echo "up ScanPerson"
 
             IDENTITY_API_DOMEN="${{ env.IDENTITY_API_DOMEN }}" \
             SCANPERSON_WEBAPI_DOMEN="${{ env.SCANPERSON_WEBAPI_DOMEN }}" \
