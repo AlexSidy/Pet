@@ -131,6 +131,9 @@ jobs:
             docker compose down --rmi all -v
             echo "up Identity"
 
+            echo "Check my enviroments - ASPNETCORE_ENVIRONMENT = ${{ env.ASPNETCORE_ENVIRONMENT }}"
+            echo "Check my enviroments - IDENTITY_ALLOWED_HOSTS = ${{ env.IDENTITY_ALLOWED_HOSTS }}"
+
             ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
             ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}" \
             ASPNETCORE_Kestrel__Certificates__Default__Password="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}" \
