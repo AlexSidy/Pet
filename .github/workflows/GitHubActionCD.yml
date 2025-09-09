@@ -142,6 +142,15 @@ jobs:
             dotnet dev-certs https -ep ScanPerson/ScanPerson.WebApi/${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
             dotnet dev-certs https -ep Identity/Identity.Api/${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
             sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories
+            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories/Pet
+            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories/Pet/Identity
+            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories/Pet/Identity/Identity.Api
+            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories/Pet/Identity/Identity.Api/https
+            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories/Pet/Identity/Identity.Api/https/cert.pfx
+            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories/Pet/ScanPerson
+            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories/Pet/ScanPerson/ScanPerson.WebApi
+            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories/Pet/ScanPerson/ScanPerson.WebApi/https
+            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories/Pet/ScanPerson/ScanPerson.WebApi/https/cert.pfx
             
             # Rebuild and restart the Docker Compose services for all solutions.
             # The --build flag forces Docker Compose to rebuild the images locally.
@@ -149,9 +158,6 @@ jobs:
             # Graylog
             echo "Graylog build and up."
             cd Graylog
-
-            echo "Check my enviroments - ASPNETCORE_ENVIRONMENT = ${{ env.ASPNETCORE_ENVIRONMENT }}"
-            echo "Check my enviroments - IDENTITY_ALLOWED_HOSTS = ${{ env.IDENTITY_ALLOWED_HOSTS }}"
 
             GRAYLOG_PASSWORD_SECRET="${{ env.GRAYLOG_PASSWORD_SECRET }}" \
             GRAYLOG_ROOT_PASSWORD_SHA2="${{ env.GRAYLOG_ROOT_PASSWORD_SHA2 }}" \
@@ -200,3 +206,8 @@ jobs:
             AUTO_MAPPER_LICENSE_KEY="${{ env.AUTO_MAPPER_LICENSE_KEY }}" \
             PGDATA="${{ env.SCANPERSON_PGDATA }}" \
             docker compose up -d --build
+
+            ls -l /home/${{ env.VM_USER }}/Repositories/Pet/Identity/Identity.Api/https/cert.pfx
+            ls -l /home/${{ env.VM_USER }}/Repositories/Pet/ScanPerson/ScanPerson.WebApi/https/cert.pfx
+            echo "$(ls -l /home/${{ env.VM_USER }}/Repositories/Pet/ScanPerson/ScanPerson.WebApi/https/cert.pfx)"
+            echo "$(ls -l /home/${{ env.VM_USER }}/Repositories/Pet/Identity/Identity.Api/https/cert.pfx)"
