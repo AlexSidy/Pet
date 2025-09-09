@@ -41,7 +41,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Change permission for Repositories folder."
-            sudo chown -R alexsi:alexsi Repositories
+            docker stop $(docker ps -qa)
+            docker rm $(docker ps -qa)
             sudo chown -R alexsi:alexsi /home/alexsi/Repositories/Pet/
 
       # Copy files to VM
