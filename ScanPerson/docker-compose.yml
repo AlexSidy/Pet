@@ -43,11 +43,13 @@ services:
         - HTMLWEBRU_API_KEY=${HTMLWEBRU_API_KEY}
         - AUTO_MAPPER_LICENSE_KEY=${AUTO_MAPPER_LICENSE_KEY}
         - ConnectionStrings__ScanPersonDb=${ConnectionStrings__ScanPersonDb}
+        - APP_UID=${APP_UID}
+        - HOST_MAIN_PATH=${HOST_MAIN_PATH}
     ports:
         - 8080:8080 # HTTP
         - 8081:8081 # HTTPS
     volumes:
-        - ./ScanPerson.WebApi/https/cert.pfx:/https/cert.pfx
+        - ${HOST_MAIN_PATH}/ScanPerson/ScanPerson.WebApi/${ASPNETCORE_Kestrel__Certificates__Default__Path}:${ASPNETCORE_Kestrel__Certificates__Default__Path}
     networks:
         - scanperson-network
 

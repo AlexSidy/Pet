@@ -109,6 +109,8 @@ jobs:
           PGADMIN_DEFAULT_EMAIL: ${{ secrets.PGADMIN_DEFAULT_EMAIL }}
           PGADMIN_DEFAULT_PASSWORD: ${{ secrets.PGADMIN_DEFAULT_PASSWORD }}
           PGADMIN_CONFIG_SERVER_MODE: ${{ vars.PGADMIN_CONFIG_SERVER_MODE }}
+          APP_UID: ${{ secrets.VM_USER }}:${{ secrets.VM_USER }}
+          HOST_MAIN_PATH: ${{ vars.HOST_MAIN_PATH }}
 
           # Graylog solution
           GRAYLOG_PASSWORD_SECRET: ${{ secrets.GRAYLOG_PASSWORD_SECRET }}
@@ -183,6 +185,8 @@ jobs:
             ConnectionStrings__IdentityDb="${{ env.ConnectionStrings__IdentityDb }}" \
             POSTGRES_DB="${{ env.IDENTITY_POSTGRES_DB }}" \
             PGDATA="${{ env.IDENTITY_PGDATA }}" \
+            APP_UID="${{ env.APP_UID }}" \
+            HOST_MAIN_PATH="${{ env.HOST_MAIN_PATH }}" \
             docker compose up -d --build
 
             cd ..
@@ -207,6 +211,8 @@ jobs:
             HTMLWEBRU_API_KEY="${{ env.HTMLWEBRU_API_KEY }}" \
             AUTO_MAPPER_LICENSE_KEY="${{ env.AUTO_MAPPER_LICENSE_KEY }}" \
             PGDATA="${{ env.SCANPERSON_PGDATA }}" \
+            APP_UID="${{ env.APP_UID }}" \
+            HOST_MAIN_PATH="${{ env.HOST_MAIN_PATH }}" \
             docker compose up -d --build
 
             ls -l /home/${{ env.VM_USER }}/Repositories/Pet/Identity/Identity.Api/https/cert.pfx
