@@ -13,6 +13,7 @@ services:
         - SCANPERSON_WEBAPI_DOMEN=${SCANPERSON_WEBAPI_DOMEN}
         - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
         - CHOKIDAR_USEPOLLING=true 
+        - APP_UID=${APP_UID}
     ports:
         - 4200:4200
     volumes:

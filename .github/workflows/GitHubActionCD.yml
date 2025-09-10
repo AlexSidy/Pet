@@ -75,6 +75,8 @@ jobs:
             else
               echo "No dangling images to remove."
             fi
+            echo "docker image prune -f:"
+            docker image prune -f
 
             echo "Check and remove unused Docker volumes."
             if [ ${{ env.IS_REMOVE_VOLUMES }} && -n "$(docker volume ls -qf dangling=true)" ]; then
@@ -83,6 +85,8 @@ jobs:
             else
               echo "No dangling volumes to remove."
             fi
+            echo "docker volume prune -f:"
+            docker volume prune -f
 
             echo "Ensure network exists or create it"
             if ! docker network ls | grep -q 'scanperson-network'; then
@@ -157,6 +161,7 @@ jobs:
             # Navigate to the project directory on the VM
             cd Repositories/Pet
 
+            echo "USER ${{ env.APP_UID }}"
             echo "Generating development certificates..."
             mkdir -p /home/${{ env.VM_USER }}/https
             dotnet dev-certs https -ep /home/${{ env.VM_USER }}${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"

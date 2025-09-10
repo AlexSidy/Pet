@@ -24,6 +24,7 @@ COPY . .
 #RUN chmod +x set-enviroments.sh
 #RUN ./set-enviroments.sh
 
+USER $APP_UID
 # Запускаем приложение
 CMD ["ng", "serve", "--host", "0.0.0.0", "--poll", "2000", "--proxy-config", "proxy.conf.json"]
 

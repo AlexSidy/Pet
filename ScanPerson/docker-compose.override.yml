@@ -4,7 +4,8 @@ services:
         - IDENTITY_API_DOMEN=${IDENTITY_API_DOMEN}
         - SCANPERSON_WEBAPI_DOMEN=${SCANPERSON_WEBAPI_DOMEN}
         - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-        - CHOKIDAR_USEPOLLING=true 
+        - CHOKIDAR_USEPOLLING=true
+        - APP_UID=${APP_UID}
       
   scanperson.webapi:
     environment:
