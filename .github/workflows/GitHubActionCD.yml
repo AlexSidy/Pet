@@ -163,9 +163,11 @@ jobs:
 
             echo "USER ${{ env.APP_UID }}"
             echo "Generating development certificates..."
-            mkdir -p /home/${{ env.VM_USER }}/https
-            dotnet dev-certs https -ep /home/${{ env.VM_USER }}${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
-            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}
+            # mkdir -p /home/${{ env.VM_USER }}/https
+            # dotnet dev-certs https --trust -ep /home/${{ env.VM_USER }}${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
+            # dotnet dev-certs https --trust -ep ${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
+            # sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}
+            # sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} ${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}
             sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories
             
             # Rebuild and restart the Docker Compose services for all solutions.
@@ -229,3 +231,28 @@ jobs:
             APP_UID="${{ env.APP_UID }}" \
             HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
             docker compose up -d --build
+
+            cd ..
+            echo "Setting correct permissions for certificate file inside container..."
+
+            # ”казываем пользовател€, от которого запускаетс€ .NET приложение в контейнере (часто root, но может быть и другим)
+            # ≈сли ты не знаешь точно, попробуй указать UID 0 (root) или UID твоего пользовател€ на хосте, если он совпадает с UID внутри контейнера.
+            # ¬ данном случае, € предполагаю, что .NET приложение запускаетс€ от пользовател€ с UID 1000 (часто это первый пользователь на Linux)
+            # “ы можешь проверить UID пользовател€ внутри контейнера, запустив `docker exec <container_id> id`
+            
+            # ѕример дл€ identity.api
+            docker exec identityapi chown root:root /https/cert.pfx
+            docker exec identityapi chmod a+rwxrwxrwx "/https/cert.pfx" -R
+
+            # ѕример дл€ scanperson.webapi
+            # ѕроверь им€ контейнера, которое у теб€ в docker-compose.yml
+            docker exec scanpersonwebapi chown root:root /https/cert.pfx
+            docker exec scanpersonwebapi chmod a+rwxrwxrwx "/https/cert.pfx" -R
+            
+            # «атем перезапускаем сервисы, чтобы они смогли прочитать измененный файл
+            cd Identity
+            docker compose up -d --force-recreate
+            cd ../ScanPerson
+            docker compose up -d --force-recreate
+            
+            # ... (остальные команды)
