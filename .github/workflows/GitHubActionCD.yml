@@ -62,14 +62,14 @@ jobs:
               echo "No stopped containers to remove."
             fi
 
-            echo "Check and remove dangling images (optional, but good for cleanup)"
-            if [ ${{ env.IS_REMOVE_IMAGE }} && -n "$(docker images -f dangling=true -q)" ]; then
+            echo "if ${{ env.IS_REMOVE_IMAGE }} = true then check and remove dangling images (optional, but good for cleanup)"
+            if [ ${{ env.IS_REMOVE_IMAGE }} = "true" && -n "$(docker images -f dangling=true -q)" ]; then
               echo "Removing dangling images..."
               docker image prune -f
             fi
 
-            echo "Check and remove unused Docker volumes."
-            if [ ${{ env.IS_REMOVE_VOLUMES }} && -n "$(docker volume ls -qf dangling=true)" ]; then
+            echo "if ${{ env.IS_REMOVE_VOLUMES }} = true then check and remove unused Docker volumes."
+            if [ ${{ env.IS_REMOVE_VOLUMES }} = "true" && -n "$(docker volume ls -qf dangling=true)" ]; then
               echo "Removing dangling volumes..."
               docker volume prune -f
             else
@@ -216,8 +216,3 @@ jobs:
             APP_UID="${{ env.APP_UID }}" \
             HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
             docker compose up -d --build
-
-            ls -l /home/${{ env.VM_USER }}/Repositories/Pet/Identity/Identity.Api/https/cert.pfx
-            ls -l /home/${{ env.VM_USER }}/Repositories/Pet/ScanPerson/ScanPerson.WebApi/https/cert.pfx
-            echo "$(ls -l /home/${{ env.VM_USER }}/Repositories/Pet/ScanPerson/ScanPerson.WebApi/https/cert.pfx)"
-            echo "$(ls -l /home/${{ env.VM_USER }}/Repositories/Pet/Identity/Identity.Api/https/cert.pfx)"
