@@ -117,7 +117,6 @@ jobs:
           PGADMIN_DEFAULT_EMAIL: ${{ secrets.PGADMIN_DEFAULT_EMAIL }}
           PGADMIN_DEFAULT_PASSWORD: ${{ secrets.PGADMIN_DEFAULT_PASSWORD }}
           PGADMIN_CONFIG_SERVER_MODE: ${{ vars.PGADMIN_CONFIG_SERVER_MODE }}
-          APP_UID: ${{ secrets.VM_USER }}:${{ secrets.VM_USER }}
           HOST_HTTPS_PATH: ${{ vars.HOST_HTTPS_PATH }}
 
           # Graylog solution
@@ -148,7 +147,6 @@ jobs:
             # Navigate to the project directory on the VM
             cd Repositories/Pet
 
-            echo "USER ${{ env.APP_UID }}"
             echo "Generating development certificates..."
             mkdir -p /home/${{ env.VM_USER }}/https
             dotnet dev-certs https --trust -ep /home/${{ env.VM_USER }}${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
@@ -184,7 +182,6 @@ jobs:
             ConnectionStrings__IdentityDb="${{ env.ConnectionStrings__IdentityDb }}" \
             POSTGRES_DB="${{ env.IDENTITY_POSTGRES_DB }}" \
             PGDATA="${{ env.IDENTITY_PGDATA }}" \
-            APP_UID="${{ env.APP_UID }}" \
             HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
             docker compose up -d --build
 
@@ -209,12 +206,11 @@ jobs:
             HTMLWEBRU_API_KEY="${{ env.HTMLWEBRU_API_KEY }}" \
             AUTO_MAPPER_LICENSE_KEY="${{ env.AUTO_MAPPER_LICENSE_KEY }}" \
             PGDATA="${{ env.SCANPERSON_PGDATA }}" \
-            APP_UID="${{ env.APP_UID }}" \
             HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
             docker compose up -d --build
 
             cd ..
-            echo "Setting correct permissions for certificate file inside container..."
+            echo "Setting correct permissions for certificate file inside container."
 
             docker exec identityapi sudo chown root:root ${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -R
             docker exec identityapi sudo chmod a+rwxrwxrwx ${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -R
@@ -224,6 +220,7 @@ jobs:
             
             # restart containers with new cert permissions
             cd Identity
+            echo "Restart Identity containers."
             ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
             ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}" \
             ASPNETCORE_Kestrel__Certificates__Default__Password="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}" \
@@ -237,11 +234,11 @@ jobs:
             ConnectionStrings__IdentityDb="${{ env.ConnectionStrings__IdentityDb }}" \
             POSTGRES_DB="${{ env.IDENTITY_POSTGRES_DB }}" \
             PGDATA="${{ env.IDENTITY_PGDATA }}" \
-            APP_UID="${{ env.APP_UID }}" \
             HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
             docker compose restart
 
             cd ../ScanPerson
+            echo "Restart ScanPerson containers."
             IDENTITY_API_DOMEN="${{ env.IDENTITY_API_DOMEN }}" \
             SCANPERSON_WEBAPI_DOMEN="${{ env.SCANPERSON_WEBAPI_DOMEN }}" \
             ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
@@ -259,6 +256,5 @@ jobs:
             HTMLWEBRU_API_KEY="${{ env.HTMLWEBRU_API_KEY }}" \
             AUTO_MAPPER_LICENSE_KEY="${{ env.AUTO_MAPPER_LICENSE_KEY }}" \
             PGDATA="${{ env.SCANPERSON_PGDATA }}" \
-            APP_UID="${{ env.APP_UID }}" \
             HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
             docker compose restart

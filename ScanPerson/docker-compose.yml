@@ -13,7 +13,6 @@ services:
         - SCANPERSON_WEBAPI_DOMEN=${SCANPERSON_WEBAPI_DOMEN}
         - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
         - CHOKIDAR_USEPOLLING=true 
-        - APP_UID=${APP_UID}
     ports:
         - 4200:4200
     volumes:
@@ -44,7 +43,6 @@ services:
         - HTMLWEBRU_API_KEY=${HTMLWEBRU_API_KEY}
         - AUTO_MAPPER_LICENSE_KEY=${AUTO_MAPPER_LICENSE_KEY}
         - ConnectionStrings__ScanPersonDb=${ConnectionStrings__ScanPersonDb}
-        - APP_UID=${APP_UID}
         - HOST_HTTPS_PATH=${HOST_HTTPS_PATH}
     ports:
         - 8080:8080 # HTTP
@@ -66,7 +64,7 @@ services:
     ports:
         - 5433:5432
     volumes:
-        - postgres:/var/lib/postgresql/data
+        - postgres:${PGDATA}
     networks:
         - scanperson-network
     healthcheck:

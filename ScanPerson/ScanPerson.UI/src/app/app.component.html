@@ -5,7 +5,7 @@
     <div class="container-fluid">
       <div class="navbar-nav d-flex justify-content-between w-100">
         <a class="nav-link" [routerLink]="['']" routerLinkActive='active' [routerLinkActiveOptions]="{ exact: true }">Home</a>
-        <a class="nav-link" [routerLink]="['/person']" routerLinkActive='active' [routerLinkActiveOptions]="{ exact: true }" >Person</a>
+        <a class="nav-link" [routerLink]="['/person']" routerLinkActive='active' [routerLinkActiveOptions]="{ exact: true }" *ngIf="isLoggedIn">Person</a>
         <a class="nav-link ms-auto" [routerLink]="['/auth']" routerLinkActive='active' [routerLinkActiveOptions]="{ exact: true }" *ngIf="!isLoggedIn">Login/Register</a>
         <a class="nav-link ms-auto" [routerLink]="['']" routerLinkActive='active' [routerLinkActiveOptions]="{ exact: true }" (click)='logout()' *ngIf="isLoggedIn">Logout</a>
       </div>

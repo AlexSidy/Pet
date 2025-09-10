@@ -18,7 +18,6 @@ services:
       - ALLOWED_HOSTS=${ALLOWED_HOSTS}
       - JWT_OPTIONS_SECRET_KEY=${JWT_OPTIONS_SECRET_KEY}
       - ConnectionStrings__IdentityDb=${ConnectionStrings__IdentityDb}
-      - APP_UID=${APP_UID}
       - HOST_HTTPS_PATH=${HOST_HTTPS_PATH}
     ports:
       - 8090:8090
@@ -40,7 +39,7 @@ services:
     ports:
       - 5434:5432
     volumes:
-      - identitydb:/data/identitydb
+      - identitydb:${PGDATA}
     networks:
       - scanperson-network
     healthcheck:
