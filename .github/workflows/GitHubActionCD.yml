@@ -241,13 +241,13 @@ jobs:
             # Ты можешь проверить UID пользователя внутри контейнера, запустив `docker exec <container_id> id`
             
             # Пример для identity.api
-            docker exec identityapi chown root:root /https/cert.pfx
-            docker exec identityapi chmod a+rwxrwxrwx "/https/cert.pfx" -R
+            docker exec identityapi sudo chown root:root /https/cert.pfx
+            docker exec identityapi sudo chmod a+rwxrwxrwx "/https/cert.pfx" -R
 
             # Пример для scanperson.webapi
             # Проверь имя контейнера, которое у тебя в docker-compose.yml
-            docker exec scanpersonwebapi chown root:root /https/cert.pfx
-            docker exec scanpersonwebapi chmod a+rwxrwxrwx "/https/cert.pfx" -R
+            docker exec scanpersonwebapi sudo chown root:root /https/cert.pfx
+            docker exec scanpersonwebapi sudo chmod a+rwxrwxrwx "/https/cert.pfx" -R
             
             # Затем перезапускаем сервисы, чтобы они смогли прочитать измененный файл
             cd Identity
