@@ -39,7 +39,8 @@ jobs:
           #Common
           VM_HOST: ${{ secrets.VM_HOST }}
           VM_USER: ${{ secrets.VM_USER }}
-          IS_REMOVE_IMAGE: false
+          IS_REMOVE_IMAGE: true
+          IS_REMOVE_VOLUMES: true
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
@@ -65,6 +66,14 @@ jobs:
             if [ ${{ env.IS_REMOVE_IMAGE }} && -n "$(docker images -f dangling=true -q)" ]; then
               echo "Removing dangling images..."
               docker image prune -f
+            fi
+
+            echo "Check and remove unused Docker volumes."
+            if [ ${{ env.IS_REMOVE_VOLUMES }} && -n "$(docker volume ls -qf dangling=true)" ]; then
+              echo "Removing dangling volumes..."
+              docker volume prune -f
+            else
+              echo "No dangling volumes to remove."
             fi
 
             echo "Ensure network exists or create it"
@@ -142,7 +151,8 @@ jobs:
 
             echo "Generating development certificates..."
             mkdir -p /home/${{ env.VM_USER }}/https
-            dotnet dev-certs https -ep /home/${{ env.VM_USER }}/Repositories/Pet/ScanPerson/ScanPerson.WebApi${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
+            dotnet dev-certs https -ep /home/${{ env.VM_USER }}${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
+            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}
             sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories
             
             # Rebuild and restart the Docker Compose services for all solutions.
@@ -151,15 +161,17 @@ jobs:
             # Graylog
             echo "Graylog build and up."
             cd Graylog
+            docker compose down --rmi all -v
 
             GRAYLOG_PASSWORD_SECRET="${{ env.GRAYLOG_PASSWORD_SECRET }}" \
             GRAYLOG_ROOT_PASSWORD_SHA2="${{ env.GRAYLOG_ROOT_PASSWORD_SHA2 }}" \
             docker compose up -d --build
-
+            
             cd ..
 
             echo "Identity build and up."
             cd Identity
+            docker compose down --rmi all -v
 
             ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
             ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}" \
@@ -175,13 +187,14 @@ jobs:
             POSTGRES_DB="${{ env.IDENTITY_POSTGRES_DB }}" \
             PGDATA="${{ env.IDENTITY_PGDATA }}" \
             APP_UID="${{ env.APP_UID }}" \
-            HOST_MAIN_PATH="${{ env.HOST_MAIN_PATH }}" \
+            HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
             docker compose up -d --build
 
             cd ..
 
             echo "ScanPerson build and up."
             cd ScanPerson
+            docker compose down --rmi all -v
 
             IDENTITY_API_DOMEN="${{ env.IDENTITY_API_DOMEN }}" \
             SCANPERSON_WEBAPI_DOMEN="${{ env.SCANPERSON_WEBAPI_DOMEN }}" \
@@ -201,7 +214,7 @@ jobs:
             AUTO_MAPPER_LICENSE_KEY="${{ env.AUTO_MAPPER_LICENSE_KEY }}" \
             PGDATA="${{ env.SCANPERSON_PGDATA }}" \
             APP_UID="${{ env.APP_UID }}" \
-            HOST_MAIN_PATH="${{ env.HOST_MAIN_PATH }}" \
+            HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
             docker compose up -d --build
 
             ls -l /home/${{ env.VM_USER }}/Repositories/Pet/Identity/Identity.Api/https/cert.pfx
