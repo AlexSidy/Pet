@@ -7,6 +7,7 @@ on:
   workflow_run:
     workflows: ["Full CI and SonarQube Analysis"]
     types: [completed]
+  workflow_call:
   workflow_dispatch:
 jobs:
   continuous-delivery:
@@ -31,7 +32,7 @@ jobs:
 
       # Prepare before Deploy to VM and build containers
       - name: Prepare before deploy to VM and build containers
-        uses: appleboy/ssh-action@v1.2.2
+        uses: appleboy/ssh-action@3ca8a7c5359ac6ad91aa47f1946ece1c3b025004
         env:
           #Common
           VM_HOST: ${{ secrets.VM_HOST }}
@@ -93,7 +94,7 @@ jobs:
 
       # Copy files to VM
       - name: Copy files to VM
-        uses: appleboy/scp-action@v1.0.0
+        uses: appleboy/scp-action@eb443bd4941c3334ee584c1915fcfa2001e8a86c
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
@@ -104,7 +105,7 @@ jobs:
 
       # Deploy to VM and build containers
       - name: Deploy to VM and build containers
-        uses: appleboy/ssh-action@v1.2.2
+        uses: appleboy/ssh-action@3ca8a7c5359ac6ad91aa47f1946ece1c3b025004
         env:
           #Common
           VM_USER: ${{ secrets.VM_USER }}
