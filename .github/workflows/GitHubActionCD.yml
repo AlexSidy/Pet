@@ -4,20 +4,17 @@
 name: Push to VM, Build and UP Docker Compose
 
 on:
-  pull_request:
-    branches: [ "dev", "prod" ]
-  push:
-    branches: [ "dev", "prod" ]
-  workflow_call:
-  # can be triggered manually
+  workflow_run:
+    workflows: ["Full CI and SonarQube Analysis"]
+    types: [completed]
   workflow_dispatch:
 jobs:
   continuous-delivery:
   # add conditional only merged pull requests to prod
-    # if: |
-    #   ${{ (github.event.workflow_run.conclusion == 'success' &&
-    #     github.event.workflow_run.head_branch == 'dev') ||
-    #     github.event_name == 'workflow_dispatch' }}
+    if: |
+      ${{ true || (github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.head_branch == 'prod') ||
+        github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
       - name: Print a github.event.workflow_run.conclusion 
@@ -39,8 +36,8 @@ jobs:
           #Common
           VM_HOST: ${{ secrets.VM_HOST }}
           VM_USER: ${{ secrets.VM_USER }}
-          IS_REMOVE_IMAGE: true
-          IS_REMOVE_VOLUMES: true
+          IS_REMOVE_IMAGE: false # [absolute] true only for configure deploy
+          IS_REMOVE_VOLUMES: false # [absolute] true only for configure deploy
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
@@ -62,31 +59,21 @@ jobs:
               echo "No stopped containers to remove."
             fi
 
+            echo "Check and remove images (optional, but good for cleanup)"
             if [ ${{ env.IS_REMOVE_IMAGE }} ]; then
-              echo "test ok"
-            else
-              echo "test no ok"
-            fi
-
-            echo "Check and remove dangling images (optional, but good for cleanup)"
-            if [ ${{ env.IS_REMOVE_IMAGE }} && -n "$(docker images -f dangling=true -q)" ]; then
-              echo "Removing dangling images..."
+              echo "Removing images..."
               docker image prune -f
             else
               echo "No dangling images to remove."
             fi
-            echo "docker image prune -f:"
-            docker image prune -f
 
             echo "Check and remove unused Docker volumes."
-            if [ ${{ env.IS_REMOVE_VOLUMES }} && -n "$(docker volume ls -qf dangling=true)" ]; then
-              echo "Removing dangling volumes..."
+            if [ ${{ env.IS_REMOVE_VOLUMES }} ]; then
+              echo "Removing volumes..."
               docker volume prune -f
             else
               echo "No dangling volumes to remove."
             fi
-            echo "docker volume prune -f:"
-            docker volume prune -f
 
             echo "Ensure network exists or create it"
             if ! docker network ls | grep -q 'scanperson-network'; then
@@ -163,11 +150,9 @@ jobs:
 
             echo "USER ${{ env.APP_UID }}"
             echo "Generating development certificates..."
-            # mkdir -p /home/${{ env.VM_USER }}/https
-            # dotnet dev-certs https --trust -ep /home/${{ env.VM_USER }}${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
-            # dotnet dev-certs https --trust -ep ${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
-            # sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}
-            # sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} ${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}
+            mkdir -p /home/${{ env.VM_USER }}/https
+            dotnet dev-certs https --trust -ep /home/${{ env.VM_USER }}${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
+            sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}
             sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories
             
             # Rebuild and restart the Docker Compose services for all solutions.
@@ -182,10 +167,8 @@ jobs:
             GRAYLOG_ROOT_PASSWORD_SHA2="${{ env.GRAYLOG_ROOT_PASSWORD_SHA2 }}" \
             docker compose up -d --build
             
-            cd ..
-
             echo "Identity build and up."
-            cd Identity
+            cd ../Identity
             docker compose down --rmi all -v
 
             ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
@@ -205,10 +188,8 @@ jobs:
             HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
             docker compose up -d --build
 
-            cd ..
-
             echo "ScanPerson build and up."
-            cd ScanPerson
+            cd ../IScanPerson
             docker compose down --rmi all -v
 
             IDENTITY_API_DOMEN="${{ env.IDENTITY_API_DOMEN }}" \
@@ -235,22 +216,49 @@ jobs:
             cd ..
             echo "Setting correct permissions for certificate file inside container..."
 
-            # ”казываем пользовател€, от которого запускаетс€ .NET приложение в контейнере (часто root, но может быть и другим)
-            # ≈сли ты не знаешь точно, попробуй указать UID 0 (root) или UID твоего пользовател€ на хосте, если он совпадает с UID внутри контейнера.
-            # ¬ данном случае, € предполагаю, что .NET приложение запускаетс€ от пользовател€ с UID 1000 (часто это первый пользователь на Linux)
-            # “ы можешь проверить UID пользовател€ внутри контейнера, запустив `docker exec <container_id> id`
-            
-            # ѕример дл€ identity.api
-            docker exec identityapi sudo chown root:root /https/cert.pfx
-            docker exec identityapi sudo chmod a+rwxrwxrwx "/https/cert.pfx" -R
+            docker exec identityapi sudo chown root:root ${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -R
+            docker exec identityapi sudo chmod a+rwxrwxrwx ${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -R
 
-            # ѕример дл€ scanperson.webapi
-            # ѕроверь им€ контейнера, которое у теб€ в docker-compose.yml
-            docker exec scanpersonwebapi sudo chown root:root /https/cert.pfx
-            docker exec scanpersonwebapi sudo chmod a+rwxrwxrwx "/https/cert.pfx" -R
+            docker exec scanpersonwebapi sudo chown root:root ${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -R
+            docker exec scanpersonwebapi sudo chmod a+rwxrwxrwx ${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -R
             
-            # «атем перезапускаем сервисы, чтобы они смогли прочитать измененный файл
+            # restart containers with new cert permissions
             cd Identity
+            ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
+            ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}" \
+            ASPNETCORE_Kestrel__Certificates__Default__Password="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}" \
+            JWT_OPTIONS_SECRET_KEY="${{ env.JWT_OPTIONS_SECRET_KEY }}" \
+            POSTGRES_USER="${{ env.POSTGRES_USER }}" \
+            POSTGRES_PASSWORD="${{ env.POSTGRES_PASSWORD }}" \
+            PGADMIN_DEFAULT_EMAIL="${{ env.PGADMIN_DEFAULT_EMAIL }}" \
+            PGADMIN_DEFAULT_PASSWORD="${{ env.PGADMIN_DEFAULT_PASSWORD }}" \
+            PGADMIN_CONFIG_SERVER_MODE="${{ env.PGADMIN_CONFIG_SERVER_MODE }}" \
+            ALLOWED_HOSTS="${{ env.IDENTITY_ALLOWED_HOSTS }}" \
+            ConnectionStrings__IdentityDb="${{ env.ConnectionStrings__IdentityDb }}" \
+            POSTGRES_DB="${{ env.IDENTITY_POSTGRES_DB }}" \
+            PGDATA="${{ env.IDENTITY_PGDATA }}" \
+            APP_UID="${{ env.APP_UID }}" \
+            HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
             docker compose restart
+
             cd ../ScanPerson
+            IDENTITY_API_DOMEN="${{ env.IDENTITY_API_DOMEN }}" \
+            SCANPERSON_WEBAPI_DOMEN="${{ env.SCANPERSON_WEBAPI_DOMEN }}" \
+            ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
+            ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}" \
+            ASPNETCORE_Kestrel__Certificates__Default__Password="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}" \
+            JWT_OPTIONS_SECRET_KEY="${{ env.JWT_OPTIONS_SECRET_KEY }}" \
+            POSTGRES_USER="${{ env.POSTGRES_USER }}" \
+            POSTGRES_PASSWORD="${{ env.POSTGRES_PASSWORD }}" \
+            PGADMIN_DEFAULT_EMAIL="${{ env.PGADMIN_DEFAULT_EMAIL }}" \
+            PGADMIN_DEFAULT_PASSWORD="${{ env.PGADMIN_DEFAULT_PASSWORD }}" \
+            PGADMIN_CONFIG_SERVER_MODE="${{ env.PGADMIN_CONFIG_SERVER_MODE }}" \
+            ALLOWED_HOSTS="${{ env.SCANPERSON_ALLOWED_HOSTS }}" \
+            ConnectionStrings__ScanPersonDb="${{ env.ConnectionStrings__ScanPersonDb }}" \
+            POSTGRES_DB="${{ env.SCANPERSON_POSTGRES_DB }}" \
+            HTMLWEBRU_API_KEY="${{ env.HTMLWEBRU_API_KEY }}" \
+            AUTO_MAPPER_LICENSE_KEY="${{ env.AUTO_MAPPER_LICENSE_KEY }}" \
+            PGDATA="${{ env.SCANPERSON_PGDATA }}" \
+            APP_UID="${{ env.APP_UID }}" \
+            HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
             docker compose restart
