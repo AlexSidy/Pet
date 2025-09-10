@@ -11,10 +11,10 @@ on:
 jobs:
   continuous-delivery:
   # add conditional only merged pull requests to prod
-    if: |
-      ${{ true || (github.event.workflow_run.conclusion == 'success' &&
-        github.event.workflow_run.head_branch == 'prod') ||
-        github.event_name == 'workflow_dispatch' }}
+    # if: |
+    #   ${{ true || (github.event.workflow_run.conclusion == 'success' &&
+    #     github.event.workflow_run.head_branch == 'prod') ||
+    #     github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
       - name: Print a github.event.workflow_run.conclusion 
