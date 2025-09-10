@@ -251,8 +251,6 @@ jobs:
             
             # «атем перезапускаем сервисы, чтобы они смогли прочитать измененный файл
             cd Identity
-            docker compose up -d --force-recreate
+            docker compose restart
             cd ../ScanPerson
-            docker compose up -d --force-recreate
-            
-            # ... (остальные команды)
+            docker compose restart
