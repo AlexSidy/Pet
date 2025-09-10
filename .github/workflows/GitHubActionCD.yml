@@ -4,9 +4,13 @@
 name: Push to VM, Build and UP Docker Compose
 
 on:
+  pull_request:
+    branches: [ "dev", "prod" ]
+  push:
+    branches: [ "dev", "prod" ]
   workflow_dispatch:
   workflow_run:
-    workflows: [Full CI and SonarQube Analysis]
+    workflows: [ Full CI and SonarQube Analysis ]
     types: 
         - completed
 jobs:
