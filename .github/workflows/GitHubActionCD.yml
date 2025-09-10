@@ -119,7 +119,7 @@ jobs:
           PGADMIN_DEFAULT_PASSWORD: ${{ secrets.PGADMIN_DEFAULT_PASSWORD }}
           PGADMIN_CONFIG_SERVER_MODE: ${{ vars.PGADMIN_CONFIG_SERVER_MODE }}
           APP_UID: ${{ secrets.VM_USER }}:${{ secrets.VM_USER }}
-          HOST_MAIN_PATH: ${{ vars.HOST_MAIN_PATH }}
+          HOST_HTTPS_PATH: ${{ vars.HOST_HTTPS_PATH }}
 
           # Graylog solution
           GRAYLOG_PASSWORD_SECRET: ${{ secrets.GRAYLOG_PASSWORD_SECRET }}
