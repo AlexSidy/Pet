@@ -4,26 +4,27 @@
 name: Push to VM, Build and UP Docker Compose
 
 on:
-  workflow_run:
-    workflows: ["Full CI and SonarQube Analysis"]
-    types: [completed]
-  workflow_call:
   workflow_dispatch:
+  workflow_run:
+    workflows: [Full CI and SonarQube Analysis]
+    types: 
+        - completed
 jobs:
   continuous-delivery:
-  # add conditional only merged pull requests to prod
+    runs-on: ubuntu-latest
+    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # add conditional only merged pull requests to prod
     # if: |
     #   ${{ true || (github.event.workflow_run.conclusion == 'success' &&
     #     github.event.workflow_run.head_branch == 'prod') ||
     #     github.event_name == 'workflow_dispatch' }}
-    runs-on: ubuntu-latest
     steps:
-      - name: Print a github.event.workflow_run.conclusion 
-        run: echo github.event.workflow_run.conclusion - ${{ github.event.workflow_run.conclusion }}
-      - name: Print a github.event.workflow_run.head_branch 
-        run: echo github.event.workflow_run.head_branch - ${{ github.event.workflow_run.head_branch }}
-      - name: Print a github.event_name 
-        run: echo github.event_name - ${{ github.event_name }}
+      # - name: Print a github.event.workflow_run.conclusion 
+      #   run: echo github.event.workflow_run.conclusion - ${{ github.event.workflow_run.conclusion }}
+      # - name: Print a github.event.workflow_run.head_branch 
+      #   run: echo github.event.workflow_run.head_branch - ${{ github.event.workflow_run.head_branch }}
+      # - name: Print a github.event_name 
+      #   run: echo github.event_name - ${{ github.event_name }}
   
       - name: Checkout to the branch
         uses: actions/checkout@v4
