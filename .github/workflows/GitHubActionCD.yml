@@ -39,7 +39,7 @@ jobs:
           #Common
           VM_HOST: ${{ secrets.VM_HOST }}
           VM_USER: ${{ secrets.VM_USER }}
-          IS_REMOVE_IMAGE: true
+          IS_REMOVE_IMAGE: "true"
           IS_REMOVE_VOLUMES: true
         with:
           host: ${{ secrets.VM_HOST }}
@@ -63,7 +63,7 @@ jobs:
             fi
 
             echo "if ${{ env.IS_REMOVE_IMAGE }} = true then check and remove dangling images (optional, but good for cleanup)"
-            if [ "${{ env.IS_REMOVE_IMAGE }}" = "true" && -n "$(docker images -f dangling=true -q)" ]; then
+            if [ ${{ env.IS_REMOVE_IMAGE }} == "true" && -n "$(docker images -f dangling=true -q)" ]; then
               echo "Removing dangling images..."
               docker image prune -f
             else
@@ -71,7 +71,7 @@ jobs:
             fi
 
             echo "if ${{ env.IS_REMOVE_VOLUMES }} = true then check and remove unused Docker volumes."
-            if [ ${{ env.IS_REMOVE_VOLUMES }} == true && -n "$(docker volume ls -qf dangling=true)" ]; then
+            if [ "${{ env.IS_REMOVE_VOLUMES }}"== "true" && -n "$(docker volume ls -qf dangling=true)" ]; then
               echo "Removing dangling volumes..."
               docker volume prune -f
             else
