@@ -39,7 +39,7 @@ services:
     ports:
       - 5434:5432
     volumes:
-      - identitydb:${PGDATA}
+      - identitydb:/data/identitydb
     networks:
       - scanperson-network
     healthcheck:
