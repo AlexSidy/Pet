@@ -157,6 +157,7 @@ jobs:
             mkdir -p /home/${{ env.VM_USER }}/https
             dotnet dev-certs https --trust -ep /home/${{ env.VM_USER }}${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -p "${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}"
             sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}
+            sudo chmod -R a+rwxrwxrwx /home/${{ env.VM_USER }}${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}
             sudo chown -R ${{ env.VM_USER }}:${{ env.VM_USER }} /home/${{ env.VM_USER }}/Repositories
             
             # Rebuild and restart the Docker Compose services for all solutions.
@@ -192,7 +193,7 @@ jobs:
             docker compose up -d --build
 
             echo "ScanPerson build and up."
-            cd ../IScanPerson
+            cd ../ScanPerson
             docker compose down --rmi all -v
 
             IDENTITY_API_DOMEN="${{ env.IDENTITY_API_DOMEN }}" \
@@ -215,52 +216,51 @@ jobs:
             HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
             docker compose up -d --build
 
-            cd ..
-            echo "Setting correct permissions for certificate file inside container."
+            # echo "Setting correct permissions for certificate file inside container."
 
-            docker exec identityapi sudo chown root:root ${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -R
-            docker exec identityapi sudo chmod a+rwxrwxrwx ${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -R
+            # docker exec identityapi sudo chown root:root ${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -R
+            # docker exec identityapi sudo chmod a+rwxrwxrwx ${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -R
 
-            docker exec scanpersonwebapi sudo chown root:root ${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -R
-            docker exec scanpersonwebapi sudo chmod a+rwxrwxrwx ${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -R
+            # docker exec scanpersonwebapi sudo chown root:root ${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -R
+            # docker exec scanpersonwebapi sudo chmod a+rwxrwxrwx ${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }} -R
             
-            # restart containers with new cert permissions
-            cd Identity
-            echo "Restart Identity containers."
-            ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
-            ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}" \
-            ASPNETCORE_Kestrel__Certificates__Default__Password="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}" \
-            JWT_OPTIONS_SECRET_KEY="${{ env.JWT_OPTIONS_SECRET_KEY }}" \
-            POSTGRES_USER="${{ env.POSTGRES_USER }}" \
-            POSTGRES_PASSWORD="${{ env.POSTGRES_PASSWORD }}" \
-            PGADMIN_DEFAULT_EMAIL="${{ env.PGADMIN_DEFAULT_EMAIL }}" \
-            PGADMIN_DEFAULT_PASSWORD="${{ env.PGADMIN_DEFAULT_PASSWORD }}" \
-            PGADMIN_CONFIG_SERVER_MODE="${{ env.PGADMIN_CONFIG_SERVER_MODE }}" \
-            ALLOWED_HOSTS="${{ env.IDENTITY_ALLOWED_HOSTS }}" \
-            ConnectionStrings__IdentityDb="${{ env.ConnectionStrings__IdentityDb }}" \
-            POSTGRES_DB="${{ env.IDENTITY_POSTGRES_DB }}" \
-            PGDATA="${{ env.IDENTITY_PGDATA }}" \
-            HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
-            docker compose restart
+            # # restart containers with new cert permissions
+            # cd ../Identity
+            # echo "Restart Identity containers."
+            # ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
+            # ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}" \
+            # ASPNETCORE_Kestrel__Certificates__Default__Password="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}" \
+            # JWT_OPTIONS_SECRET_KEY="${{ env.JWT_OPTIONS_SECRET_KEY }}" \
+            # POSTGRES_USER="${{ env.POSTGRES_USER }}" \
+            # POSTGRES_PASSWORD="${{ env.POSTGRES_PASSWORD }}" \
+            # PGADMIN_DEFAULT_EMAIL="${{ env.PGADMIN_DEFAULT_EMAIL }}" \
+            # PGADMIN_DEFAULT_PASSWORD="${{ env.PGADMIN_DEFAULT_PASSWORD }}" \
+            # PGADMIN_CONFIG_SERVER_MODE="${{ env.PGADMIN_CONFIG_SERVER_MODE }}" \
+            # ALLOWED_HOSTS="${{ env.IDENTITY_ALLOWED_HOSTS }}" \
+            # ConnectionStrings__IdentityDb="${{ env.ConnectionStrings__IdentityDb }}" \
+            # POSTGRES_DB="${{ env.IDENTITY_POSTGRES_DB }}" \
+            # PGDATA="${{ env.IDENTITY_PGDATA }}" \
+            # HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
+            # docker compose restart
 
-            cd ../ScanPerson
-            echo "Restart ScanPerson containers."
-            IDENTITY_API_DOMEN="${{ env.IDENTITY_API_DOMEN }}" \
-            SCANPERSON_WEBAPI_DOMEN="${{ env.SCANPERSON_WEBAPI_DOMEN }}" \
-            ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
-            ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}" \
-            ASPNETCORE_Kestrel__Certificates__Default__Password="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}" \
-            JWT_OPTIONS_SECRET_KEY="${{ env.JWT_OPTIONS_SECRET_KEY }}" \
-            POSTGRES_USER="${{ env.POSTGRES_USER }}" \
-            POSTGRES_PASSWORD="${{ env.POSTGRES_PASSWORD }}" \
-            PGADMIN_DEFAULT_EMAIL="${{ env.PGADMIN_DEFAULT_EMAIL }}" \
-            PGADMIN_DEFAULT_PASSWORD="${{ env.PGADMIN_DEFAULT_PASSWORD }}" \
-            PGADMIN_CONFIG_SERVER_MODE="${{ env.PGADMIN_CONFIG_SERVER_MODE }}" \
-            ALLOWED_HOSTS="${{ env.SCANPERSON_ALLOWED_HOSTS }}" \
-            ConnectionStrings__ScanPersonDb="${{ env.ConnectionStrings__ScanPersonDb }}" \
-            POSTGRES_DB="${{ env.SCANPERSON_POSTGRES_DB }}" \
-            HTMLWEBRU_API_KEY="${{ env.HTMLWEBRU_API_KEY }}" \
-            AUTO_MAPPER_LICENSE_KEY="${{ env.AUTO_MAPPER_LICENSE_KEY }}" \
-            PGDATA="${{ env.SCANPERSON_PGDATA }}" \
-            HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
-            docker compose restart
+            # cd ../ScanPerson
+            # echo "Restart ScanPerson containers."
+            # IDENTITY_API_DOMEN="${{ env.IDENTITY_API_DOMEN }}" \
+            # SCANPERSON_WEBAPI_DOMEN="${{ env.SCANPERSON_WEBAPI_DOMEN }}" \
+            # ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
+            # ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}" \
+            # ASPNETCORE_Kestrel__Certificates__Default__Password="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}" \
+            # JWT_OPTIONS_SECRET_KEY="${{ env.JWT_OPTIONS_SECRET_KEY }}" \
+            # POSTGRES_USER="${{ env.POSTGRES_USER }}" \
+            # POSTGRES_PASSWORD="${{ env.POSTGRES_PASSWORD }}" \
+            # PGADMIN_DEFAULT_EMAIL="${{ env.PGADMIN_DEFAULT_EMAIL }}" \
+            # PGADMIN_DEFAULT_PASSWORD="${{ env.PGADMIN_DEFAULT_PASSWORD }}" \
+            # PGADMIN_CONFIG_SERVER_MODE="${{ env.PGADMIN_CONFIG_SERVER_MODE }}" \
+            # ALLOWED_HOSTS="${{ env.SCANPERSON_ALLOWED_HOSTS }}" \
+            # ConnectionStrings__ScanPersonDb="${{ env.ConnectionStrings__ScanPersonDb }}" \
+            # POSTGRES_DB="${{ env.SCANPERSON_POSTGRES_DB }}" \
+            # HTMLWEBRU_API_KEY="${{ env.HTMLWEBRU_API_KEY }}" \
+            # AUTO_MAPPER_LICENSE_KEY="${{ env.AUTO_MAPPER_LICENSE_KEY }}" \
+            # PGDATA="${{ env.SCANPERSON_PGDATA }}" \
+            # HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
+            # docker compose restart
