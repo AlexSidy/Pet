@@ -8,7 +8,7 @@ on:
   workflow_run:
     workflows: [ CI github action ]
     types: [completed]
-    branches: [prod]
+    branches: [main]
 
 jobs:
   continuous-delivery:
