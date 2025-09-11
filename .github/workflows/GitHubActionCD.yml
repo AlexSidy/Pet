@@ -4,6 +4,8 @@
 name: CD github action
 
 on:
+  pull_request:
+    branches: [ "dev", "prod" ]
   workflow_dispatch:
   workflow_run:
     workflows: [ CI github action ]
