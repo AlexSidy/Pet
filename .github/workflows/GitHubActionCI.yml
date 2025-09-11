@@ -5,7 +5,10 @@ name: CI github action
 
 on:
   pull_request:
-    branches: [ "dev", "prod" ]
+    branches: [ "dev", "main" ]
+  push:
+    branches: [ "prod" ]
+   
   workflow_call:
   workflow_dispatch:
 
