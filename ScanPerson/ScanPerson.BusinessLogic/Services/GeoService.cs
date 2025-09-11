@@ -13,7 +13,7 @@ using ScanPerson.Models.Responses;
 namespace ScanPerson.BusinessLogic.Services
 {
 	/// <summary>
-	/// Сервис получения информации о местонахождении человека по номеру телефона с сервиса https://htmlweb.ru/geo/telcod_api_example.php
+	/// Service for getting information about a person's location by phone number from the service https://htmlweb.ru/geo/telcod_api_example.php
 	/// </summary>
 	public class GeoService : PersonInfoServiceBase
 	{

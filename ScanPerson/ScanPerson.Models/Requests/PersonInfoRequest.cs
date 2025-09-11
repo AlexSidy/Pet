@@ -1,12 +1,12 @@
 ﻿namespace ScanPerson.Models.Requests
 {
 	/// <summary>
-	/// входные данные для получения информации о человеке.
+	/// Input data for retrieving information about a person.
 	/// </summary>
 	public class PersonInfoRequest
 	{
 		/// <summary>
-		/// Номер телефона.
+		/// The phone number.
 		/// </summary>
 		public string PhoneNumber { get; set; }
 	}

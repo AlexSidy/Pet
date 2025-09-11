@@ -3,32 +3,32 @@
 namespace ScanPerson.Models.Items
 {
 	/// <summary>
-	/// Объект для получения данных с сервиса https://htmlweb.ru/geo/telcod_api_example.php
+	/// Object for receiving data from the service https://htmlweb.ru/geo/telcod_api_example.php
 	/// </summary>
 	public class LocationDeserialized
 	{
 		/// <summary>
-		/// Страна регистрации номера телефона.
+		/// Country of registration of the phone number.
 		/// </summary>
 		public Country Country { get; set; }
 
 		/// <summary>
-		/// Предположительно, текущее положение телефона.
+		/// Presumably the current position of the phone.
 		/// </summary>
 		public Region Region { get; set; }
 
 		/// <summary>
-		/// Округ регистрации номера телефона.
+		/// District of registration of telephone number.
 		/// </summary>
 		public string Okrug { get; set; }
 
 		/// <summary>
-		/// Город  регистрации номера телефона.
+		/// City of registration of the phone number.
 		/// </summary>
 		public Capital Capital { get; set; }
 
 		/// <summary>
-		/// Оператор обслуживания связи.
+		/// Communication service operator.
 		/// </summary>
 		[JsonPropertyName("0")]
 		public Operator Operator { get; set; }
@@ -52,12 +52,12 @@ namespace ScanPerson.Models.Items
 	public class Operator
 	{
 		/// <summary>
-		/// Город оператора обслуживания.
+		/// City of service operator.
 		/// </summary>
 		public string Name { get; set; }
 
 		/// <summary>
-		/// Название оператора.
+		/// Operator name.
 		/// </summary>
 		[JsonPropertyName("oper_brand")]
 		public string OperBrand { get; set; }

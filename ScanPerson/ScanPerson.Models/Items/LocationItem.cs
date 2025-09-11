@@ -1,37 +1,37 @@
 ﻿namespace ScanPerson.Models.Items
 {
 	/// <summary>
-	/// Локационные данные персоны.
+	/// Location data of a person.
 	/// </summary>
 	public class LocationItem
 	{
 		/// <summary>
-		/// Страна регистрации номера телефона.
+		/// The country where the phone number is registered.
 		/// </summary>
 		public string CountryName { get; set; }
 
 		/// <summary>
-		/// Предположительно, текущее положение телефона.
+		/// The presumed current location of the phone.
 		/// </summary>
 		public string CurrentRegion { get; set; }
 
 		/// <summary>
-		/// Округ регистрации номера телефона.
+		/// The district where the phone number is registered.
 		/// </summary>
 		public string RegistrationOkrug { get; set; }
 
 		/// <summary>
-		/// Город  регистрации номера телефона.
+		/// The city where the phone number is registered.
 		/// </summary>
 		public string RegistrationCapital { get; set; }
 
 		/// <summary>
-		/// Оператор обслуживания связи.
+		/// The telecommunications service provider.
 		/// </summary>
 		public string OperatorName { get; set; }
 
 		/// <summary>
-		/// Город оператора обслуживания.
+		/// The city of the service provider.
 		/// </summary>
 		public string OperatorCity { get; set; }
 	}

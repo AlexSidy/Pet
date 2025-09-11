@@ -10,7 +10,7 @@ using ScanPerson.Models.Options;
 namespace ScanPerson.BusinessLogic
 {
 	/// <summary>
-	/// Расширение для добавления сервисов бизнес функциональности.
+	/// Extension for adding business functionality services..
 	/// </summary>
 	public static class BusinessLogicExtensions
 	{

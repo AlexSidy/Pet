@@ -1,11 +1,13 @@
 ﻿namespace Identity.Api.Initializers.Interfaces;
 
-// Интерфейс для первичной инициализации данных в сервисе.
+/// <summary>
+/// Interface for initial data seeding in a service.
+/// </summary>
 internal interface IInitializer
 {
 	/// <summary>
-	/// Метод для запроса данных, их проверки и дальнейшей инициализации в случае необходимости.
+	/// Method for requesting data, validating it, and performing further initialization if necessary.
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>A task that represents the asynchronous initialization operation.</returns>
 	Task SeedAsync();
 }

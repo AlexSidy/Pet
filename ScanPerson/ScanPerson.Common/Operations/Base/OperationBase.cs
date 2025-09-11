@@ -2,6 +2,9 @@
 
 namespace ScanPerson.Common.Operations.Base
 {
+	/// <summary>
+	/// Base class for all operations ScanPerson services.
+	/// </summary>
 	public abstract class OperationBase
 	{
 		private const string ErrorDefault = "An error occurred while performing the operation.";
