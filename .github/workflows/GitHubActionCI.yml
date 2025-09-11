@@ -6,8 +6,6 @@ name: Full CI and SonarQube Analysis
 on:
   pull_request:
     branches: [ "dev", "prod" ]
-  push:
-    branches: [ "dev", "prod" ]
   workflow_call:
   workflow_dispatch:
 
