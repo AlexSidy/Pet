@@ -3,12 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ScanPerson.Integration.Tests.Base
 {
-	[TestClass]
 	public abstract class IntegrationTestsBase
 	{
 		protected const string PersonInfoControllerName = "PersonInfo";
 
-		public TestContext TestContext { get; set; }
+		public required TestContext TestContext { get; set; }
 
 		protected WebApplicationFactory<Program>? Factory { get; set; }
 

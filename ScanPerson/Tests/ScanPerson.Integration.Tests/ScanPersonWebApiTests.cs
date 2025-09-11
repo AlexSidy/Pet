@@ -93,7 +93,7 @@ namespace ScanPerson.Integration.Tests
 			// Act
 			try
 			{
-				var response = await HttpClient.PostAsync(
+				var response = await HttpClient!.PostAsync(
 					$"{Program.WebApi}/{PersonInfoControllerName}/{nameof(PersonInfoController.GetScanPersonInfoAsync)}",
 					content,
 					TestContext.CancellationTokenSource.Token);
@@ -128,7 +128,7 @@ namespace ScanPerson.Integration.Tests
 			// Act
 			try
 			{
-				var response = await HttpClient.PostAsync(
+				var response = await HttpClient!.PostAsync(
 					$"{Program.WebApi}/{PersonInfoControllerName}/{nameof(PersonInfoController.GetScanPersonInfoAsync)}",
 					content,
 					TestContext.CancellationTokenSource.Token);

@@ -1,10 +1,10 @@
 services:
   scanperson.ui:
     environment:
-        - SCANPERSON_AUTH_API_DOMEN=${SCANPERSON_AUTH_API_DOMEN}
+        - IDENTITY_API_DOMEN=${IDENTITY_API_DOMEN}
         - SCANPERSON_WEBAPI_DOMEN=${SCANPERSON_WEBAPI_DOMEN}
         - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-        - CHOKIDAR_USEPOLLING=true 
+        - CHOKIDAR_USEPOLLING=true
       
   scanperson.webapi:
     environment:
@@ -18,6 +18,7 @@ services:
         - HTMLWEBRU_API_KEY=${HTMLWEBRU_API_KEY}
         - AUTO_MAPPER_LICENSE_KEY=${AUTO_MAPPER_LICENSE_KEY}
         - ConnectionStrings__ScanPersonDb=${ConnectionStrings__ScanPersonDb}
+        - HOST_HTTPS_PATH=${HOST_HTTPS_PATH}
 
   scanpersondb:
     environment:

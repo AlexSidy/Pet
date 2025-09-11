@@ -37,7 +37,7 @@ export class PersonComponent {
         }
       },
       error: (e): void => {
-        alert('Failed to register. Please try again later:' + e.error);
+        alert('Failed to load. Please try again later:' + (e.error ?? e.message));
         console.log(e);
       },
       complete: (): void => {

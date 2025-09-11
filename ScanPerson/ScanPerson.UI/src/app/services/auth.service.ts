@@ -35,8 +35,8 @@ export class AuthService {
           }
         },
         error: (e) => {
-          console.log('Registration error:' + e.error);
-          alert('Failed to register. Please try again later:' + e.error);
+          console.log('Registration error:' + (e.error ?? e.message));
+          alert('Failed to register. Please try again later:' + (e.error ?? e.message));
         },
         complete: () => {}
       });
@@ -58,8 +58,8 @@ export class AuthService {
           }
         },
         error: (e) => {
-          console.log('Registration error:' + e.error);
-          alert('Failed to register. Please try again later:' + e.error);
+          console.log('Login error:' + (e.error ?? e.message));
+          alert('Failed to login. Please try again later:' + (e.error ?? e.message));
         },
         complete: () => {}
       });
