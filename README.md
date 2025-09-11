@@ -168,28 +168,29 @@ CD Pipeline (CD github action):
 Перезапуск контейнеров.
 
 Структура проекта 🌐
-.
-├── Graylog/                  # Docker Compose для Graylog
-|   ├── .env
-|   ├── docker-compose.override.yml
-│   └── docker-compose.yml
-├── Identity/                 # Docker Compose для Identity Service
-│   ├── Identity.Api/Dockerfile
-|   ├── .env
-|   ├── docker-compose.override.yml
-│   └── docker-compose.yml
-├── ScanPerson/            
-|   ├── .env
-│   ├── docker-compose.yml
-|   ├── docker-compose.override.yml
-│   ├── /ScanPerson.UI/Dockerfile # Frontend (Angular)
-│   └── /ScanPerson.WebApi/Dockerfile # Backend API (Core Web API)
-├── .github/
-│   └── workflows/  # GitHub Actions
-│       ├── GitHubActionCD.yml  # CI/CD пайплайн
-│       └── GitHubActionCI.yml   # CI с анализом SonarQube
-├── README.md
-└── ... # Другие файлы проекта
+
+    .
+    ├── Graylog/                  # Docker Compose для Graylog
+    |   ├── .env
+    |   ├── docker-compose.override.yml
+    │   └── docker-compose.yml
+    ├── Identity/                 # Docker Compose для Identity Service
+    │   ├── Identity.Api/Dockerfile
+    |   ├── .env
+    |   ├── docker-compose.override.yml
+    │   └── docker-compose.yml
+    ├── ScanPerson/            
+    |   ├── .env
+    │   ├── docker-compose.yml
+    |   ├── docker-compose.override.yml
+    │   ├── /ScanPerson.UI/Dockerfile # Frontend (Angular)
+    │   └── /ScanPerson.WebApi/Dockerfile # Backend API (Core Web API)
+    ├── .github/
+    │   └── workflows/  # GitHub Actions
+    │       ├── GitHubActionCD.yml  # CI/CD пайплайн
+    │       └── GitHubActionCI.yml   # CI с анализом SonarQube
+    ├── README.md
+    └── ... # Другие файлы проекта
 
 ### Расширение функционала 🏗️
 Для расширение функционала обработки и получения дополнительной информации подразумевается добавление нового класса по пути ScanPerson.BusinessLogic\Services, унаследованного от IPersonInfoService, а так же покрытие этого класса тестами (см. пример классов GeoService и GeoServiceTests)
