@@ -11,10 +11,8 @@ on:
 
 jobs:
   continuous-integration:
-
     name: Build, Test, and Analyze
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v4

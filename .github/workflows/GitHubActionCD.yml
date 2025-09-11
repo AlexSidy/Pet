@@ -13,6 +13,7 @@ on:
 
 jobs:
   continuous-delivery:
+    name: Prepare host, push and up dockers
     runs-on: ubuntu-latest
     # if: |
     #   ${{ true || (github.event.workflow_run.conclusion == 'success' &&
