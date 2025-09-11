@@ -1,22 +1,18 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: Push to VM, Build and UP Docker Compose
+name: CD github action
 
 on:
-  pull_request:
-    branches: [ "prod" ]
   workflow_dispatch:
   workflow_run:
-    workflows: [ Full CI and SonarQube Analysis ]
+    workflows: [ CI github action ]
     types: 
         - completed
 
 jobs:
   continuous-delivery:
     runs-on: ubuntu-latest
-    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    # add conditional only merged pull requests to prod
     # if: |
     #   ${{ true || (github.event.workflow_run.conclusion == 'success' &&
     #     github.event.workflow_run.head_branch == 'prod') ||
