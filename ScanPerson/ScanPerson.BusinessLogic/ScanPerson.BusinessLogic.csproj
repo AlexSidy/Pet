@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="15.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="9.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ScanPerson.Common\ScanPerson.Common.csproj" />
     <ProjectReference Include="..\ScanPerson.DAL\ScanPerson.DAL.csproj" />
     <ProjectReference Include="..\ScanPerson.Models\ScanPerson.Models.csproj" />
   </ItemGroup>

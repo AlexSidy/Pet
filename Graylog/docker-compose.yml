@@ -4,7 +4,7 @@ services:
     image: "mongo:4.4.6"
     volumes:
       - "mongodb_data:/data/db"
-    restart: "on-failure"
+    restart: always
     networks:
         - scanperson-network
 
@@ -23,13 +23,13 @@ services:
         soft: -1
     volumes:
       - "es_data:/usr/share/elasticsearch/data"
-    restart: "on-failure"
+    restart: always
     networks:
         - scanperson-network
 
   graylog:
     container_name: graylog
-    image: "${GRAYLOG_IMAGE:-graylog/graylog:4.3}"
+    image: graylog/graylog:4.3
     depends_on:
       elasticsearch:
         condition: "service_started"
@@ -38,8 +38,8 @@ services:
     entrypoint: "/usr/bin/tini -- wait-for-it elasticsearch:9200 --  /docker-entrypoint.sh"
     environment:
       GRAYLOG_NODE_ID_FILE: "/usr/share/graylog/data/config/node-id"
-      GRAYLOG_PASSWORD_SECRET: iamsuperpuperadminsecret
-      GRAYLOG_ROOT_PASSWORD_SHA2: 398EEF3711EDDEB1AB1622F7228C963D5D00BF6F2BB80D6D2F2C16CD102113AB
+      GRAYLOG_PASSWORD_SECRET: ${GRAYLOG_PASSWORD_SECRET}
+      GRAYLOG_ROOT_PASSWORD_SHA2: ${GRAYLOG_ROOT_PASSWORD_SHA2}
       GRAYLOG_HTTP_BIND_ADDRESS: "0.0.0.0:9000"
       GRAYLOG_HTTP_EXTERNAL_URI: "http://localhost:9000/"
       GRAYLOG_ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
@@ -56,14 +56,12 @@ services:
     - "5555:5555/udp"   # RAW TCP
     - "12201:12201/tcp" # GELF TCP
     - "12201:12201/udp" # GELF UDP
-    #- "10000:10000/tcp" # Custom TCP port
-    #- "10000:10000/udp" # Custom UDP port
     - "13301:13301/tcp" # Forwarder data
     - "13302:13302/tcp" # Forwarder config
     volumes:
       - "graylog_data:/usr/share/graylog/data/data"
       - "graylog_journal:/usr/share/graylog/data/journal"
-    restart: "on-failure"
+    restart: always
     networks:
         - scanperson-network
 volumes:

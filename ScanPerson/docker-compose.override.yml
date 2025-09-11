@@ -1,30 +1,24 @@
 services:
   scanperson.ui:
     environment:
-        - SCANPERSON_AUTH_API_DOMEN=${SCANPERSON_AUTH_API_DOMEN}
+        - IDENTITY_API_DOMEN=${IDENTITY_API_DOMEN}
         - SCANPERSON_WEBAPI_DOMEN=${SCANPERSON_WEBAPI_DOMEN}
-        - ASPNETCORE_ENVIRONMENT=Development
-        - CHOKIDAR_USEPOLLING=true 
+        - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+        - CHOKIDAR_USEPOLLING=true
       
   scanperson.webapi:
     environment:
-        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
         - ASPNETCORE_HTTP_PORTS=8080
         - ASPNETCORE_HTTPS_PORTS=8081
         - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}
         - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}
-        - Allowed_Hosts=${Allowed_Hosts}
-        - JwtOptions__SecretKey=${JwtOptions__SecretKey}
-
-  scanperson.auth.api:
-    environment:
-        - ASPNETCORE_ENVIRONMENT=Development
-        - ASPNETCORE_HTTP_PORTS=8090
-        - ASPNETCORE_HTTPS_PORTS=8091
-        - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}
-        - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}
-        - Allowed_Hosts=${Allowed_Hosts}
-        - JwtOptions__SecretKey=${JwtOptions__SecretKey}
+        - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+        - JWT_OPTIONS_SECRET_KEY=${JWT_OPTIONS_SECRET_KEY}
+        - HTMLWEBRU_API_KEY=${HTMLWEBRU_API_KEY}
+        - AUTO_MAPPER_LICENSE_KEY=${AUTO_MAPPER_LICENSE_KEY}
+        - ConnectionStrings__ScanPersonDb=${ConnectionStrings__ScanPersonDb}
+        - HOST_HTTPS_PATH=${HOST_HTTPS_PATH}
 
   scanpersondb:
     environment:

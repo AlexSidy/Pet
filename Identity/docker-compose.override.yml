@@ -1,0 +1,26 @@
+services:
+  identity.api:
+    environment:
+        - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+        - ASPNETCORE_HTTP_PORTS=8090
+        - ASPNETCORE_HTTPS_PORTS=8091
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_Kestrel__Certificates__Default__Path}
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_Kestrel__Certificates__Default__Password}
+        - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+        - JWT_OPTIONS_SECRET_KEY=${JWT_OPTIONS_SECRET_KEY}
+        - ConnectionStrings__IdentityDb=${ConnectionStrings__IdentityDb}
+        - HOST_HTTPS_PATH=${HOST_HTTPS_PATH}
+
+  identitydb:
+    environment:
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        POSTGRES_DB: ${POSTGRES_DB}
+        PGDATA: ${PGDATA}
+
+  identitypgadmin:
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_CONFIG_SERVER_MODE: ${PGADMIN_CONFIG_SERVER_MODE}
+      

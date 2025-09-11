@@ -9,21 +9,21 @@ Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "ScanPerson.UI", "ScanPerson
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{D7EE9B5B-50D8-4005-9624-D38D27E3A423}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.DAL", "Scanperson.DAL\ScanPerson.DAL.csproj", "{D6520A4E-E4ED-4074-8B46-B5D3F05AB48C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.DAL", "ScanPerson.DAL\ScanPerson.DAL.csproj", "{D6520A4E-E4ED-4074-8B46-B5D3F05AB48C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.Models", "ScanPerson.Models\ScanPerson.Models.csproj", "{D78251DE-3C4F-432D-A772-830100891C5B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.BusinessLogic", "ScanPerson.BusinessLogic\ScanPerson.BusinessLogic.csproj", "{F2A0C8BD-A50F-45DE-B9F4-F8563EB24A6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.Auth.Api", "ScanPerson.Auth.Api\ScanPerson.Auth.Api.csproj", "{D54673F9-C2F9-4626-B46E-FA74BC919E6E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.Common", "ScanPerson.Common\ScanPerson.Common.csproj", "{178DACE8-C5EA-439A-A431-F618987788A3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.WebApi.Integration.Tests", "ScanPerson.WebApi.Integration.Tests\ScanPerson.WebApi.Integration.Tests.csproj", "{AE1CE566-2737-46A3-8030-B4D2A7613CDC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.Integration.Tests", "Tests\ScanPerson.Integration.Tests\ScanPerson.Integration.Tests.csproj", "{AE1CE566-2737-46A3-8030-B4D2A7613CDC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.WebApi.Unit.Tests", "ScanPerson.WebApi.Unit.Tests\ScanPerson.WebApi.Unit.Tests.csproj", "{F22DAFCD-9E20-43C0-AE2B-15B652BD9D02}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.Unit.Tests", "Tests\ScanPerson.Unit.Tests\ScanPerson.Unit.Tests.csproj", "{F22DAFCD-9E20-43C0-AE2B-15B652BD9D02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanPerson.Common.Tests", "Tests\ScanPerson.Common.Tests\ScanPerson.Common.Tests.csproj", "{0DF701DE-3F0B-4183-AF70-7F31D8FE5E7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,10 +57,6 @@ Global
 		{F2A0C8BD-A50F-45DE-B9F4-F8563EB24A6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2A0C8BD-A50F-45DE-B9F4-F8563EB24A6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2A0C8BD-A50F-45DE-B9F4-F8563EB24A6D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D54673F9-C2F9-4626-B46E-FA74BC919E6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D54673F9-C2F9-4626-B46E-FA74BC919E6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D54673F9-C2F9-4626-B46E-FA74BC919E6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D54673F9-C2F9-4626-B46E-FA74BC919E6E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{178DACE8-C5EA-439A-A431-F618987788A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{178DACE8-C5EA-439A-A431-F618987788A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{178DACE8-C5EA-439A-A431-F618987788A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -73,6 +69,10 @@ Global
 		{F22DAFCD-9E20-43C0-AE2B-15B652BD9D02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F22DAFCD-9E20-43C0-AE2B-15B652BD9D02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F22DAFCD-9E20-43C0-AE2B-15B652BD9D02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DF701DE-3F0B-4183-AF70-7F31D8FE5E7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DF701DE-3F0B-4183-AF70-7F31D8FE5E7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DF701DE-3F0B-4183-AF70-7F31D8FE5E7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DF701DE-3F0B-4183-AF70-7F31D8FE5E7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -80,6 +80,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{AE1CE566-2737-46A3-8030-B4D2A7613CDC} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{F22DAFCD-9E20-43C0-AE2B-15B652BD9D02} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{0DF701DE-3F0B-4183-AF70-7F31D8FE5E7E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A569EC1C-6DDC-4C14-BB65-7ADB06C8832B}

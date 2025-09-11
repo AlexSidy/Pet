@@ -1,0 +1,77 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: CI github action
+
+on:
+  pull_request:
+    branches: [ "dev", "prod" ]
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  continuous-integration:
+    name: Build, Test, and Analyze
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Needed for SonarQube
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+
+    # --- Steps of SonarQube with CLI ---
+
+    # Step 1: Install SonarScanner CLI
+    - name: Install SonarScanner CLI
+      run: |
+        dotnet tool install --global dotnet-sonarscanner
+
+    # Step 2: Analyze begin
+    # This command prepares the environment for scanning, but does not send any data.
+    - name: SonarQube Begin Analysis
+      run: |
+        dotnet sonarscanner begin \
+          /k:"${{ env.SONAR_PROJECT_KEY }}" \
+          /o:"${{ env.SONAR_ORGANIZATION }}" \
+          /d:sonar.host.url="${{ vars.SONAR_HOST_URL }}" \
+          /d:sonar.token="${{ env.SONAR_TOKEN }}" \
+          /d:sonar.coverageReportPaths=./TestResults/SonarQube.xml
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+        SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
+
+    # Step 3: Restore, build and testing (intermediate steps)
+    - name: Restore dependencies
+      run: |
+        dotnet restore ./ScanPerson/ScanPerson.sln
+        dotnet restore ./Identity/Identity.sln
+          
+    - name: Build
+      run: |
+        dotnet build --no-restore ./ScanPerson/ScanPerson.sln
+        dotnet build --no-restore ./Identity/Identity.sln
+
+    - name: Run Tests and Generate Coverage
+      run: |
+        dotnet test ./ScanPerson/ScanPerson.sln --no-build --verbosity normal --collect "XPlat Code Coverage" --results-directory "./TestResults"
+        dotnet test ./Identity/Identity.sln --no-build --verbosity normal --collect "XPlat Code Coverage" --results-directory "./TestResults"
+          
+    - name: Merge Coverage Reports
+      run: |
+        dotnet tool install -g dotnet-reportgenerator-globaltool
+        reportgenerator -reports:./TestResults/**/*.xml -targetdir:./TestResults/ -reporttypes:SonarQube
+        
+    # Step 4: Analyze end
+    # This command sends all collected data (code analysis and coverage) to the server.
+    - name: SonarQube End Analysis
+      run: |
+        dotnet sonarscanner end /d:sonar.token="${{ env.SONAR_TOKEN }}"
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}        

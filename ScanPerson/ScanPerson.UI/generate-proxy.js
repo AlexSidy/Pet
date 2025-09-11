@@ -8,7 +8,7 @@ const fs = require('fs');
            "logLevel": "debug"
        },
        "/authApi/*/*": {
-           "target": "https://" + process.env.SCANPERSON_AUTH_API_DOMEN + ':8091',
+           "target": "https://" + process.env.IDENTITY_API_DOMEN + ':8091',
            "secure": false,
            "changeOrigin": true,
            "logLevel": "debug"

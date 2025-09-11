@@ -4,13 +4,13 @@
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
     <DockerPublishLocally>False</DockerPublishLocally>
-    <ProjectGuid>d7ee9b5b-50d8-4005-9624-d38d27e3a423</ProjectGuid>
+    <ProjectGuid>D7F31D56-9D1F-4F6B-8072-498572298C4F</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger/index.html</DockerServiceUrl>
     <DockerServiceName>graylog</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
-    <None Include=".env.graylog" />
+    <None Include=".env" />
     <None Include="docker-compose.override.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>

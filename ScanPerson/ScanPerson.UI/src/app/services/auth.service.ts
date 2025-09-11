@@ -14,12 +14,12 @@ import { RegisterRequest } from '../models/requests/register.request';
 })
 export class AuthService {
 
-  private api: string = "/" + AuthApi + '/Auth';
+  private readonly api: string = "/" + AuthApi + '/Auth';
 
   constructor(
-    private httpClient: HttpClient,
-    private router: Router,
-    private jwtHelper: JwtHelperService) {}
+    private readonly httpClient: HttpClient,
+    private readonly router: Router,
+    private readonly jwtHelper: JwtHelperService) {}
 
   register(email: string, password: string) {
     let request = new RegisterRequest(password, email);
@@ -35,8 +35,8 @@ export class AuthService {
           }
         },
         error: (e) => {
-          console.log('Registration error:' + e.error);
-          alert('Failed to register. Please try again later:' + e.error);
+          console.log('Registration error:' + (e.error ?? e.message));
+          alert('Failed to register. Please try again later:' + (e.error ?? e.message));
         },
         complete: () => {}
       });
@@ -58,8 +58,8 @@ export class AuthService {
           }
         },
         error: (e) => {
-          console.log('Registration error:' + e.error);
-          alert('Failed to register. Please try again later:' + e.error);
+          console.log('Login error:' + (e.error ?? e.message));
+          alert('Failed to login. Please try again later:' + (e.error ?? e.message));
         },
         complete: () => {}
       });

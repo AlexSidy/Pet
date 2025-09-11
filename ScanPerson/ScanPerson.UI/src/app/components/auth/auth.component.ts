@@ -16,7 +16,7 @@ export class AuthComponent {
   public email: string = '';
   public password: string = '';
 
-  constructor(private authService: AuthService) { }
+  constructor(private readonly authService: AuthService) { }
 
   login() {
     this.authService.login(this.email, this.password);
