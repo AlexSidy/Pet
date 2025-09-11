@@ -4,22 +4,21 @@ using ScanPerson.Models.Responses;
 namespace ScanPerson.BusinessLogic.Services.Interfaces
 {
 	/// <summary>
-	/// Сервис для получения информации о человеке.
+	/// Service for getting information about a person.
 	/// </summary>
 	public interface IPersonInfoService
 	{
 		/// <summary>
-		/// Получение информации о человеке.
+		/// Getting information about a person.
 		/// </summary>
-		/// <param name="request">Запрос с входящими данными.</param>
-		/// <returns>Результат с полученной информацией.</returns>
+		/// <param name="request">Request with input data.</param>
+		/// <returns>Result with output data.</returns>
 		Task<ScanPersonResponseBase> GetInfoAsync(PersonInfoRequest request);
 
 		/// <summary>
-		/// Проверка нужно ли запускать логику сервиса.
+		/// Checking whether the service logic needs to be run.
 		/// </summary>
-		/// <param name="serviceOptions">Настройки для сервисов.</param>
-		/// <returns></returns>
+		/// <returns>True if the service logic needs to be run.</returns>
 		bool CanAccept();
 	}
 }
