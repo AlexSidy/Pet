@@ -10,6 +10,9 @@ using ScanPerson.DAL.Migrations._2024_12;
 
 namespace ScanPerson.DAL
 {
+	/// <summary>
+	/// Extension for database configure.
+	/// </summary>
 	public static class DalExtensions
 	{
 		public static void AddDalServices(this IServiceCollection services, string connectionString)

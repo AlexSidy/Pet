@@ -1,7 +1,7 @@
 ﻿namespace ScanPerson.Models.Options
 {
 	/// <summary>
-	/// Настройки используемых сервисов.
+	/// Settings for the services used.
 	/// </summary>
 	public class ServicesOptions
 	{
@@ -12,12 +12,12 @@
 		}
 
 		/// <summary>
-		/// Название секции в appsettings.json.
+		/// The name of the section in appsettings.json.
 		/// </summary>
 		public const string AppSettingsSection = "ServiceOptions";
 
 		/// <summary>
-		/// Список отключенных сервисов.
+		/// A list of disabled services.
 		/// </summary>
 		public string[] UnUsingServices { get; set; }
 
@@ -25,12 +25,12 @@
 	}
 
 	/// <summary>
-	/// Настройки сервиса геолокации.
+	/// Geolocation service settings.
 	/// </summary>
 	public class GeoServiceOptions
 	{
 		/// <summary>
-		/// Базовый апи сервиса.
+		/// The base API URL for the service.
 		/// </summary>
 		public string BaseUrl { get; set; }
 	}

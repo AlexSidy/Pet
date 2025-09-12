@@ -4,8 +4,15 @@ using Newtonsoft.Json;
 
 namespace ScanPerson.WebApi.Middlewares.Exceptions
 {
+	/// <summary>
+	/// Middleware to handle exceptions globally.
+	/// </summary>
 	public class ExceptionHandlerMiddleware(ILogger<ExceptionHandlerMiddleware> logger, RequestDelegate next)
 	{
+		/// <summary>
+		/// Invokes the middleware.
+		/// </summary>
+		/// <param name="context">The HTTP context.</param>
 		public async Task Invoke(HttpContext context)
 		{
 			try
@@ -19,6 +26,11 @@ namespace ScanPerson.WebApi.Middlewares.Exceptions
 			}
 		}
 
+		/// <summary>
+		/// Handles the exception and writes a JSON response.
+		/// </summary>
+		/// <param name="context">The HTTP context.</param>
+		/// <param name="exception">The exception that occurred.</param>
 		private static Task HandleExceptionMessageAsync(HttpContext context, Exception exception)
 		{
 			context.Response.ContentType = "application/json";

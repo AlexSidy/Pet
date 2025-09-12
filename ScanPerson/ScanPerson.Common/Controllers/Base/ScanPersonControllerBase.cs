@@ -5,6 +5,9 @@ using ScanPerson.Models.Responses;
 
 namespace ScanPerson.Common.Controllers
 {
+	/// <summary>
+	/// Base controller.
+	/// </summary>
 	[Controller]
 	public class ScanPersonControllerBase : ControllerBase
 	{

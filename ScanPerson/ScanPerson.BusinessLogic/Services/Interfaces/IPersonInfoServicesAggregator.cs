@@ -4,15 +4,15 @@ using ScanPerson.Models.Responses;
 namespace ScanPerson.BusinessLogic.Services.Interfaces
 {
 	/// <summary>
-	/// Сервис отвечающий за обработку запросов со всех подключенных сервисов
+	/// The service responsible for processing requests from all connected services.
 	/// </summary>
 	public interface IPersonInfoServicesAggregator
 	{
 		/// <summary>
-		/// Метод для сканирования информации о человеке со всех сервисов.
+		/// Method for scanning information about a person from all services.
 		/// </summary>
-		/// <param name="request">Запрос с входящими данными.</param>
-		/// <returns>Список информации подходящих по начальным данным.</returns>
+		/// <param name="request">Request with input data.</param>
+		/// <returns>List of information suitable for the input data.</returns>
 		Task<ScanPersonResponseBase[]> GetScanPersonInfoAsync(PersonInfoRequest request);
 	}
 }
