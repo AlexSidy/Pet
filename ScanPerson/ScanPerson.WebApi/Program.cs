@@ -9,7 +9,6 @@ using ScanPerson.Common.Resources;
 using ScanPerson.DAL;
 using ScanPerson.Models.Options.Auth;
 using ScanPerson.WebApi.Extensions;
-using ScanPerson.WebApi.Middlewares.Exceptions;
 
 using Serilog;
 using Serilog.Sinks.Graylog;
@@ -26,7 +25,7 @@ var connectionString = builder.Configuration.GetConnectionString(DbSection) ??
 	throw new InvalidOperationException(string.Format(Messages.SectionNotFound, DbSection));
 var jwtOptins = builder.Configuration.GetSection(JwtOptions.AppSettingsSection).Get<JwtOptions>()
 	?? throw new InvalidOperationException(string.Format(Messages.SectionNotFound, JwtOptions.AppSettingsSection));
-jwtOptins.SecretKey = EnviromentHelper.GetViriableByName("JWT_OPTIONS_SECRET_KEY");
+jwtOptins.SecretKey = EnviromentHelper.GetVariableByName("JWT_OPTIONS_SECRET_KEY");
 
 // Setup Serilog
 Log.Logger = new LoggerConfiguration()
@@ -83,6 +82,12 @@ builder.Services
 builder.Services.AddAuthorizationBuilder();
 builder.Services.AddHttpClient();
 builder.Services.AddScanPersonAutoMapper();
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+	options.Configuration = builder.Configuration.GetConnectionString(RedisSection) ??
+		throw new InvalidOperationException(string.Format(Messages.SectionNotFound, RedisSection)); ;
+	options.InstanceName = RedisInstanceName;
+});
 #endregion [Add services]
 
 var app = builder.Build();
@@ -95,7 +100,7 @@ if (!app.Environment.IsProduction())
 	app.UseSwaggerUI();
 }
 
-app.UseExceptionHandlerMiddleware();
+app.UseScanPersonMiddlewares();
 app.UseHttpsRedirection();
 app.UseRouting();
 
@@ -113,6 +118,8 @@ public partial class Program
 	public const string WebApi = "webApi";
 	public const string ProjectName = "ScanPerson.WebApi";
 	public const string DbSection = "ScanPersonDb";
+	public const string RedisSection = "RedisConnection";
+	public const string RedisInstanceName = "ScanPersonRedisInstance";
 	public const string CorsPolicy = "MyTrustedHosts";
 }
 #pragma warning restore S1118

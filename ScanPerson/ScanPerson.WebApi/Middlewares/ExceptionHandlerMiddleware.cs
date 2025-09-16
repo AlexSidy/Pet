@@ -2,7 +2,7 @@
 
 using Newtonsoft.Json;
 
-namespace ScanPerson.WebApi.Middlewares.Exceptions
+namespace ScanPerson.WebApi.Middlewares
 {
 	/// <summary>
 	/// Middleware to handle exceptions globally.

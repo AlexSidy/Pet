@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{671DDF4D-2A96-468F-982E-2B4DB864D14B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		NoVariablesDefault|Default = NoVariablesDefault|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{671DDF4D-2A96-468F-982E-2B4DB864D14B}.NoVariablesDefault|Default.ActiveCfg = NoVariablesDefault
+		{671DDF4D-2A96-468F-982E-2B4DB864D14B}.NoVariablesDefault|Default.Build.0 = NoVariablesDefault
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {776B131B-E965-4632-BC15-117E2DC5FBB6}
+	EndGlobalSection
+EndGlobal

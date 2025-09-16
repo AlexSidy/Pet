@@ -19,6 +19,8 @@ services:
         - AUTO_MAPPER_LICENSE_KEY=${AUTO_MAPPER_LICENSE_KEY}
         - ConnectionStrings__ScanPersonDb=${ConnectionStrings__ScanPersonDb}
         - HOST_HTTPS_PATH=${HOST_HTTPS_PATH}
+        - IS_CACHE_ENABLE=${IS_CACHE_ENABLE}
+        - CACHE_EXPIRATION=${CACHE_EXPIRATION}
 
   scanpersondb:
     environment:
@@ -26,11 +28,5 @@ services:
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         POSTGRES_DB: ${POSTGRES_DB}
         PGDATA: ${PGDATA}
-
-  pgadmin:
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-      PGADMIN_CONFIG_SERVER_MODE: ${PGADMIN_CONFIG_SERVER_MODE}
 
       

@@ -13,10 +13,16 @@ jobs:
   continuous-delivery:
     name: Prepare host, push and up dockers
     runs-on: ubuntu-latest
+    # if: |
+    #     ${{ (github.event.workflow_run.conclusion == 'success' &&
+    #     github.event.workflow_run.head_branch == 'main' &&
+    #     github.event.workflow_run.event == 'push'
+    #     github.event_name == 'workflow_run') ||
+    #     github.event_name == 'workflow_dispatch' }}
     if: |
         ${{ (github.event.workflow_run.conclusion == 'success' &&
-        github.event.workflow_run.head_branch == 'main' &&
-        github.event.workflow_run.event == 'push'
+        github.event.workflow_run.head_branch == 'dev' &&
+        github.event.workflow_run.event == 'pull_request'
         github.event_name == 'workflow_run') ||
         github.event_name == 'workflow_dispatch' }}
     steps:      
@@ -26,17 +32,14 @@ jobs:
       - name: Checkout to the branch
         uses: actions/checkout@v4
 
-      # Add step for clean directory in task #50
-
       # Prepare before Deploy to VM and build containers
       - name: Prepare before deploy to VM and build containers
         uses: appleboy/ssh-action@3ca8a7c5359ac6ad91aa47f1946ece1c3b025004
         env:
-          #Common
           VM_HOST: ${{ secrets.VM_HOST }}
           VM_USER: ${{ secrets.VM_USER }}
-          IS_REMOVE_IMAGE: false # [absolute] true only for configure deploy
-          IS_REMOVE_VOLUMES: false # [absolute] true only for configure deploy
+          IS_REMOVE_IMAGE: ${{ vars.IS_REMOVE_IMAGE }}
+          IS_REMOVE_VOLUMES: ${{ vars.IS_REMOVE_VOLUMES }}
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
@@ -51,27 +54,27 @@ jobs:
             fi
 
             echo "Check and remove stopped containers (short alternative docker rm $(docker ps -qa) || true)"
-            if [ -n "$(docker ps -a -q)" ]; then
+            if [ -n "$(docker ps -qa)" ]; then
               echo "Removing stopped containers..."
-              docker rm $(docker ps -a -q)
+              docker rm $(docker ps -qa)
             else
               echo "No stopped containers to remove."
             fi
 
-            echo "Check and remove images (optional, but good for cleanup)"
+            echo "Check and remove images (optional, but good for cleanup)."
             if [ ${{ env.IS_REMOVE_IMAGE }} ]; then
               echo "Removing images..."
               docker image prune -f
             else
-              echo "No dangling images to remove."
+              echo "No images to remove."
             fi
 
-            echo "Check and remove unused Docker volumes."
+            echo "Check and remove unused Docker volumes (optional, but good for cleanup)."
             if [ ${{ env.IS_REMOVE_VOLUMES }} ]; then
               echo "Removing volumes..."
               docker volume prune -f
             else
-              echo "No dangling volumes to remove."
+              echo "No volumes to remove."
             fi
 
             echo "Ensure network exists or create it"
@@ -113,14 +116,16 @@ jobs:
           JWT_OPTIONS_SECRET_KEY: ${{ secrets.JWT_OPTIONS_SECRET_KEY }}
           POSTGRES_USER: ${{ vars.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          HOST_HTTPS_PATH: ${{ vars.HOST_HTTPS_PATH }}
+          IS_CACHE_ENABLE: ${{ vars.IS_CACHE_ENABLE }}
+          CACHE_EXPIRATION: ${{ vars.CACHE_EXPIRATION }}
+
+          # Shared solution
+          GRAYLOG_PASSWORD_SECRET: ${{ secrets.GRAYLOG_PASSWORD_SECRET }}
+          GRAYLOG_ROOT_PASSWORD_SHA2: ${{ secrets.GRAYLOG_ROOT_PASSWORD_SHA2 }}
           PGADMIN_DEFAULT_EMAIL: ${{ secrets.PGADMIN_DEFAULT_EMAIL }}
           PGADMIN_DEFAULT_PASSWORD: ${{ secrets.PGADMIN_DEFAULT_PASSWORD }}
           PGADMIN_CONFIG_SERVER_MODE: ${{ vars.PGADMIN_CONFIG_SERVER_MODE }}
-          HOST_HTTPS_PATH: ${{ vars.HOST_HTTPS_PATH }}
-
-          # Graylog solution
-          GRAYLOG_PASSWORD_SECRET: ${{ secrets.GRAYLOG_PASSWORD_SECRET }}
-          GRAYLOG_ROOT_PASSWORD_SHA2: ${{ secrets.GRAYLOG_ROOT_PASSWORD_SHA2 }}
 
           # ScanPerson solution
           SCANPERSON_ALLOWED_HOSTS: ${{ vars.SCANPERSON_ALLOWED_HOSTS }}
@@ -159,17 +164,18 @@ jobs:
             # The --build flag forces Docker Compose to rebuild the images locally.
 
             # Graylog
-            echo "Graylog build and up."
-            cd Graylog
-            docker compose down --rmi all -v
+            echo "Shared build and up."
+            cd Shared
 
             GRAYLOG_PASSWORD_SECRET="${{ env.GRAYLOG_PASSWORD_SECRET }}" \
             GRAYLOG_ROOT_PASSWORD_SHA2="${{ env.GRAYLOG_ROOT_PASSWORD_SHA2 }}" \
+            PGADMIN_DEFAULT_EMAIL="${{ env.PGADMIN_DEFAULT_EMAIL }}" \
+            PGADMIN_DEFAULT_PASSWORD="${{ env.PGADMIN_DEFAULT_PASSWORD }}" \
+            PGADMIN_CONFIG_SERVER_MODE="${{ env.PGADMIN_CONFIG_SERVER_MODE }}" \
             docker compose up -d --build
             
             echo "Identity build and up."
             cd ../Identity
-            docker compose down --rmi all -v
 
             ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
             ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}" \
@@ -177,19 +183,15 @@ jobs:
             JWT_OPTIONS_SECRET_KEY="${{ env.JWT_OPTIONS_SECRET_KEY }}" \
             POSTGRES_USER="${{ env.POSTGRES_USER }}" \
             POSTGRES_PASSWORD="${{ env.POSTGRES_PASSWORD }}" \
-            PGADMIN_DEFAULT_EMAIL="${{ env.PGADMIN_DEFAULT_EMAIL }}" \
-            PGADMIN_DEFAULT_PASSWORD="${{ env.PGADMIN_DEFAULT_PASSWORD }}" \
-            PGADMIN_CONFIG_SERVER_MODE="${{ env.PGADMIN_CONFIG_SERVER_MODE }}" \
             ALLOWED_HOSTS="${{ env.IDENTITY_ALLOWED_HOSTS }}" \
             ConnectionStrings__IdentityDb="${{ env.ConnectionStrings__IdentityDb }}" \
-            POSTGRES_DB="${{ env.IDENTITY_POSTGRES_DB }}" \
+            IDENTITY_POSTGRES_DB="${{ env.IDENTITY_POSTGRES_DB }}" \
             PGDATA="${{ env.IDENTITY_PGDATA }}" \
             HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
             docker compose up -d --build
 
             echo "ScanPerson build and up."
             cd ../ScanPerson
-            docker compose down --rmi all -v
 
             IDENTITY_API_DOMEN="${{ env.IDENTITY_API_DOMEN }}" \
             SCANPERSON_WEBAPI_DOMEN="${{ env.SCANPERSON_WEBAPI_DOMEN }}" \
@@ -199,9 +201,6 @@ jobs:
             JWT_OPTIONS_SECRET_KEY="${{ env.JWT_OPTIONS_SECRET_KEY }}" \
             POSTGRES_USER="${{ env.POSTGRES_USER }}" \
             POSTGRES_PASSWORD="${{ env.POSTGRES_PASSWORD }}" \
-            PGADMIN_DEFAULT_EMAIL="${{ env.PGADMIN_DEFAULT_EMAIL }}" \
-            PGADMIN_DEFAULT_PASSWORD="${{ env.PGADMIN_DEFAULT_PASSWORD }}" \
-            PGADMIN_CONFIG_SERVER_MODE="${{ env.PGADMIN_CONFIG_SERVER_MODE }}" \
             ALLOWED_HOSTS="${{ env.SCANPERSON_ALLOWED_HOSTS }}" \
             ConnectionStrings__ScanPersonDb="${{ env.ConnectionStrings__ScanPersonDb }}" \
             POSTGRES_DB="${{ env.SCANPERSON_POSTGRES_DB }}" \
@@ -209,4 +208,6 @@ jobs:
             AUTO_MAPPER_LICENSE_KEY="${{ env.AUTO_MAPPER_LICENSE_KEY }}" \
             PGDATA="${{ env.SCANPERSON_PGDATA }}" \
             HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
+            IS_CACHE_ENABLE="${{ env.IS_CACHE_ENABLE }}" \
+            CACHE_EXPIRATION="${{ env.CACHE_EXPIRATION }}" \
             docker compose up -d --build

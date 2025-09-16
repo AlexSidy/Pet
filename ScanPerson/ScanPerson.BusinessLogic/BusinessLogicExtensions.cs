@@ -25,11 +25,8 @@ namespace ScanPerson.BusinessLogic
 
 		private static void AddSecrets(this IServiceCollection services)
 		{
-			var secrets = new ScanPersonSecrets
-			{
-				HtmlWebRuApiKey = EnviromentHelper.GetViriableByName("HTMLWEBRU_API_KEY"),
-			};
-			services.AddSingleton(secrets);
+			services.AddSingleton(EnviromentHelper.GetFilledFromEnvironment<ScanPersonSecrets>());
+			services.AddSingleton(EnviromentHelper.GetFilledFromEnvironment<CacheOptions>());
 		}
 	}
 }
