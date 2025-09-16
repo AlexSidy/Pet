@@ -39,8 +39,7 @@ namespace ScanPerson.Integration.Tests
 				.WithWebHostBuilder(builder =>
 				{
 					builder.UseEnvironment("Staging");
-					Environment.SetEnvironmentVariable("HTMLWEBRU_API_KEY", "value-does-not-matter");
-					Environment.SetEnvironmentVariable("JWT_OPTIONS_SECRET_KEY", "value-does-not-matter");
+					SetTestEnvironment();
 
 					builder.ConfigureServices(services =>
 					{

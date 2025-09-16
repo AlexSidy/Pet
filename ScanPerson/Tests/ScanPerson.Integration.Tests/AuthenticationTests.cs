@@ -29,7 +29,6 @@ namespace ScanPerson.Integration.Tests
 	[TestClass]
 	public class AuthenticationTests : IntegrationTestsBase
 	{
-		private const string JwtSecretKey = "value-does-not-matterButIneedtowriteastringlargerthan256bits";
 		private readonly JwtOptions? _jwtOptions;
 		private readonly Mock<IPersonInfoServicesAggregator> _personInfoServicesAggregator;
 		private readonly Mock<ILogger<PersonInfoController>> _logger;
@@ -42,8 +41,7 @@ namespace ScanPerson.Integration.Tests
 			.WithWebHostBuilder(builder =>
 			{
 				builder.UseEnvironment("Staging");
-				Environment.SetEnvironmentVariable("HTMLWEBRU_API_KEY", "value-does-not-matter");
-				Environment.SetEnvironmentVariable("JWT_OPTIONS_SECRET_KEY", JwtSecretKey);
+				SetTestEnvironment();
 				builder.ConfigureServices(services =>
 				{
 					var forRemoveDescriptors = new[] {
