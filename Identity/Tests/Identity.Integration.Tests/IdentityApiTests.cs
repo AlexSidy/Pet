@@ -112,12 +112,12 @@ namespace ScanPerson.Integration.Tests
 			var expectedResponse = new ScanPersonResultResponse<IdentityResult>(IdentityResult.Success);
 			var taskResponse = Task.FromResult<ScanPersonResponseBase>(expectedResponse);
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
-			_userService.Setup(x => x.RegisterAsync(It.IsAny<RegisterRequest>())).Returns(taskResponse);
+			_userService!.Setup(x => x.RegisterAsync(It.IsAny<RegisterRequest>())).Returns(taskResponse);
 
 			// Act
 			try
 			{
-				var response = await _httpClient.PostAsync(
+				var response = await _httpClient!.PostAsync(
 					$"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.RegisterAsync)}",
 					content,
 					TestContext.CancellationTokenSource.Token);
@@ -151,12 +151,12 @@ namespace ScanPerson.Integration.Tests
 			var expectedResponse = new ScanPersonResultResponse<IdentityResult>(error);
 			var taskResponse = Task.FromResult<ScanPersonResponseBase>(expectedResponse);
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
-			_userService.Setup(x => x.RegisterAsync(It.IsAny<RegisterRequest>())).Returns(taskResponse);
+			_userService!.Setup(x => x.RegisterAsync(It.IsAny<RegisterRequest>())).Returns(taskResponse);
 
 			// Act
 			try
 			{
-				var response = await _httpClient.PostAsync(
+				var response = await _httpClient!.PostAsync(
 					$"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.RegisterAsync)}",
 					content,
 					TestContext.CancellationTokenSource.Token);
@@ -182,11 +182,11 @@ namespace ScanPerson.Integration.Tests
 				Email = "3uQ5f@example.com"
 			});
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
-			_userService.Setup(x => x.RegisterAsync(It.IsAny<RegisterRequest>())).Throws<InvalidOperationException>();
+			_userService!.Setup(x => x.RegisterAsync(It.IsAny<RegisterRequest>())).Throws<InvalidOperationException>();
 
 			// Act & Assert
 			await Assert.ThrowsExactlyAsync<InvalidOperationException>(
-					() => _httpClient.PostAsync(
+					() => _httpClient!.PostAsync(
 						$"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.RegisterAsync)}",
 						content,
 						TestContext.CancellationTokenSource.Token));
@@ -205,12 +205,12 @@ namespace ScanPerson.Integration.Tests
 
 			var taskResponse = Task.FromResult<ScanPersonResponseBase>(expectedResponse);
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
-			_userService.Setup(x => x.LoginAsync(It.IsAny<LoginRequest>())).Returns(taskResponse);
+			_userService!.Setup(x => x.LoginAsync(It.IsAny<LoginRequest>())).Returns(taskResponse);
 
 			// Act
 			try
 			{
-				var response = await _httpClient.PostAsync(
+				var response = await _httpClient!.PostAsync(
 					$"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.LoginAsync)}",
 					content,
 					TestContext.CancellationTokenSource.Token);
@@ -244,12 +244,12 @@ namespace ScanPerson.Integration.Tests
 			var expectedResponse = new ScanPersonResultResponse<IdentityResult>(error);
 			var taskResponse = Task.FromResult<ScanPersonResponseBase>(expectedResponse);
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
-			_userService.Setup(x => x.LoginAsync(It.IsAny<LoginRequest>())).Returns(taskResponse);
+			_userService!.Setup(x => x.LoginAsync(It.IsAny<LoginRequest>())).Returns(taskResponse);
 
 			// Act
 			try
 			{
-				var response = await _httpClient.PostAsync(
+				var response = await _httpClient!.PostAsync(
 					$"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.LoginAsync)}",
 					content,
 					TestContext.CancellationTokenSource.Token);
@@ -275,11 +275,11 @@ namespace ScanPerson.Integration.Tests
 				Email = "3uQ5f@example.com"
 			});
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
-			_userService.Setup(x => x.LoginAsync(It.IsAny<LoginRequest>())).Throws<InvalidOperationException>();
+			_userService!.Setup(x => x.LoginAsync(It.IsAny<LoginRequest>())).Throws<InvalidOperationException>();
 
 			// Act & Assert
 			await Assert.ThrowsExactlyAsync<InvalidOperationException>(
-					() => _httpClient.PostAsync(
+					() => _httpClient!.PostAsync(
 						$"{Program.AuthApi}/{AuthControllerName}/{nameof(AuthController.LoginAsync)}",
 						content,
 						TestContext.CancellationTokenSource.Token));

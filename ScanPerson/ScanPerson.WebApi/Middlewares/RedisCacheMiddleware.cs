@@ -50,7 +50,6 @@ namespace ScanPerson.WebApi.Middlewares
 				return;
 			}
 
-			logger.LogInformation("Cache miss for key: {CacheKey}", new { CacheKey = cacheKey });
 			// If no cached response is found, capture the response body.
 			var originalBodyStream = context.Response.Body;
 			await using var responseBody = new MemoryStream();
