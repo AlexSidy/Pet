@@ -61,7 +61,7 @@ namespace ScanPerson.Integration.Tests.Base
 
 		protected virtual async Task InitializeBdAndSetConnectionStringAsync()
 		{
-			await _postgreSqlContainer.StartAsync();
+			await _postgreSqlContainer.StartAsync(TestContext.CancellationTokenSource.Token);
 			_connectionString = _postgreSqlContainer.GetConnectionString();
 		}
 	}

@@ -19,6 +19,8 @@ namespace ScanPerson.Unit.Tests
 		/// </summary>
 		private RedisCacheMiddleware? _cut;
 
+		public required TestContext TestContext { get; set; }
+
 		private Mock<ILogger<RedisCacheMiddleware>>? _mockLogger;
 		private Mock<IDistributedCache>? _mockDistributedCache;
 		private Mock<RequestDelegate>? _mockNext;
@@ -92,7 +94,7 @@ namespace ScanPerson.Unit.Tests
 			_mockNext!.Setup(x => x(It.IsAny<HttpContext>())).Callback(async (HttpContext ctx) =>
 			{
 				ctx.Response.ContentType = "application/json";
-				await ctx.Response.WriteAsync("{\"data\":\"cached_content\"}");
+				await ctx.Response.WriteAsync("{\"data\":\"cached_content\"}", TestContext.CancellationTokenSource.Token);
 			});
 			_mockDistributedCache!.Setup(x =>
 				x.SetAsync(It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<DistributedCacheEntryOptions>(), It.IsAny<CancellationToken>()))
@@ -144,7 +146,7 @@ namespace ScanPerson.Unit.Tests
 			// Проверяем, что ответ был записан в Response.Body
 			responseStream.Seek(0, SeekOrigin.Begin);
 			using var reader = new StreamReader(responseStream);
-			var responseText = await reader.ReadToEndAsync();
+			var responseText = await reader.ReadToEndAsync(TestContext.CancellationTokenSource.Token);
 
 			Assert.AreEqual(cachedContent, responseText, "Response body should contain the cached content.");
 		}
@@ -162,7 +164,7 @@ namespace ScanPerson.Unit.Tests
 			_mockNext!.Setup(d => d(It.IsAny<HttpContext>())).Callback(async (HttpContext ctx) =>
 			{
 				ctx.Response.ContentType = "application/json";
-				await ctx.Response.WriteAsync("{\"data\":\"some_content\"}");
+				await ctx.Response.WriteAsync("{\"data\":\"some_content\"}", TestContext.CancellationTokenSource.Token);
 			});
 
 			_mockDistributedCache!.Setup(d =>
@@ -190,7 +192,7 @@ namespace ScanPerson.Unit.Tests
 		/// <summary>
 		/// Helper class to create a mock HttpContext with a buffered request body.
 		/// </summary>
-		private HttpContext CreateHttpContext(string requestUrl, string requestBody = "", string requestMethod = "POST")
+		private static DefaultHttpContext CreateHttpContext(string requestUrl, string requestBody = "", string requestMethod = "POST")
 		{
 			var httpContext = new DefaultHttpContext();
 			var request = httpContext.Request;
@@ -202,7 +204,7 @@ namespace ScanPerson.Unit.Tests
 			request.Method = requestMethod;
 			request.Scheme = "http";
 			request.Host = new HostString(uri.Host, uri.Port);
-			request.Path = uri.AbsolutePath; // <-- исправленная строка
+			request.Path = uri.AbsolutePath;
 
 			if (!string.IsNullOrEmpty(requestBody))
 			{
