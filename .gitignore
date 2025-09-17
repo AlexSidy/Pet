@@ -10,7 +10,7 @@
 **/TestResults/
 .env
 *.pfx
-
+**/TemplateEngineHost
 
 
 # Игнорировать папки сборки

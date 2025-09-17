@@ -42,14 +42,11 @@ builder.Host.UseSerilog();
 
 // Add services to the container.
 #region [Addition services]
-// If is not testing
-if (!builder.Environment.IsStaging())
-{
-	builder.Services.AddDalServices(connectionString);
-}
+builder.Services.AddDalServices(connectionString);
 builder.Services.AddBusinessLogicServices(builder.Configuration);
 
-var allowedHosts = builder.Configuration.GetValue<string>("ALLOWED_HOSTS")?.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries) ?? [];
+var allowedHosts = builder.Configuration.GetValue<string>("ALLOWED_HOSTS")
+	?.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries) ?? [];
 builder.Services.AddCors(options =>
 {
 	options.AddPolicy(CorsPolicy, builder =>
@@ -85,7 +82,7 @@ builder.Services.AddScanPersonAutoMapper();
 builder.Services.AddStackExchangeRedisCache(options =>
 {
 	options.Configuration = builder.Configuration.GetConnectionString(RedisSection) ??
-		throw new InvalidOperationException(string.Format(Messages.SectionNotFound, RedisSection)); ;
+		throw new InvalidOperationException(string.Format(Messages.SectionNotFound, RedisSection));
 	options.InstanceName = RedisInstanceName;
 });
 #endregion [Add services]

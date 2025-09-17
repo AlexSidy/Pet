@@ -29,47 +29,51 @@ namespace ScanPerson.WebApi.Middlewares
 				return;
 			}
 
-			// Form a unique cache key based on the URL and request body.
+			// Form a unique cache key based on the URL and request body (Post) or query string (Get).
 			var requestBody = await ReadRequestBodyAsync(context.Request);
+			if (requestBody == null)
+			{
+				await next(context);
+				return;
+			}
 			var cacheKey = $"{url}-{requestBody}";
 
-			logger.LogInformation($"Checking cache for key: {cacheKey}");
+			logger.LogInformation("Checking cache for key: {CacheKey}", new { CacheKey = cacheKey });
 
 			var cachedResponse = await cache.GetStringAsync(cacheKey);
 
 			if (!string.IsNullOrEmpty(cachedResponse))
 			{
-				logger.LogInformation($"Cache hit for key: {cacheKey}");
+				logger.LogInformation("Cache hit for key: {CacheKey}", new { CacheKey = cacheKey });
 				context.Response.ContentType = "application/json";
 				await context.Response.WriteAsync(cachedResponse);
 				return;
 			}
-			else
+
+			logger.LogInformation("Cache miss for key: {CacheKey}", new { CacheKey = cacheKey });
+			// If no cached response is found, capture the response body.
+			var originalBodyStream = context.Response.Body;
+			await using var responseBody = new MemoryStream();
+			context.Response.Body = responseBody;
+
+			await next(context);
+
+			// Copy the response to not interfere with the original stream.
+			responseBody.Seek(0, SeekOrigin.Begin);
+			using var reader = new StreamReader(responseBody);
+			var responseText = await reader.ReadToEndAsync();
+
+			// Reset the response stream to the beginning.
+			responseBody.Seek(0, SeekOrigin.Begin);
+			await responseBody.CopyToAsync(originalBodyStream);
+			context.Response.Body = originalBodyStream;
+
+			var options = new DistributedCacheEntryOptions
 			{
-				logger.LogInformation($"Cache miss for key: {cacheKey}");
-				// If no cached response is found, capture the response body.
-				var originalBodyStream = context.Response.Body;
-				await using var responseBody = new MemoryStream();
-				context.Response.Body = responseBody;
-
-				await next(context);
-
-				// Copy the response to not interfere with the original stream.
-				responseBody.Seek(0, SeekOrigin.Begin);
-				using var reader = new StreamReader(responseBody);
-				var responseText = await reader.ReadToEndAsync();
-
-				// Reset the response stream to the beginning.
-				responseBody.Seek(0, SeekOrigin.Begin);
-				await responseBody.CopyToAsync(originalBodyStream);
-				context.Response.Body = originalBodyStream;
-
-				var options = new DistributedCacheEntryOptions
-				{
-					AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(cacheOptions.CacheExpiration)
-				};
-				await cache.SetStringAsync(cacheKey, responseText, options);
-			}
+				AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(cacheOptions.CacheExpiration)
+			};
+			logger.LogInformation("Cache set new row for key: {CacheKey}", new { CacheKey = cacheKey });
+			await cache.SetStringAsync(cacheKey, responseText, options);
 		}
 
 		/// <summary>
@@ -81,7 +85,7 @@ namespace ScanPerson.WebApi.Middlewares
 		{
 			if (request.Method == "GET")
 			{
-				return string.Empty;
+				return request.QueryString.ToString();
 			}
 
 			// Allows you to read the request body multiple times

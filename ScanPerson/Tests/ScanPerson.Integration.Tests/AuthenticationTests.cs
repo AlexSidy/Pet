@@ -29,12 +29,15 @@ namespace ScanPerson.Integration.Tests
 	[TestClass]
 	public class AuthenticationTests : IntegrationTestsBase
 	{
-		private readonly JwtOptions? _jwtOptions;
-		private readonly Mock<IPersonInfoServicesAggregator> _personInfoServicesAggregator;
-		private readonly Mock<ILogger<PersonInfoController>> _logger;
+		private JwtOptions? _jwtOptions;
+		private Mock<IPersonInfoServicesAggregator>? _personInfoServicesAggregator;
+		private Mock<ILogger<PersonInfoController>>? _logger;
 
-		public AuthenticationTests()
+		[TestInitialize]
+		public override async Task InitializeAsync()
 		{
+			await InitializeBdAndSetConnectionStringAsync();
+
 			_personInfoServicesAggregator = new Mock<IPersonInfoServicesAggregator>();
 			_logger = new Mock<ILogger<PersonInfoController>>();
 			Factory = new WebApplicationFactory<Program>()
@@ -96,7 +99,7 @@ namespace ScanPerson.Integration.Tests
 			var personResponses = CreationHelper.GetPersonResponse();
 			var taskResponse = CreationHelper.GetTaskResponse(personResponses);
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
-			_personInfoServicesAggregator.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Returns(taskResponse!);
+			_personInfoServicesAggregator!.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Returns(taskResponse!);
 			var token = GenerateJwtToken("testuser");
 
 			HttpClient!.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);

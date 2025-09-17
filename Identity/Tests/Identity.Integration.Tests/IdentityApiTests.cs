@@ -15,6 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using Moq;
+using Testcontainers.PostgreSql;
+using Xunit;
 
 using Newtonsoft.Json;
 
@@ -24,18 +26,27 @@ using ScanPerson.Models.Responses;
 namespace ScanPerson.Integration.Tests
 {
 	[TestClass]
-	public class IdentityApiTests
+	public class IdentityApiTests : IAsyncLifetime
 	{
 		public TestContext TestContext { get; set; }
 
 		private const string AuthControllerName = "Auth";
-		private readonly HttpClient _httpClient;
-		private readonly WebApplicationFactory<Program> _factory;
-		private readonly Mock<IUserService> _userService;
-		private readonly Mock<ILogger<AuthController>> _logger;
+		private HttpClient? _httpClient;
+		private WebApplicationFactory<Program>? _factory;
+		private Mock<IUserService>? _userService;
+		private Mock<ILogger<AuthController>>? _logger;
+		private PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
+		.WithDatabase("test_db")
+		.WithUsername("testuser")
+		.WithPassword("testpassword")
+		.Build();
 
-		public IdentityApiTests()
+		[TestInitialize]
+		public async Task InitializeAsync()
 		{
+			await _postgreSqlContainer.StartAsync();
+			var connectionString = _postgreSqlContainer.GetConnectionString();
+
 			_userService = new Mock<IUserService>();
 			_logger = new Mock<ILogger<AuthController>>();
 			_factory = new WebApplicationFactory<Program>()
@@ -43,6 +54,7 @@ namespace ScanPerson.Integration.Tests
 				{
 					builder.UseEnvironment("Staging");
 					Environment.SetEnvironmentVariable("JWT_OPTIONS_SECRET_KEY", "value-does-not-matter");
+					Environment.SetEnvironmentVariable("ConnectionStrings__IdentityDb", connectionString);
 
 					builder.ConfigureServices(services =>
 					{
@@ -67,6 +79,12 @@ namespace ScanPerson.Integration.Tests
 					});
 				});
 			_httpClient = _factory.CreateDefaultClient();
+		}
+
+		[TestCleanup]
+		public async Task DisposeAsync()
+		{
+			await _postgreSqlContainer.DisposeAsync();
 		}
 
 		private static void RemoveFromServices(IServiceCollection services, IEnumerable<Type> types)
