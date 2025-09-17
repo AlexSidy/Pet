@@ -44,7 +44,7 @@ namespace ScanPerson.Integration.Tests
 		[TestInitialize]
 		public async Task InitializeAsync()
 		{
-			await _postgreSqlContainer.StartAsync();
+			await _postgreSqlContainer.StartAsync(TestContext.CancellationTokenSource.Token);
 			var connectionString = _postgreSqlContainer.GetConnectionString();
 
 			_userService = new Mock<IUserService>();
