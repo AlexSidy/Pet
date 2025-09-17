@@ -8,8 +8,7 @@
       "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger",
       "serviceActions": {
         "identity.api": "StartDebugging",
-        "identitydb": "StartWithoutDebugging",
-        "identitypgadmin": "StartWithoutDebugging"
+        "identitydb": "StartWithoutDebugging"
       }
     },
     "Release Compose": {
@@ -20,8 +19,7 @@
       "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger",
       "serviceActions": {
         "identity.api": "StartDebugging",
-        "identitydb": "StartWithoutDebugging",
-        "identitypgadmin": "StartWithoutDebugging"
+        "identitydb": "StartWithoutDebugging"
       }
     }
   }

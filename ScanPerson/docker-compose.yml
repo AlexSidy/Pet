@@ -44,6 +44,8 @@ services:
         - AUTO_MAPPER_LICENSE_KEY=${AUTO_MAPPER_LICENSE_KEY}
         - ConnectionStrings__ScanPersonDb=${ConnectionStrings__ScanPersonDb}
         - HOST_HTTPS_PATH=${HOST_HTTPS_PATH}
+        - IS_CACHE_ENABLE=${IS_CACHE_ENABLE}
+        - CACHE_EXPIRATION=${CACHE_EXPIRATION}
     ports:
         - 8080:8080 # HTTP
         - 8081:8081 # HTTPS
@@ -64,7 +66,7 @@ services:
     ports:
         - 5433:5432
     volumes:
-        - postgres:/var/lib/postgresql/data
+        - scanpersondbdata:/data/scanpersondb
     networks:
         - scanperson-network
     healthcheck:
@@ -72,24 +74,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
- 
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    restart: always
-    depends_on:
-      - scanpersondb
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-      PGADMIN_CONFIG_SERVER_MODE: ${PGADMIN_CONFIG_SERVER_MODE}
-    volumes:
-        - postgres:/data/postgres
-        - pgadmin:/var/lib/pgadmin
-    ports:
-        - 8000:80
-    networks:
-        - scanperson-network
 
 networks:
   scanperson-network:
@@ -97,7 +81,4 @@ networks:
     driver: bridge
 
 volumes:
-    postgres:
-    pgadmin:
-
-      
+    scanpersondbdata:

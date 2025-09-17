@@ -151,6 +151,15 @@ namespace ScanPerson.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An unhandled exception occurred: {ErrorMessage}.
+        /// </summary>
+        public static string UnhandledException {
+            get {
+                return ResourceManager.GetString("UnhandledException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Such user is exist..
         /// </summary>
         public static string UserAlredyExist {
