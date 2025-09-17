@@ -4,10 +4,10 @@
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
     <DockerPublishLocally>False</DockerPublishLocally>
-    <ProjectGuid>D7F31D56-9D1F-4F6B-8072-498572298C4F</ProjectGuid>
+    <ProjectGuid>671DDF4D-2A96-468F-982E-2B4DB864D14B</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger/index.html</DockerServiceUrl>
-    <DockerServiceName>graylog</DockerServiceName>
+    <DockerServiceName>redis</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include=".env" />

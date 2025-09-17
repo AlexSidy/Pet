@@ -5,7 +5,6 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -15,7 +14,6 @@ using Newtonsoft.Json;
 
 using ScanPerson.BusinessLogic.Services.Interfaces;
 using ScanPerson.Common.Tests;
-using ScanPerson.DAL.Contexts;
 using ScanPerson.Integration.Tests.Base;
 using ScanPerson.Integration.Tests.Configure;
 using ScanPerson.Models.Items;
@@ -28,35 +26,30 @@ namespace ScanPerson.Integration.Tests
 	[TestClass]
 	public class ScanPersonWebApiTests : IntegrationTestsBase
 	{
-		private readonly Mock<IPersonInfoServicesAggregator> _personInfoServicesAggregator;
-		private readonly Mock<ILogger<PersonInfoController>> _logger;
+		private Mock<IPersonInfoServicesAggregator>? _personInfoServicesAggregator;
+		private Mock<ILogger<PersonInfoController>>? _logger;
 
-		public ScanPersonWebApiTests()
+		[TestInitialize]
+		public override async Task InitializeAsync()
 		{
+			await InitializeBdAndSetConnectionStringAsync();
+
 			_personInfoServicesAggregator = new Mock<IPersonInfoServicesAggregator>();
 			_logger = new Mock<ILogger<PersonInfoController>>();
 			Factory = new WebApplicationFactory<Program>()
 				.WithWebHostBuilder(builder =>
 				{
 					builder.UseEnvironment("Staging");
-					Environment.SetEnvironmentVariable("HTMLWEBRU_API_KEY", "value-does-not-matter");
-					Environment.SetEnvironmentVariable("JWT_OPTIONS_SECRET_KEY", "value-does-not-matter");
+					SetTestEnvironment();
 
 					builder.ConfigureServices(services =>
 					{
 						// Удаляем реальный сервис
 						var forRemoveDescriptors = new[] {
 							typeof(ILogger<PersonInfoController>),
-							typeof(ScanPersonDbContext),
 							typeof(IPersonInfoServicesAggregator)
 						};
 						RemoveFromServices(services, forRemoveDescriptors);
-
-						// Регистрируем InMemory базу данных
-						services.AddDbContext<ScanPersonDbContext>(options =>
-						{
-							options.UseInMemoryDatabase("ScanPersonDb");
-						});
 
 						// Подменяем на мок сервис
 						services.AddTransient(_ => _logger.Object);
@@ -88,7 +81,7 @@ namespace ScanPerson.Integration.Tests
 			var personResponses = CreationHelper.GetPersonResponse();
 			var taskResponse = CreationHelper.GetTaskResponse(personResponses);
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
-			_personInfoServicesAggregator.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Returns(taskResponse!);
+			_personInfoServicesAggregator!.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Returns(taskResponse!);
 
 			// Act
 			try
@@ -123,7 +116,7 @@ namespace ScanPerson.Integration.Tests
 				PhoneNumber = "123456789"
 			});
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
-			_personInfoServicesAggregator.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Throws<InvalidOperationException>();
+			_personInfoServicesAggregator!.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Throws<InvalidOperationException>();
 
 			// Act
 			try

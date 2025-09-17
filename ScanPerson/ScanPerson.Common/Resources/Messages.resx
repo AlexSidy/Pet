@@ -153,4 +153,7 @@
   <data name="ClientOperationError" xml:space="preserve">
     <value>An error occurred while performing the operation.</value>
   </data>
+  <data name="UnhandledException" xml:space="preserve">
+    <value>An unhandled exception occurred: {ErrorMessage}</value>
+  </data>
 </root>

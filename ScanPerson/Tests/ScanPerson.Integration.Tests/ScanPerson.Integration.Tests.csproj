@@ -39,11 +39,18 @@
 	<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
 	<PackageReference Include="MSTest.TestAdapter" Version="3.10.4" />
 	<PackageReference Include="MSTest.TestFramework" Version="3.10.4" />
+	<PackageReference Include="Testcontainers" Version="4.7.0" />
+	<PackageReference Include="Testcontainers.PostgreSql" Version="4.7.0" />
+	<PackageReference Include="xunit.extensibility.core" Version="2.9.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\ScanPerson.WebApi\ScanPerson.WebApi.csproj" />
     <ProjectReference Include="..\ScanPerson.Common.Tests\ScanPerson.Common.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\AlexSi\.nuget\packages\mstest.testadapter\3.10.4\buildTransitive\net9.0\\Microsoft.TestPlatform.AdapterUtilities.dll" />
   </ItemGroup>
 
 </Project>

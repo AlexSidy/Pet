@@ -2,7 +2,7 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 /.sonarqube
-/.vs
+**/.vs
 /ScanPerson/.vs/
 /Identity/.vs/
 /Graylog/.vs/
@@ -10,7 +10,7 @@
 **/TestResults/
 .env
 *.pfx
-
+**/TemplateEngineHost
 
 
 # Игнорировать папки сборки

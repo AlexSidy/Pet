@@ -2,7 +2,9 @@
 
 using Newtonsoft.Json;
 
-namespace ScanPerson.WebApi.Middlewares.Exceptions
+using ScanPerson.Common.Resources;
+
+namespace ScanPerson.WebApi.Middlewares
 {
 	/// <summary>
 	/// Middleware to handle exceptions globally.
@@ -21,7 +23,7 @@ namespace ScanPerson.WebApi.Middlewares.Exceptions
 			}
 			catch (Exception ex)
 			{
-				logger.LogError(ex, ex.Message);
+				logger.LogError(ex, Messages.UnhandledException, ex.Message);
 				await HandleExceptionMessageAsync(context, ex).ConfigureAwait(false);
 			}
 		}
@@ -31,7 +33,7 @@ namespace ScanPerson.WebApi.Middlewares.Exceptions
 		/// </summary>
 		/// <param name="context">The HTTP context.</param>
 		/// <param name="exception">The exception that occurred.</param>
-		private static Task HandleExceptionMessageAsync(HttpContext context, Exception exception)
+		private static async Task HandleExceptionMessageAsync(HttpContext context, Exception exception)
 		{
 			context.Response.ContentType = "application/json";
 			int statusCode = (int)HttpStatusCode.InternalServerError;
@@ -41,7 +43,7 @@ namespace ScanPerson.WebApi.Middlewares.Exceptions
 				StatusCode = statusCode,
 				ErrorMessage = exception.Message
 			});
-			return context.Response.WriteAsync(result);
+			await context.Response.WriteAsync(result);
 		}
 	}
 }

@@ -7,7 +7,6 @@
       "composeLaunchServiceName": "scanperson.webapi",
       "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger",
       "serviceActions": {
-        "pgadmin": "StartWithoutDebugging",
         "scanperson.ui": "StartWithoutDebugging",
         "scanperson.webapi": "StartDebugging",
         "scanpersondb": "StartWithoutDebugging"
@@ -20,7 +19,6 @@
       "composeLaunchServiceName": "scanperson.webapi",
       "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger",
       "serviceActions": {
-        "pgadmin": "StartWithoutDebugging",
         "scanperson.ui": "StartWithoutDebugging",
         "scanperson.webapi": "StartDebugging",
         "scanpersondb": "StartWithoutDebugging"
