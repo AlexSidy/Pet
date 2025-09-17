@@ -22,6 +22,8 @@ jobs:
     steps:      
       - name: Print a github.event.workflow_run.display_branch 
         run: echo github.event.workflow_run.display_branch - ${{ github.event.workflow_run.display_branch }}
+      - name: Print a github.event.workflow_run.ref
+        run: echo github.event.workflow_run.ref - ${{ github.event.workflow_run.ref }}
   
       - name: Checkout to the branch
         uses: actions/checkout@v4
