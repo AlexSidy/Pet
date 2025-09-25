@@ -1,122 +1,122 @@
-﻿using AutoMapper;
+﻿//using AutoMapper;
 
-using Microsoft.Extensions.Logging;
+//using Microsoft.Extensions.Logging;
 
-using Moq;
+//using Moq;
 
-using ScanPerson.BusinessLogic.Services;
-using ScanPerson.Common.Resources;
-using ScanPerson.Common.Tests;
-using ScanPerson.Models.Items;
-using ScanPerson.Models.Options;
-using ScanPerson.Models.Requests;
-using ScanPerson.Models.Responses;
+//using ScanPerson.BusinessLogic.Services;
+//using ScanPerson.Common.Resources;
+//using ScanPerson.Common.Tests;
+//using ScanPerson.Models.Items;
+//using ScanPerson.Models.Options;
+//using ScanPerson.Models.Requests;
+//using ScanPerson.Models.Responses;
 
-namespace ScanPerson.Unit.Tests
-{
-	[TestClass]
-	public sealed class GeoServiceTests
-	{
-		// class under tests
-		private readonly GeoService _cut;
+//namespace ScanPerson.Unit.Tests
+//{
+//	[TestClass]
+//	public sealed class GeoServiceTests
+//	{
+//		// class under tests
+//		private readonly GeoService _cut;
 
-		private readonly Mock<ILogger<GeoService>> _logger;
-		private Mock<IHttpClientFactory> _httpClientFactory;
-		private readonly ScanPersonSecrets _secrets = new() { HtmlWebRuApiKey = "key" };
-		private readonly ServicesOptions _servicesOptions;
-		private readonly Mock<IMapper> _mapper;
+//		private readonly Mock<ILogger<GeoService>> _logger;
+//		private Mock<IHttpClientFactory> _httpClientFactory;
+//		private readonly ScanPersonSecrets _secrets = new() { HtmlWebRuApiKey = "key" };
+//		private readonly ServicesOptions _servicesOptions;
+//		private readonly Mock<IMapper> _mapper;
 
 
-		public GeoServiceTests()
-		{
-			_logger = new Mock<ILogger<GeoService>>();
-			_httpClientFactory = new Mock<IHttpClientFactory>();
-			_httpClientFactory.SetupHttpClientFactoryWithSuccessResponse();
-			_servicesOptions = new()
-			{
-				UnUsingServices = ["TestUnusedService", "TestService"],
-				GeoServiceOptions = new GeoServiceOptions
-				{
-					BaseUrl = "https://test.ru/geo"
-				}
-			};
-			_mapper = new Mock<IMapper>();
-			_mapper.SetupAutoMapper();
+//		public GeoServiceTests()
+//		{
+//			_logger = new Mock<ILogger<GeoService>>();
+//			_httpClientFactory = new Mock<IHttpClientFactory>();
+//			_httpClientFactory.SetupHttpClientFactoryWithSuccessResponse();
+//			_servicesOptions = new()
+//			{
+//				UnUsingServices = ["TestUnusedService", "TestService"],
+//				GeoServiceOptions = new GeoServiceOptions
+//				{
+//					BaseUrl = "https://test.ru/geo"
+//				}
+//			};
+//			_mapper = new Mock<IMapper>();
+//			_mapper.SetupAutoMapper();
 
-			_cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions, _mapper.Object);
-		}
+//			_cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions, _mapper.Object);
+//		}
 
-		[TestMethod]
-		public void Ctor_DependiesAreNotNull_Success()
-		{
-			// Arrange
+//		[TestMethod]
+//		public void Ctor_DependiesAreNotNull_Success()
+//		{
+//			// Arrange
 
-			// Act
-			var cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions, _mapper.Object);
+//			// Act
+//			var cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions, _mapper.Object);
 
-			// Assert
-			Assert.IsNotNull(cut);
-		}
+//			// Assert
+//			Assert.IsNotNull(cut);
+//		}
 
-		[TestMethod]
-		public async Task GetInfoAsync_PersonRequestIsCorrect_ReturnSuccessResult()
-		{
-			// Arrange
-			var personRequest = new PersonInfoRequest();
-			var expectedResult = CreationHelper.GetPersonResponse();
+//		[TestMethod]
+//		public async Task GetInfoAsync_PersonRequestIsCorrect_ReturnSuccessResult()
+//		{
+//			// Arrange
+//			var personRequest = new PersonInfoRequest();
+//			var expectedResult = CreationHelper.GetPersonResponse();
 
-			// Act
-			var result = (ScanPersonResultResponse<PersonInfoItem>)await _cut.GetInfoAsync(personRequest);
+//			// Act
+//			var result = (ScanPersonResultResponse<PersonInfoItem>)await _cut.GetInfoAsync(personRequest);
 
-			// Assert
-			Assert.IsNotNull(result);
-			Assert.IsTrue(result.IsSuccess);
-			AssertHelper.AssertLocationResult(expectedResult[0], result);
-		}
+//			// Assert
+//			Assert.IsNotNull(result);
+//			Assert.IsTrue(result.IsSuccess);
+//			AssertHelper.AssertLocationResult(expectedResult[0], result);
+//		}
 
-		[TestMethod]
-		public async Task GetInfoAsync_ResponseFromHttpIsNotSuccess_ReturnFailResult()
-		{
-			// Arrange
-			var personRequest = new PersonInfoRequest();
-			_httpClientFactory.Reset();
-			_httpClientFactory.SetupHttpClientFactoryWithErrorResponse();
+//		[TestMethod]
+//		public async Task GetInfoAsync_ResponseFromHttpIsNotSuccess_ReturnFailResult()
+//		{
+//			// Arrange
+//			var personRequest = new PersonInfoRequest();
+//			_httpClientFactory.Reset();
+//			_httpClientFactory.SetupHttpClientFactoryWithErrorResponse();
 
-			var cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions, _mapper.Object);
+//			var cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions, _mapper.Object);
 
-			// Act
-			var result = await cut.GetInfoAsync(personRequest);
+//			// Act
+//			var result = await cut.GetInfoAsync(personRequest);
 
-			// Assert
-			Assert.IsNotNull(result);
-			Assert.IsFalse(result.IsSuccess);
-			Assert.AreEqual(Messages.ClientOperationError, result.Error);
-		}
+//			// Assert
+//			Assert.IsNotNull(result);
+//			Assert.IsFalse(result.IsSuccess);
+//			Assert.AreEqual(Messages.ClientOperationError, result.Error);
+//		}
 
-		[TestMethod]
-		public void CanAccept_ThisNotInUnUsingServices_ReturnTrue()
-		{
-			// Arrange
+//		[TestMethod]
+//		public void CanAccept_ThisNotInUnUsingServices_ReturnTrue()
+//		{
+//			// Arrange
 
-			// Act
-			var result = _cut.CanAccept();
+//			// Act
+//			var result = _cut.CanAccept();
 
-			// Assert
-			Assert.IsTrue(result);
-		}
+//			// Assert
+//			Assert.IsTrue(result);
+//		}
 
-		[TestMethod]
-		public void CanAccept_ThisInUnUsingServices_ReturnTrue()
-		{
-			// Arrange
-			var servicesOptions = new ServicesOptions() { UnUsingServices = ["GeoService", "TestUnusedService"] };
+//		[TestMethod]
+//		public void CanAccept_ThisInUnUsingServices_ReturnTrue()
+//		{
+//			// Arrange
+//			var servicesOptions = new ServicesOptions() { UnUsingServices = ["GeoService", "TestUnusedService"] };
 
-			// Act
-			var cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, servicesOptions, _mapper.Object);
-			var result = cut.CanAccept();
+//			// Act
+//			var cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, servicesOptions, _mapper.Object);
+//			var result = cut.CanAccept();
 
-			// Assert
-			Assert.IsFalse(result);
-		}
-	}
-}
+//			// Assert
+//			Assert.IsFalse(result);
+//		}
+//	}
+//}

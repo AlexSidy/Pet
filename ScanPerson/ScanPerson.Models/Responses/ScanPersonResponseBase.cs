@@ -14,7 +14,6 @@ namespace ScanPerson.Models.Responses
 		public ScanPersonResponseBase()
 		{
 			IsSuccess = true;
-			Errors = Enumerable.Empty<string>();
 		}
 
 		/// <summary>

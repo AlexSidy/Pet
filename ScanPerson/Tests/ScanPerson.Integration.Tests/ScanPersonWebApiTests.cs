@@ -2,8 +2,6 @@
 using System.Net.Http.Json;
 using System.Text;
 
-using GetContactAPI;
-
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -71,54 +69,6 @@ namespace ScanPerson.Integration.Tests
 				});
 			HttpClient = Factory!.CreateDefaultClient();
 		}
-
-		[TestMethod]
-		public async Task MyGetContactAPI()
-		{
-			var phone = "+79253047679";
-			var api = new GetContact(new Data(
-				"cOYkBY8c68caa8f1384da416ab39b9cc173227f57d1cde6d2abca4bba0",
-				"84a1e9d85986266055bb416e3bcf059b47262e777bb6a6d9a683499589aebe8e"
-				));
-			var phoneInfo = await api.GetByPhoneAsync(phone, TestContext.CancellationTokenSource.Token);
-			var tagsInfo = await api.GetTagsAsync(phone, TestContext.CancellationTokenSource.Token);
-
-			if (phoneInfo.Meta.IsRequestError)
-			{
-				// ваша обработка ошибки
-				return;
-			}
-
-			if (tagsInfo.Meta.IsRequestError)
-			{
-				// ваша обработка ошибки
-				return;
-			}
-
-			string name = phoneInfo.Response.Profile.DisplayName;
-		}
-
-		[TestMethod]
-		public async Task MyTestVoxlinkRu()
-		{
-			var phoneNumber = "+79253047679";
-			var url = $"http://num.voxlink.ru/get/?num={phoneNumber}";
-			using (var client = new HttpClient())
-			{
-				var response = await client.GetAsync(url, TestContext.CancellationTokenSource.Token);
-				response.EnsureSuccessStatusCode();
-				var locationResult = await response!.Content.ReadAsStringAsync();
-				//				{
-				//					"code": "925",
-				//					"num": "3047679",
-				//					"full_num": "9253047679",
-				//					"operator": "Билайн",
-				//					"old_operator": "МЕГАФОН",
-				//					"region": "Москва и Московская область"
-				//				}
-			}
-		}
-
 
 		[TestMethod]
 		public async Task GetPersonAsync_CorrectRequest_ReturnSuccessResult()
