@@ -15,30 +15,18 @@ jobs:
     runs-on: ubuntu-latest
     if: |
         ${{ (github.event.workflow_run.conclusion == 'success' &&
-        (github.event.workflow_run.display_branch == 'main' ||
-            github.event.workflow_run.ref == 'refs/heads/main' ||
-            github.event.workflow_run.ref == 'main') &&
         github.event.workflow_run.event == 'push' &&
-        github.event_name == 'workflow_run') ||
-        github.event_name == 'workflow_dispatch' }}
+        github.event_name == 'workflow_run' ||
+        github.event_name == 'workflow_dispatch') }}
     steps:
       - name: Print a check result
         run: echo check result - |
             ${{ (github.event.workflow_run.conclusion == 'success' &&
-            (github.event.workflow_run.display_branch == 'main' ||
-                github.event.workflow_run.ref == 'refs/heads/main' ||
-                github.event.workflow_run.ref == 'main') &&
             github.event.workflow_run.event == 'push' &&
-            github.event_name == 'workflow_run') ||
-            github.event_name == 'workflow_dispatch' }}
+            github.event_name == 'workflow_run' ||
+            github.event_name == 'workflow_dispatch') }}
       - name: Print a  github.event.workflow_run.event 
         run: echo  github.event.workflow_run.event - ${{  github.event.workflow_run.event }}
-      - name: Print a github.event.workflow_run.display_branch 
-        run: echo github.event.workflow_run.display_branch - ${{ github.event.workflow_run.display_branch }}
-      - name: Print a github.event.workflow_run.ref
-        run: echo github.event.workflow_run.ref - ${{ github.event.workflow_run.ref }}
-      - name: Print a github.event_name
-        run: echo github.event_name - ${{ github.event_name }}
   
       - name: Checkout to the branch
         uses: actions/checkout@v4
