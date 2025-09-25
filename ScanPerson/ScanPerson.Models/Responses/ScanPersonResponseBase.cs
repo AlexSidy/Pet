@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace ScanPerson.Models.Responses
 {
@@ -13,6 +14,7 @@ namespace ScanPerson.Models.Responses
 		public ScanPersonResponseBase()
 		{
 			IsSuccess = true;
+			Errors = Enumerable.Empty<string>();
 		}
 
 		/// <summary>

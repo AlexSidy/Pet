@@ -46,7 +46,7 @@ namespace ScanPerson.Common.Tests
 				new PersonInfoItem
 				{
 					Id = 1,
-					Name = "Name",
+					Names = ["Name"],
 					Mail = "Mail",
 					Location = new LocationItem
 					{

@@ -8,6 +8,7 @@
 		public ServicesOptions()
 		{
 			GeoServiceOptions = new GeoServiceOptions();
+			BrowserBotServiceOptions = new BrowserBotServiceOptions();
 			UnUsingServices = new string[] { };
 		}
 
@@ -22,6 +23,8 @@
 		public string[] UnUsingServices { get; set; }
 
 		public GeoServiceOptions GeoServiceOptions { get; set; }
+
+		public BrowserBotServiceOptions BrowserBotServiceOptions { get; set; }
 	}
 
 	/// <summary>
@@ -33,5 +36,16 @@
 		/// The base API URL for the service.
 		/// </summary>
 		public string BaseUrl { get; set; }
+	}
+
+	/// <summary>
+	/// Settings for the browser bot service.
+	/// </summary>
+	public class BrowserBotServiceOptions
+	{
+		/// <summary>
+		/// The host options for the service.
+		/// </summary>
+		public ServiceHostOptions ServiceHostOptions { get; set; }
 	}
 }

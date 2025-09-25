@@ -100,5 +100,21 @@ namespace ScanPerson.Unit.Tests
 			Assert.IsFalse(result[0].IsSuccess);
 			Assert.AreEqual(Messages.ClientOperationError, result[0].Error);
 		}
+
+		[TestMethod]
+		public async Task GetInfoAsync_PersonInfoServiceIsEmpty_ReturnEmptyCollectionResult()
+		{
+			// Arrange
+			var personRequest = new PersonInfoRequest();
+			_personInfoService.Setup(x => x.GetInfoAsync(It.IsAny<PersonInfoRequest>())).Throws(new Exception());
+			var cut = new PersonInfoServicesAggregator(_logger.Object, []);
+
+			// Act
+			var result = await cut.GetScanPersonInfoAsync(personRequest);
+
+			// Assert
+			Assert.IsNotNull(result);
+			Assert.IsTrue(result.Length == 0);
+		}
 	}
 }

@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -28,11 +28,12 @@ var jwtOptins = builder.Configuration.GetSection(JwtOptions.AppSettingsSection).
 jwtOptins.SecretKey = EnviromentHelper.GetVariableByName("JWT_OPTIONS_SECRET_KEY");
 
 // Setup Serilog
+var graylogOptions = EnviromentHelper.GetHostOptionsBySectionByName("Graylog", builder.Configuration);
 Log.Logger = new LoggerConfiguration()
 	.WriteTo.Graylog(new GraylogSinkOptions
 	{
-		HostnameOrAddress = builder.Configuration.GetSection("Graylog").GetValue<string>("Host") ?? "graylog",
-		Port = builder.Configuration.GetSection("Graylog").GetValue<int?>("Port") ?? 12201,
+		HostnameOrAddress = graylogOptions.Host ?? "graylog",
+		Port = graylogOptions.Port ?? 12201,
 		Facility = ProjectName,
 		MinimumLogEventLevel = Serilog.Events.LogEventLevel.Information,
 		TransportType = TransportType.Tcp

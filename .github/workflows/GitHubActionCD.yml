@@ -18,14 +18,27 @@ jobs:
         (github.event.workflow_run.display_branch == 'main' ||
             github.event.workflow_run.ref == 'refs/heads/main' ||
             github.event.workflow_run.ref == 'main') &&
-        github.event.workflow_run.event == 'pull_request' &&
+        github.event.workflow_run.event == 'push' &&
         github.event_name == 'workflow_run') ||
         github.event_name == 'workflow_dispatch' }}
-    steps:      
+    steps:
+      - name: Print a check result
+        run: echo check result - |
+            ${{ (github.event.workflow_run.conclusion == 'success' &&
+            (github.event.workflow_run.display_branch == 'main' ||
+                github.event.workflow_run.ref == 'refs/heads/main' ||
+                github.event.workflow_run.ref == 'main') &&
+            github.event.workflow_run.event == 'push' &&
+            github.event_name == 'workflow_run') ||
+            github.event_name == 'workflow_dispatch' }}
+      - name: Print a  github.event.workflow_run.event 
+        run: echo  github.event.workflow_run.event - ${{  github.event.workflow_run.event }}
       - name: Print a github.event.workflow_run.display_branch 
         run: echo github.event.workflow_run.display_branch - ${{ github.event.workflow_run.display_branch }}
       - name: Print a github.event.workflow_run.ref
         run: echo github.event.workflow_run.ref - ${{ github.event.workflow_run.ref }}
+      - name: Print a github.event_name
+        run: echo github.event_name - ${{ github.event_name }}
   
       - name: Checkout to the branch
         uses: actions/checkout@v4
@@ -38,23 +51,27 @@ jobs:
           VM_USER: ${{ secrets.VM_USER }}
           IS_REMOVE_IMAGE: ${{ vars.IS_REMOVE_IMAGE }}
           IS_REMOVE_VOLUMES: ${{ vars.IS_REMOVE_VOLUMES }}
+          EXCLUDE_SERVICE_NAMES: browserbotapi|redis|mongodb|pgadmin
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo "Check and stop running containers (short alternative docker stop $(docker ps -qa) || true)"
-            if [ -n "$(docker ps -qa)" ]; then
+            FOR_REMOVE_CONTAINERS=$(docker ps -qa | grep -E -v "$(docker ps -qa --filter name="^(${{ env.EXCLUDE_SERVICE_NAMES }})")")
+            echo "FOR_REMOVE_CONTAINERS: $FOR_REMOVE_CONTAINERS"
+    
+            echo "Check and stop running containers (short alternative docker stop $(docker ps -qa)"
+            if [ -n $FOR_REMOVE_CONTAINERS ]; then
               echo "Stopping running containers..."
-              docker stop $(docker ps -qa)
+              docker stop $FOR_REMOVE_CONTAINERS
             else
               echo "No running containers to stop."
             fi
 
-            echo "Check and remove stopped containers (short alternative docker rm $(docker ps -qa) || true)"
-            if [ -n "$(docker ps -qa)" ]; then
+            echo "Check and remove stopped containers (short alternative docker rm $(docker ps -qa)"
+            if [ -n $FOR_REMOVE_CONTAINERS ]; then
               echo "Removing stopped containers..."
-              docker rm $(docker ps -qa)
+              docker rm $FOR_REMOVE_CONTAINERS
             else
               echo "No stopped containers to remove."
             fi

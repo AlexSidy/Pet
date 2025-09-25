@@ -17,7 +17,7 @@ namespace ScanPerson.Common.Tests
 		{
 			Assert.IsTrue(result.IsSuccess);
 			Assert.IsNull(result.Error);
-			Assert.AreEqual(expected.Result.Name, result.Result.Name);
+			Assert.AreEqual(expected.Result.Names[0], result.Result.Names[0]);
 			Assert.AreEqual(expected.Result.Mail, result.Result.Mail);
 			Assert.AreEqual(expected.Result.Id, result.Result.Id);
 			AssertLocationResult(expected, result);

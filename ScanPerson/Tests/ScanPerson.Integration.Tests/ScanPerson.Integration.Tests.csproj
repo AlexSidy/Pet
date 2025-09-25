@@ -52,5 +52,4 @@
   <ItemGroup>
     <None Remove="C:\Users\AlexSi\.nuget\packages\mstest.testadapter\3.10.4\buildTransitive\net9.0\\Microsoft.TestPlatform.AdapterUtilities.dll" />
   </ItemGroup>
-
 </Project>

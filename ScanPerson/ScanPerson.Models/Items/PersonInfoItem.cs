@@ -13,7 +13,7 @@
 		/// <summary>
 		/// Name of the person.
 		/// </summary>	
-		public string Name { get; set; }
+		public string[] Names { get; set; }
 
 		/// <summary>
 		/// Mail of the person.

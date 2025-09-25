@@ -5,7 +5,7 @@ namespace ScanPerson.WebApi.Extensions
 	/// <summary>
 	/// Extension methods for adding the ExceptionHandlerMiddleware to the application's request pipeline.
 	/// </summary>
-	public static class ExceptionHandlerMiddlewareExtensions
+	public static class ScanPersonMiddlewareExtensions
 	{
 		/// <summary>
 		/// Adds the ExceptionHandlerMiddleware to the specified IApplicationBuilder.
