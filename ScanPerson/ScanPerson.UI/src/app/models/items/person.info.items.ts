@@ -1,7 +1,7 @@
 export class PersonInfoItem {
     constructor(
         public id?: number,
-        public name?: string,
+        public names?: string[],
         public mail?: string,
         public location?: LocationItem
       ) { }

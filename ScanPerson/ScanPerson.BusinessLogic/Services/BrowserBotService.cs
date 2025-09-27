@@ -54,7 +54,7 @@ namespace ScanPerson.BusinessLogic.Services
 				.. namesResult.IsSuccess ? namesResult.Result : [] ];
 
 			return [.. result.Distinct()];
-			
+
 		}
 
 		/// <summary>
@@ -71,33 +71,18 @@ namespace ScanPerson.BusinessLogic.Services
 		}
 
 		/// <summary>
-		/// Send request and check if success.
-		/// </summary>
-		/// <param name="request">Request object.</param>
-		/// <exception cref="HttpRequestException">Thrown if request is not success.</exception>
-		/// <returns>Response from http request</returns>
-		private async Task<HttpResponseMessage> SendRequestAndCheckSuccess(PersonInfoRequest request)
-		{
-			var response = await HttpClient.GetAsync(GetRequestByMethodName(request, "GetNameByPhoneNumberAsync"));
-			response.EnsureSuccessStatusCode();
-
-			return response;
-		}
-
-		/// <summary>
 		/// Get name person info from BrowserBotService.
 		/// </summary>
 		/// <param name="request">Request object.</param>
 		/// <returns>Result operation as response wrapper with string result.</returns>
 		private async Task<ScanPersonResultResponse<string>> GetNamePersonInfoAsync(PersonInfoRequest request)
 		{
-			var response = await SendRequestAndCheckSuccess(request);
+			var response = await SendRequestAndCheckSuccess(request, "GetNameByPhoneNumberAsync");
 			var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<string>>();
 			Logger.LogInformation(Messages.OperationResult, JsonSerializer.Serialize(result));
 
 			return result!;
 		}
-
 
 		/// <summary>
 		/// Get names person info from BrowserBotService.
@@ -106,12 +91,25 @@ namespace ScanPerson.BusinessLogic.Services
 		/// <returns>Result operation as response wrapper with string[] result.</returns>
 		private async Task<ScanPersonResultResponse<string[]>> GetNamesPersonInfoAsync(PersonInfoRequest request)
 		{
-			var response = await HttpClient.GetAsync(GetRequestByMethodName(request, "GetNamesByPhoneNumberAsync"));
-			response.EnsureSuccessStatusCode();
+			var response = await SendRequestAndCheckSuccess(request, "GetNamesByPhoneNumberAsync");
 			var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<string[]>>();
 			Logger.LogInformation(Messages.OperationResult, JsonSerializer.Serialize(result));
 
 			return result!;
+		}
+
+		/// <summary>
+		/// Send request and check if success.
+		/// </summary>
+		/// <param name="request">Request object.</param>
+		/// <exception cref="HttpRequestException">Thrown if request is not success.</exception>
+		/// <returns>Response from http request</returns>
+		private async Task<HttpResponseMessage> SendRequestAndCheckSuccess(PersonInfoRequest request, string methodName)
+		{
+			var response = await HttpClient.GetAsync(GetRequestByMethodName(request, methodName));
+			response.EnsureSuccessStatusCode();
+
+			return response;
 		}
 
 		/// <summary>
@@ -123,7 +121,7 @@ namespace ScanPerson.BusinessLogic.Services
 		private string GetRequestByMethodName(PersonInfoRequest request, string methodName)
 		{
 			var parameters = GetParameters(request);
-			var url = "http://" + GetBaseUrl() + "/" + methodName;
+			var url = GetBaseUrl() + methodName;
 			var requestUrl = QueryHelpers.AddQueryString(url, parameters!);
 
 			return requestUrl;

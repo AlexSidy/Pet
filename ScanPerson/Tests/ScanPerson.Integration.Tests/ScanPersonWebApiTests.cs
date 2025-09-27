@@ -78,33 +78,26 @@ namespace ScanPerson.Integration.Tests
 			{
 				PhoneNumber = "123456789"
 			});
-			var personResponses = CreationHelper.GetPersonResponse();
-			var taskResponse = CreationHelper.GetTaskResponse(personResponses);
+			var personResponse = CreationHelper.GetPersonsResponse();
+			var taskResponse = CreationHelper.GetTaskResponse(personResponse);
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
-			_personInfoServicesAggregator!.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Returns(taskResponse!);
+			_personInfoServicesAggregator!.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Returns(taskResponse);
 
 			// Act
-			try
-			{
-				var response = await HttpClient!.PostAsync(
-					$"{Program.WebApi}/{PersonInfoControllerName}/{nameof(PersonInfoController.GetScanPersonInfoAsync)}",
-					content,
-					TestContext.CancellationTokenSource.Token);
+			var response = await HttpClient!.PostAsync(
+				$"{Program.WebApi}/{PersonInfoControllerName}/{nameof(PersonInfoController.GetScanPersonInfoAsync)}",
+				content,
+				TestContext.CancellationTokenSource.Token);
 
-				// Assert
-				Assert.IsNotNull(response);
-				response.EnsureSuccessStatusCode();
-				Assert.IsNotNull(response.Content.Headers.ContentType);
-				Assert.AreEqual("application/json; charset=utf-8", response.Content.Headers.ContentType.ToString());
-				var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<PersonInfoItem>>(
-					TestContext.CancellationTokenSource.Token);
-				Assert.IsNotNull(result);
-				AssertHelper.AssertResult(personResponses[0], result);
-			}
-			catch (Exception ex)
-			{
-				throw new InvalidOperationException(ex.Message);
-			}
+			// Assert
+			Assert.IsNotNull(response);
+			response.EnsureSuccessStatusCode();
+			Assert.IsNotNull(response.Content.Headers.ContentType);
+			Assert.AreEqual("application/json; charset=utf-8", response.Content.Headers.ContentType.ToString());
+			var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<PersonInfoItem[]>>(
+				TestContext.CancellationTokenSource.Token);
+			Assert.IsNotNull(result);
+			AssertHelper.AssertResult(personResponse, result);
 		}
 
 		[TestMethod]
@@ -119,22 +112,15 @@ namespace ScanPerson.Integration.Tests
 			_personInfoServicesAggregator!.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Throws<InvalidOperationException>();
 
 			// Act
-			try
-			{
-				var response = await HttpClient!.PostAsync(
-					$"{Program.WebApi}/{PersonInfoControllerName}/{nameof(PersonInfoController.GetScanPersonInfoAsync)}",
-					content,
-					TestContext.CancellationTokenSource.Token);
+			var response = await HttpClient!.PostAsync(
+				$"{Program.WebApi}/{PersonInfoControllerName}/{nameof(PersonInfoController.GetScanPersonInfoAsync)}",
+				content,
+				TestContext.CancellationTokenSource.Token);
 
-				// Assert
-				Assert.IsNotNull(response);
-				Assert.IsFalse(response.IsSuccessStatusCode);
-				Assert.AreEqual(HttpStatusCode.InternalServerError, response.StatusCode);
-			}
-			catch (Exception ex)
-			{
-				throw new InvalidOperationException(ex.Message);
-			}
+			// Assert
+			Assert.IsNotNull(response);
+			Assert.IsFalse(response.IsSuccessStatusCode);
+			Assert.AreEqual(HttpStatusCode.InternalServerError, response.StatusCode);
 		}
 	}
 }

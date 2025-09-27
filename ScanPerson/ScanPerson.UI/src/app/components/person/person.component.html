@@ -6,7 +6,7 @@
   <thead>
     <tr>
       <th>ID</th>
-      <th>Имя</th>
+      <th>Идентификаторы</th>
       <th>Почта</th>      
       <th>Страна</th>
       <th>Текущее расположение</th>
@@ -19,7 +19,7 @@
   <tbody>
     <tr *ngFor="let item of items" class="table table-striped">
       <td>{{item?.id}}</td>
-      <td>{{item?.name}}</td>
+      <td>{{item?.names?.join(', ')}}</td>
       <td>{{item?.mail}}</td>
       <td>{{item?.location?.countryName}}</td>
       <td>{{item?.location?.currentRegion}}</td>

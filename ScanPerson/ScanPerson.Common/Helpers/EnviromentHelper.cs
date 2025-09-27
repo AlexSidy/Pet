@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using ScanPerson.Common.Resources;
 using ScanPerson.Models.Attributes;
 using ScanPerson.Models.Options;
-using ScanPerson.Models.Options.Auth;
 
 namespace ScanPerson.Common.Helpers
 {

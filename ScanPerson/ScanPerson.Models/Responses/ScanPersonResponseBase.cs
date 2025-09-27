@@ -51,6 +51,18 @@ namespace ScanPerson.Models.Responses
 		}
 
 		/// <summary>
+		/// Set warning messages for success response.
+		/// </summary>
+		/// <param name="messages">Warning messages.</param>
+		protected void SetWarningMessages(IEnumerable<string> messages)
+		{
+			if (IsSuccess && messages != null && messages.Any())
+			{
+				Errors = messages;
+			}
+		}
+
+		/// <summary>
 		/// List of errors.
 		/// </summary>
 		private IEnumerable<string> Errors { get; set; }

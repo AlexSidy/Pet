@@ -28,21 +28,24 @@ namespace ScanPerson.BusinessLogic.Services
 			_logger.LogInformation(Messages.OperationInput, string.Join(", ", _personInfoServices.Select(x => x.GetType().Name)));
 		}
 
-		public async Task<ScanPersonResponseBase[]> GetScanPersonInfoAsync(PersonInfoRequest request)
+		public async Task<ScanPersonResponseBase> GetScanPersonInfoAsync(PersonInfoRequest request)
 		{
 			try
 			{
 				_logger.LogInformation(Messages.StartedMethodWithParameters, nameof(GetScanPersonInfoAsync), JsonSerializer.Serialize(request));
-				var result = await Task.WhenAll(_personInfoServices.Select(x => x.GetInfoAsync(request)));
-				_logger.LogInformation(Messages.OperationResult, JsonSerializer.Serialize(result));
+				var results = await Task.WhenAll(_personInfoServices.Select(x => x.GetInfoAsync(request)));
+				_logger.LogInformation(Messages.OperationResult, JsonSerializer.Serialize(results));
 
-				return result;
+				var aggregatedResult = GetAggregatedResult(results);
+				_logger.LogInformation(Messages.OperationResult, JsonSerializer.Serialize(aggregatedResult));
+
+				return aggregatedResult;
 			}
 			catch (Exception ex)
 			{
 				_logger.LogError(ex, Messages.OperationError, GetType().Name);
 
-				return [GetFail<PersonInfoItem>(Messages.ClientOperationError)];
+				return GetFail<PersonInfoItem[]>(Messages.ClientOperationError);
 			}
 		}
 	}

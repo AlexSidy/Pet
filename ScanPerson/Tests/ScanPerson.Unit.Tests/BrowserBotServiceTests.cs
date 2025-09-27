@@ -1,122 +1,169 @@
-﻿//using AutoMapper;
+﻿using AutoMapper;
 
-//using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
-//using Moq;
+using Moq;
+using Moq.Protected;
 
-//using ScanPerson.BusinessLogic.Services;
-//using ScanPerson.Common.Resources;
-//using ScanPerson.Common.Tests;
-//using ScanPerson.Models.Items;
-//using ScanPerson.Models.Options;
-//using ScanPerson.Models.Requests;
-//using ScanPerson.Models.Responses;
+using ScanPerson.BusinessLogic.Services;
+using ScanPerson.Common.Resources;
+using ScanPerson.Common.Tests;
+using ScanPerson.Models.Items;
+using ScanPerson.Models.Options;
+using ScanPerson.Models.Requests;
+using ScanPerson.Models.Responses;
 
-//namespace ScanPerson.Unit.Tests
-//{
-//	[TestClass]
-//	public sealed class GeoServiceTests
-//	{
-//		// class under tests
-//		private readonly GeoService _cut;
+namespace ScanPerson.Unit.Tests
+{
+	[TestClass]
+	public sealed class BrowserBotServiceTests
+	{
+		// class under tests
+		private readonly BrowserBotService _cut;
 
-//		private readonly Mock<ILogger<GeoService>> _logger;
-//		private Mock<IHttpClientFactory> _httpClientFactory;
-//		private readonly ScanPersonSecrets _secrets = new() { HtmlWebRuApiKey = "key" };
-//		private readonly ServicesOptions _servicesOptions;
-//		private readonly Mock<IMapper> _mapper;
+		private readonly Mock<ILogger<BrowserBotService>> _logger;
+		private Mock<IHttpClientFactory> _httpClientFactory;
+		private readonly ScanPersonSecrets _secrets = new() { HtmlWebRuApiKey = "key" };
+		private readonly ServicesOptions _servicesOptions;
+		private readonly Mock<IMapper> _mapper;
 
 
-//		public GeoServiceTests()
-//		{
-//			_logger = new Mock<ILogger<GeoService>>();
-//			_httpClientFactory = new Mock<IHttpClientFactory>();
-//			_httpClientFactory.SetupHttpClientFactoryWithSuccessResponse();
-//			_servicesOptions = new()
-//			{
-//				UnUsingServices = ["TestUnusedService", "TestService"],
-//				GeoServiceOptions = new GeoServiceOptions
-//				{
-//					BaseUrl = "https://test.ru/geo"
-//				}
-//			};
-//			_mapper = new Mock<IMapper>();
-//			_mapper.SetupAutoMapper();
+		public BrowserBotServiceTests()
+		{
+			_logger = new Mock<ILogger<BrowserBotService>>();
+			_httpClientFactory = new Mock<IHttpClientFactory>();
+			_httpClientFactory.SetupHttpClientFactoryWithSuccessResponse();
+			_servicesOptions = new()
+			{
+				UnUsingServices = ["TestUnusedService", "TestService"],
+				GeoServiceOptions = new GeoServiceOptions
+				{
+					BaseUrl = "https://test.ru/geo"
+				},
+				BrowserBotServiceOptions = new BrowserBotServiceOptions
+				{
+					ServiceHostOptions = new ServiceHostOptions
+					{
+						Host = "browserbot",
+						Port = 443,
+						ApiVersion = "Api",
+						ControllerName = "Controller"
+					}
+				}
+			};
+			_mapper = new Mock<IMapper>();
+			_mapper.SetupAutoMapper();
 
-//			_cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions, _mapper.Object);
-//		}
+			_cut = new BrowserBotService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions, _mapper.Object);
+		}
 
-//		[TestMethod]
-//		public void Ctor_DependiesAreNotNull_Success()
-//		{
-//			// Arrange
+		[TestMethod]
+		public void Ctor_DependiesAreNotNull_Success()
+		{
+			// Arrange
 
-//			// Act
-//			var cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions, _mapper.Object);
+			// Act
+			var cut = new BrowserBotService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions, _mapper.Object);
 
-//			// Assert
-//			Assert.IsNotNull(cut);
-//		}
+			// Assert
+			Assert.IsNotNull(cut);
+		}
 
-//		[TestMethod]
-//		public async Task GetInfoAsync_PersonRequestIsCorrect_ReturnSuccessResult()
-//		{
-//			// Arrange
-//			var personRequest = new PersonInfoRequest();
-//			var expectedResult = CreationHelper.GetPersonResponse();
+		[TestMethod]
+		public async Task GetInfoAsync_PersonRequestIsCorrect_ReturnSuccessResult()
+		{
+			// Arrange
+			var personRequest = new PersonInfoRequest { PhoneNumber = "12345" };
+			_httpClientFactory.Reset();
+			var response1 = @"
+			{
+			  ""result"": ""Test name1"",
+			  ""isSuccess"": true,
+			  ""error"": null
+			}";
+			var mockHttpMessageHandler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
+			mockHttpMessageHandler
+				.Protected()
+				.Setup<Task<HttpResponseMessage>>(
+					"SendAsync",
+					ItExpr.Is<HttpRequestMessage>(x => x.RequestUri != null && x.RequestUri.ToString().Contains("GetNameByPhoneNumberAsync")),
+					ItExpr.IsAny<CancellationToken>())
+				.ReturnsAsync(CreationHelper.GetSuccessHttpMessage(response1));
 
-//			// Act
-//			var result = (ScanPersonResultResponse<PersonInfoItem>)await _cut.GetInfoAsync(personRequest);
+			var response2 = @"
+			{
+			  ""result"": [
+			    ""Test name2""
+			  ],
+			  ""isSuccess"": true,
+			  ""error"": null
+			}";
+			mockHttpMessageHandler
+				.Protected()
+				.Setup<Task<HttpResponseMessage>>(
+					"SendAsync",
+					ItExpr.Is<HttpRequestMessage>(x => x.RequestUri != null && x.RequestUri!.ToString().Contains("GetNamesByPhoneNumberAsync")),
+					ItExpr.IsAny<CancellationToken>())
+				.ReturnsAsync(CreationHelper.GetSuccessHttpMessage(response2));
 
-//			// Assert
-//			Assert.IsNotNull(result);
-//			Assert.IsTrue(result.IsSuccess);
-//			AssertHelper.AssertLocationResult(expectedResult[0], result);
-//		}
+			var httpClient = new HttpClient(mockHttpMessageHandler.Object);
 
-//		[TestMethod]
-//		public async Task GetInfoAsync_ResponseFromHttpIsNotSuccess_ReturnFailResult()
-//		{
-//			// Arrange
-//			var personRequest = new PersonInfoRequest();
-//			_httpClientFactory.Reset();
-//			_httpClientFactory.SetupHttpClientFactoryWithErrorResponse();
+			_httpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
-//			var cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions, _mapper.Object);
+			// Act
+			var cut = new BrowserBotService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions, _mapper.Object);
+			var result = (ScanPersonResultResponse<PersonInfoItem>)await cut.GetInfoAsync(personRequest);
 
-//			// Act
-//			var result = await cut.GetInfoAsync(personRequest);
+			// Assert
+			Assert.IsNotNull(result);
+			Assert.IsTrue(result.IsSuccess);
+			Assert.AreEqual("Test name1", result.Result.Names[0]);
+			Assert.AreEqual("Test name2", result.Result.Names[1]);
+		}
 
-//			// Assert
-//			Assert.IsNotNull(result);
-//			Assert.IsFalse(result.IsSuccess);
-//			Assert.AreEqual(Messages.ClientOperationError, result.Error);
-//		}
+		[TestMethod]
+		public async Task GetInfoAsync_ResponseFromHttpIsNotSuccess_ReturnFailResult()
+		{
+			// Arrange
+			var personRequest = new PersonInfoRequest();
+			_httpClientFactory.Reset();
+			_httpClientFactory.SetupHttpClientFactoryWithErrorResponse();
 
-//		[TestMethod]
-//		public void CanAccept_ThisNotInUnUsingServices_ReturnTrue()
-//		{
-//			// Arrange
+			var cut = new BrowserBotService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions, _mapper.Object);
 
-//			// Act
-//			var result = _cut.CanAccept();
+			// Act
+			var result = await cut.GetInfoAsync(personRequest);
 
-//			// Assert
-//			Assert.IsTrue(result);
-//		}
+			// Assert
+			Assert.IsNotNull(result);
+			Assert.IsFalse(result.IsSuccess);
+			Assert.AreEqual(Messages.ClientOperationError, result.Error);
+		}
 
-//		[TestMethod]
-//		public void CanAccept_ThisInUnUsingServices_ReturnTrue()
-//		{
-//			// Arrange
-//			var servicesOptions = new ServicesOptions() { UnUsingServices = ["GeoService", "TestUnusedService"] };
+		[TestMethod]
+		public void CanAccept_ThisNotInUnUsingServices_ReturnTrue()
+		{
+			// Arrange
 
-//			// Act
-//			var cut = new GeoService(_logger.Object, _httpClientFactory.Object, _secrets, servicesOptions, _mapper.Object);
-//			var result = cut.CanAccept();
+			// Act
+			var result = _cut.CanAccept();
 
-//			// Assert
-//			Assert.IsFalse(result);
-//		}
-//	}
-//}
+			// Assert
+			Assert.IsTrue(result);
+		}
+
+		[TestMethod]
+		public void CanAccept_ThisInUnUsingServices_ReturnTrue()
+		{
+			// Arrange
+			var servicesOptions = new ServicesOptions() { UnUsingServices = ["BrowserBotService", "TestUnusedService"] };
+
+			// Act
+			var cut = new BrowserBotService(_logger.Object, _httpClientFactory.Object, _secrets, servicesOptions, _mapper.Object);
+			var result = cut.CanAccept();
+
+			// Assert
+			Assert.IsFalse(result);
+		}
+	}
+}

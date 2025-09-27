@@ -15,31 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     if: |
         ${{ (github.event.workflow_run.conclusion == 'success' &&
-        (github.event.workflow_run.display_branch == 'main' ||
-            github.event.workflow_run.ref == 'refs/heads/main' ||
-            github.event.workflow_run.ref == 'main') &&
         github.event.workflow_run.event == 'push' &&
-        github.event_name == 'workflow_run') ||
-        github.event_name == 'workflow_dispatch' }}
+        github.event_name == 'workflow_run' ||
+        github.event_name == 'workflow_dispatch') }}
     steps:
-      - name: Print a check result
-        run: echo check result - |
-            ${{ (github.event.workflow_run.conclusion == 'success' &&
-            (github.event.workflow_run.display_branch == 'main' ||
-                github.event.workflow_run.ref == 'refs/heads/main' ||
-                github.event.workflow_run.ref == 'main') &&
-            github.event.workflow_run.event == 'push' &&
-            github.event_name == 'workflow_run') ||
-            github.event_name == 'workflow_dispatch' }}
-      - name: Print a  github.event.workflow_run.event 
-        run: echo  github.event.workflow_run.event - ${{  github.event.workflow_run.event }}
-      - name: Print a github.event.workflow_run.display_branch 
-        run: echo github.event.workflow_run.display_branch - ${{ github.event.workflow_run.display_branch }}
-      - name: Print a github.event.workflow_run.ref
-        run: echo github.event.workflow_run.ref - ${{ github.event.workflow_run.ref }}
-      - name: Print a github.event_name
-        run: echo github.event_name - ${{ github.event_name }}
-  
       - name: Checkout to the branch
         uses: actions/checkout@v4
 
@@ -51,7 +30,7 @@ jobs:
           VM_USER: ${{ secrets.VM_USER }}
           IS_REMOVE_IMAGE: ${{ vars.IS_REMOVE_IMAGE }}
           IS_REMOVE_VOLUMES: ${{ vars.IS_REMOVE_VOLUMES }}
-          EXCLUDE_SERVICE_NAMES: browserbotapi|redis|mongodb|pgadmin
+          EXCLUDE_SERVICE_NAMES: browserbotapi|redis|mongodb|pgadmin|graylog|elasticsearch
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
@@ -60,16 +39,16 @@ jobs:
             FOR_REMOVE_CONTAINERS=$(docker ps -qa | grep -E -v "$(docker ps -qa --filter name="^(${{ env.EXCLUDE_SERVICE_NAMES }})")")
             echo "FOR_REMOVE_CONTAINERS: $FOR_REMOVE_CONTAINERS"
     
-            echo "Check and stop running containers (short alternative docker stop $(docker ps -qa)"
-            if [ -n $FOR_REMOVE_CONTAINERS ]; then
+            echo "Check and stop running containers "
+            if [ -n "$FOR_REMOVE_CONTAINERS" ]; then
               echo "Stopping running containers..."
               docker stop $FOR_REMOVE_CONTAINERS
             else
               echo "No running containers to stop."
             fi
 
-            echo "Check and remove stopped containers (short alternative docker rm $(docker ps -qa)"
-            if [ -n $FOR_REMOVE_CONTAINERS ]; then
+            echo "Check and remove stopped containers"
+            if [ -n "$FOR_REMOVE_CONTAINERS" ]; then
               echo "Removing stopped containers..."
               docker rm $FOR_REMOVE_CONTAINERS
             else
@@ -77,7 +56,7 @@ jobs:
             fi
 
             echo "Check and remove images (optional, but good for cleanup)."
-            if [ ${{ env.IS_REMOVE_IMAGE }} ]; then
+            if [ ${{ env.IS_REMOVE_IMAGE }}='true' ]; then
               echo "Removing images..."
               docker image prune -f
             else
@@ -85,7 +64,7 @@ jobs:
             fi
 
             echo "Check and remove unused Docker volumes (optional, but good for cleanup)."
-            if [ ${{ env.IS_REMOVE_VOLUMES }} ]; then
+            if [ ${{ env.IS_REMOVE_VOLUMES }}='true' ]; then
               echo "Removing volumes..."
               docker volume prune -f
             else
