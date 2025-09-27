@@ -56,7 +56,7 @@ jobs:
             fi
 
             echo "Check and remove images (optional, but good for cleanup)."
-            if [ ${{ env.IS_REMOVE_IMAGE }}='true' ]; then
+            if [ "${{ env.IS_REMOVE_IMAGE }}" == 'true' ]; then
               echo "Removing images..."
               docker image prune -f
             else
@@ -64,7 +64,7 @@ jobs:
             fi
 
             echo "Check and remove unused Docker volumes (optional, but good for cleanup)."
-            if [ ${{ env.IS_REMOVE_VOLUMES }}='true' ]; then
+            if [ "${{ env.IS_REMOVE_VOLUMES }}" == 'true' ]; then
               echo "Removing volumes..."
               docker volume prune -f
             else

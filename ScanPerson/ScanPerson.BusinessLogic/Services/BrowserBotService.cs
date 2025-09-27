@@ -137,7 +137,7 @@ namespace ScanPerson.BusinessLogic.Services
 				$"{ServicesOptions.BrowserBotServiceOptions.ServiceHostOptions.Host}" +
 				$":{ServicesOptions.BrowserBotServiceOptions.ServiceHostOptions.Port}" +
 				$"/{ServicesOptions.BrowserBotServiceOptions.ServiceHostOptions.ApiVersion}" +
-				$"/{ServicesOptions.BrowserBotServiceOptions.ServiceHostOptions.ControllerName}";
+				$"/{ServicesOptions.BrowserBotServiceOptions.ServiceHostOptions.ControllerName}/";
 		}
 	}
 }
