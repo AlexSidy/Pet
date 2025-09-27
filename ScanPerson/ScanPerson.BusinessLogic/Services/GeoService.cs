@@ -15,22 +15,14 @@ namespace ScanPerson.BusinessLogic.Services
 	/// <summary>
 	/// Service for getting information about a person's location by phone number from the service https://htmlweb.ru/geo/telcod_api_example.php
 	/// </summary>
-	public class GeoService : PersonInfoServiceBase
+	public class GeoService(
+		ILogger<GeoService> logger,
+		IHttpClientFactory httpClientFactory,
+		ScanPersonSecrets secrets,
+		ServicesOptions serviceOptions,
+		IMapper mapper) : PersonInfoServiceBase(logger, httpClientFactory, secrets, serviceOptions, mapper)
 	{
-		private readonly string _baseUrl;
-
-		public GeoService(
-			ILogger<GeoService> logger,
-			IHttpClientFactory httpClientFactory,
-			ScanPersonSecrets secrets,
-			ServicesOptions serviceOptions,
-			IMapper mapper)
-			: base(logger, httpClientFactory, secrets, serviceOptions, mapper)
-		{
-			_baseUrl = serviceOptions.GeoServiceOptions.BaseUrl;
-		}
-
-		protected async override Task<ScanPersonResponseBase> GetPersonInfoAsync(PersonInfoRequest request)
+		protected async override Task<ScanPersonResponseBase> GetAnyPersonInfoAsync(PersonInfoRequest request)
 		{
 			var parameters = new Dictionary<string, string>
 			{
@@ -38,7 +30,7 @@ namespace ScanPerson.BusinessLogic.Services
 				["telcod"] = request.PhoneNumber,
 				["api_key"] = Secrets.HtmlWebRuApiKey
 			};
-			var requestUrl = QueryHelpers.AddQueryString(_baseUrl, parameters!);
+			var requestUrl = QueryHelpers.AddQueryString(ServicesOptions.GeoServiceOptions.BaseUrl, parameters!);
 			var response = await HttpClient.GetAsync(requestUrl);
 			response.EnsureSuccessStatusCode();
 			var locationResult = await response!.Content.ReadFromJsonAsync<LocationDeserialized>();

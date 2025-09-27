@@ -14,6 +14,11 @@ namespace ScanPerson.BusinessLogic
 	/// </summary>
 	public static class BusinessLogicExtensions
 	{
+		/// <summary>
+		/// Adds business logic services.
+		/// </summary>
+		/// <param name="services">The services.</param>
+		/// <param name="configuration">The configuration.</param>
 		public static void AddBusinessLogicServices(this IServiceCollection services, IConfiguration configuration)
 		{
 			var serviceOptions = configuration.GetSection(ServicesOptions.AppSettingsSection).Get<ServicesOptions>() ?? new ServicesOptions();
@@ -23,6 +28,10 @@ namespace ScanPerson.BusinessLogic
 			services.AddSingleton<IPersonInfoServicesAggregator, PersonInfoServicesAggregator>();
 		}
 
+		/// <summary>
+		/// Adds secrets.
+		/// </summary>
+		/// <param name="services">The services.</param>
 		private static void AddSecrets(this IServiceCollection services)
 		{
 			services.AddSingleton(EnviromentHelper.GetFilledFromEnvironment<ScanPersonSecrets>());

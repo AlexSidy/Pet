@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using ScanPerson.BusinessLogic.Services.Interfaces;
@@ -27,7 +27,7 @@ namespace ScanPerson.WebApi.Controllers
 			logger.LogInformation(Messages.StartedMethod, ControllerContext?.RouteData?.Values["action"]);
 			var result = await service.GetScanPersonInfoAsync(request);
 
-			return GetResult(result.ToHashSet().FirstOrDefault());
+			return GetResult(result);
 		}
 	}
 }

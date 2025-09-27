@@ -71,7 +71,7 @@ namespace ScanPerson.Unit.Tests
 			// Assert
 			Assert.IsNotNull(result);
 			Assert.IsTrue(result.IsSuccess);
-			AssertHelper.AssertLocationResult(expectedResult[0], result);
+			AssertHelper.AssertLocationResultWithPerson(expectedResult, result);
 		}
 
 		[TestMethod]

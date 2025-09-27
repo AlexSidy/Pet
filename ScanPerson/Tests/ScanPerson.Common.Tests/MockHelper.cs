@@ -52,7 +52,7 @@ namespace ScanPerson.Common.Tests
 		public static void SetupAutoMapper(this Mock<IMapper> mapper)
 		{
 			mapper.Setup(x => x.Map<LocationItem>(It.IsAny<LocationDeserialized>()))
-				.Returns(CreationHelper.GetPersonResponse()[0].Result.Location);
+				.Returns(CreationHelper.GetPersonsResponse().Result[0].Location);
 		}
 	}
 }

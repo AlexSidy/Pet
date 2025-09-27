@@ -11,6 +11,7 @@
 .env
 *.pfx
 **/TemplateEngineHost
+.editorconfig
 
 
 # Игнорировать папки сборки

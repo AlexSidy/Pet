@@ -47,19 +47,19 @@ namespace ScanPerson.Unit.Tests
 		{
 			// Arrange
 			var personRequest = new PersonInfoRequest();
-			var expectedResult = CreationHelper.GetPersonResponse()[0];
+			var expectedResult = CreationHelper.GetPersonResponse();
 			var taskResponse = Task.FromResult<ScanPersonResponseBase>(expectedResult);
 			_personInfoService.Setup(x => x.GetInfoAsync(It.IsAny<PersonInfoRequest>())).Returns(taskResponse);
 
 			// Act
-			var results = await _cut.GetScanPersonInfoAsync(personRequest);
-			var result = (ScanPersonResultResponse<PersonInfoItem>)results[0];
+			var response = await _cut.GetScanPersonInfoAsync(personRequest);
+			var result = (ScanPersonResultResponse<PersonInfoItem[]>)response;
 
 			// Assert
 			Assert.IsNotNull(result);
-			Assert.IsNotNull(result);
+			Assert.IsNotNull(result.Result);
 			Assert.IsTrue(result.IsSuccess);
-			AssertHelper.AssertLocationResult(expectedResult, result);
+			AssertHelper.AssertPersonInfo(expectedResult.Result, result.Result[0]);
 		}
 
 		[TestMethod]
@@ -78,9 +78,9 @@ namespace ScanPerson.Unit.Tests
 
 			// Assert
 			Assert.IsNotNull(result);
-			Assert.IsNotNull(result[0]);
-			Assert.IsFalse(result[0].IsSuccess);
-			Assert.AreEqual(errorMessage, result[0].Error);
+			Assert.IsNotNull(result);
+			Assert.IsFalse(result.IsSuccess);
+			Assert.AreEqual(errorMessage, result.Error);
 		}
 
 		[TestMethod]
@@ -96,9 +96,26 @@ namespace ScanPerson.Unit.Tests
 
 			// Assert
 			Assert.IsNotNull(result);
-			Assert.IsNotNull(result[0]);
-			Assert.IsFalse(result[0].IsSuccess);
-			Assert.AreEqual(Messages.ClientOperationError, result[0].Error);
+			Assert.IsNotNull(result);
+			Assert.IsFalse(result.IsSuccess);
+			Assert.AreEqual(Messages.ClientOperationError, result.Error);
+		}
+
+		[TestMethod]
+		public async Task GetInfoAsync_PersonInfoServiceIsEmpty_ReturnBaseFailResult()
+		{
+			// Arrange
+			var personRequest = new PersonInfoRequest();
+			_personInfoService.Setup(x => x.GetInfoAsync(It.IsAny<PersonInfoRequest>())).Throws(new Exception());
+			var cut = new PersonInfoServicesAggregator(_logger.Object, []);
+
+			// Act
+			var result = await cut.GetScanPersonInfoAsync(personRequest);
+
+			// Assert
+			Assert.IsNotNull(result);
+			Assert.IsFalse(result.IsSuccess);
+			Assert.IsNotEmpty(result.Error);
 		}
 	}
 }

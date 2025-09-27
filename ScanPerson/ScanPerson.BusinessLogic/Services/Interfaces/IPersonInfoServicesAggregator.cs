@@ -13,6 +13,6 @@ namespace ScanPerson.BusinessLogic.Services.Interfaces
 		/// </summary>
 		/// <param name="request">Request with input data.</param>
 		/// <returns>List of information suitable for the input data.</returns>
-		Task<ScanPersonResponseBase[]> GetScanPersonInfoAsync(PersonInfoRequest request);
+		Task<ScanPersonResponseBase> GetScanPersonInfoAsync(PersonInfoRequest request);
 	}
 }

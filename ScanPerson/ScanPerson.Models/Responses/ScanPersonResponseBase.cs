@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace ScanPerson.Models.Responses
 {
@@ -46,6 +47,18 @@ namespace ScanPerson.Models.Responses
 			get
 			{
 				return Errors == null ? null : string.Join(", ", Errors);
+			}
+		}
+
+		/// <summary>
+		/// Set warning messages for success response.
+		/// </summary>
+		/// <param name="messages">Warning messages.</param>
+		protected void SetWarningMessages(IEnumerable<string> messages)
+		{
+			if (IsSuccess && messages != null && messages.Any())
+			{
+				Errors = messages;
 			}
 		}
 
