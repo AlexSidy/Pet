@@ -3,6 +3,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
+import { ScanPersonResponseBase } from '../models/responses/scan.person.response.base';
 import { ScanPersonResultResponse } from '../models/responses/scan.person.result.response';
 import { ACCESS_TOKEN_KEY, AuthApi } from '../constants/constants';
 import { LoginRequest } from '../models/requests/login.request';
@@ -24,7 +25,7 @@ export class AuthService {
   register(email: string, password: string) {
     let request = new RegisterRequest(password, email);
     return this.httpClient
-      .post<ScanPersonResultResponse>(this.api + '/RegisterAsync', request)
+      .post<ScanPersonResponseBase>(this.api + '/RegisterAsync', request)
       .subscribe({
         next: (response) => {
           if (response?.isSuccess) {
@@ -45,7 +46,7 @@ export class AuthService {
   login(email: string, password: string) {
     let request = new LoginRequest(password, email);
     return this.httpClient
-      .post<ScanPersonResultResponse>(this.api + '/LoginAsync', request)
+      .post<ScanPersonResultResponse<string>>(this.api + '/LoginAsync', request)
       .subscribe({
         next: (response) => {
           if (response.isSuccess && this.isBrowser()) {

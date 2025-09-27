@@ -19,9 +19,10 @@ namespace ScanPerson.Models.Responses
 		{
 		}
 
-		public ScanPersonResultResponse(TResult result) : base()
+		public ScanPersonResultResponse(TResult result, IEnumerable<string> warnings = null) : base()
 		{
 			Result = result;
+			SetWarningMessages(warnings);
 		}
 
 		/// <summary>

@@ -7,14 +7,14 @@ using ScanPerson.Models.Responses;
 namespace ScanPerson.Common.Tests
 {
 	/// <summary>
-	/// Класс для создания объектов, используемых в тестах.
+	/// A class for creating objects used in tests.
 	/// </summary>
 	public sealed class CreationHelper
 	{
 		/// <summary>
-		/// Получает шаблонный ответ от сервера с ошибкой 500.
+		/// Gets a template response from the server with a 500 error code.
 		/// </summary>
-		/// <returns>неуспешный ответ с сервера.</returns>
+		/// <returns>The unsuccessful response from the server.</returns>
 		public static HttpResponseMessage GetInternalServerErrorHttpMessage()
 		{
 			return new HttpResponseMessage
@@ -25,54 +25,71 @@ namespace ScanPerson.Common.Tests
 		}
 
 		/// <summary>
-		/// Получает шаблонный ответ от сервера с кодом 200.
+		/// Gets a template response from the server with a 200 status code.
 		/// </summary>
-		/// <returns>Успешный ответ с сервера.</returns>
-		public static HttpResponseMessage GetSuccessHttpMessage()
+		/// <returns>The successful response from the server.</returns>
+		public static HttpResponseMessage GetSuccessHttpMessage(string? response = null)
 		{
 			return new HttpResponseMessage
 			{
 				StatusCode = HttpStatusCode.OK,
-				Content = new StringContent(GetGeoJsonResponse(), Encoding.UTF8, "application/json")
+				Content = new StringContent(response ?? GetGeoJsonResponse(), Encoding.UTF8, "application/json")
 			};
 		}
 
 		/// <summary>
-		/// Получает успешный общий ответ с сервиса.
+		/// Gets a successful aggregated response from the service.
 		/// </summary>
-		/// <returns></returns>
-		public static ScanPersonResultResponse<PersonInfoItem>[] GetPersonResponse()
-			=> [ new ScanPersonResultResponse<PersonInfoItem>(
-				new PersonInfoItem
-				{
-					Id = 1,
-					Name = "Name",
-					Mail = "Mail",
-					Location = new LocationItem
-					{
-						CountryName = "Россия",
-						CurrentRegion = "Московская область",
-						OperatorCity = "Москва",
-						OperatorName = "Билайн",
-						RegistrationCapital = "Москва",
-						RegistrationOkrug = "Центральный федеральный округ"
-					}
-				})];
+		/// <returns>The result containing an array of person information.</returns>
+		public static ScanPersonResultResponse<PersonInfoItem[]> GetPersonsResponse()
+			=> new ScanPersonResultResponse<PersonInfoItem[]>(
+				[GetPerson()]);
 
 		/// <summary>
-		/// Получает успешный общий ответ с сервиса обернутый в Task.
+		/// Gets a successful response from the service.
 		/// </summary>
-		/// <param name="personResponse">Результат полученный от сервиса.</param>
-		/// <returns>Задача с результатом операции.</returns>
-		public static Task<ScanPersonResponseBase[]> GetTaskResponse(ScanPersonResultResponse<PersonInfoItem>[] personResponses)
+		/// <returns>The result containing an person information.</returns>
+		public static ScanPersonResultResponse<PersonInfoItem> GetPersonResponse()
+			=> new ScanPersonResultResponse<PersonInfoItem>(
+				GetPerson());
+
+		/// <summary>
+		/// Get person info.
+		/// </summary>
+		/// <returns>Person Info</returns>
+		private static PersonInfoItem GetPerson()
 		{
-			return Task.FromResult<ScanPersonResponseBase[]>(personResponses);
+			return new PersonInfoItem
+			{
+				Id = 1,
+				Names = ["Name"],
+				Mail = "Mail",
+				Location = new LocationItem
+				{
+					CountryName = "Россия",
+					CurrentRegion = "Московская область",
+					OperatorCity = "Москва",
+					OperatorName = "Билайн",
+					RegistrationCapital = "Москва",
+					RegistrationOkrug = "Центральный федеральный округ"
+				}
+			};
 		}
 
 		/// <summary>
-		/// Получает успешный ответ с сервиса  https://htmlweb.ru/geo/telcod_api_example.php
+		/// Gets a successful aggregated response from the service, wrapped in a Task.
 		/// </summary>
-		/// <returns>Тест в виде json объекта.</returns>
+		/// <param name="personResponse">The result received from the service.</param>
+		/// <returns>A Task representing the result of the operation.</returns>
+		public static Task<ScanPersonResponseBase> GetTaskResponse(ScanPersonResultResponse<PersonInfoItem[]> personResponses)
+		{
+			return Task.FromResult<ScanPersonResponseBase>(personResponses);
+		}
+
+		/// <summary>
+		/// Gets a successful response from the service https://htmlweb.ru/geo/telcod_api_example.php
+		/// </summary>
+		/// <returns>The test result as a JSON object.</returns>
 		private static string GetGeoJsonResponse()
 		{
 			return @"
@@ -86,9 +103,9 @@ namespace ScanPerson.Common.Tests
 		}
 
 		/// <summary>
-		/// Получает неуспешный ответ с сервиса  https://htmlweb.ru/geo/telcod_api_example.php
+		/// Gets an unsuccessful response from the http client.
 		/// </summary>
-		/// <returns>Тест в виде json объекта.</returns>
+		/// <returns>The test result as a JSON object.</returns>
 		private static string GetInternalServerErrorJsonResponse()
 		{
 			return @"{ ""message"": ""Internal server error"", ""code"": 500 }";

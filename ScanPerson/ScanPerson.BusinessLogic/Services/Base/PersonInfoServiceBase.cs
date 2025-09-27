@@ -45,7 +45,7 @@ namespace ScanPerson.BusinessLogic.Services
 			try
 			{
 				Logger.LogInformation(Messages.StartedMethodWithParameters, nameof(GetInfoAsync), JsonSerializer.Serialize(request));
-				var result = await GetPersonInfoAsync(request);
+				var result = await GetAnyPersonInfoAsync(request);
 				Logger.LogInformation(Messages.OperationResult, JsonSerializer.Serialize(result));
 
 				return result;
@@ -68,6 +68,6 @@ namespace ScanPerson.BusinessLogic.Services
 		/// </summary>
 		/// <param name="request">Запрос с входящими данными.</param>
 		/// <returns>Результат с полученной информацией конкретного сервиса.</returns>
-		protected abstract Task<ScanPersonResponseBase> GetPersonInfoAsync(PersonInfoRequest request);
+		protected abstract Task<ScanPersonResponseBase> GetAnyPersonInfoAsync(PersonInfoRequest request);
 	}
 }
