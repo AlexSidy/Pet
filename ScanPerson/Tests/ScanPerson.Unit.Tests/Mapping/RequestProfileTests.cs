@@ -73,7 +73,7 @@ namespace ScanPerson.Unit.Tests.Mapping
 
 			// Assert
 			// Ожидаем префикс "7" + исходный номер
-			Assert.AreEqual(null, destination.PhoneNumber);
+			Assert.IsNull(destination.PhoneNumber);
 		}
 	}
 }

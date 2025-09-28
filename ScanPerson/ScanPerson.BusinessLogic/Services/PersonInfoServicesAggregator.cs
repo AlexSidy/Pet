@@ -59,12 +59,6 @@ namespace ScanPerson.BusinessLogic.Services
 
 			if (results.Any(x => x.IsSuccess))
 			{
-				var tte = results
-						.Where(x => x.IsSuccess)
-						.OfType<ScanPersonResultResponse<PersonInfoItem>>()
-						.Where(x => x != null)
-						.Select(x => x!.Result)
-						.ToHashSet();
 				return GetSuccess(
 					results
 						.Where(x => x.IsSuccess)
