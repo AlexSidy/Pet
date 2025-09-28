@@ -14,10 +14,9 @@ export class HttpUnauthorizedInterceptor implements HttpInterceptor {
             if (err.status === 401) {
                 // auto logout if 401 response returned from api
                 this.authService.logout();
-                return next.handle(request);
             }
 
-            return throwError(() => new Error(err.message || 'An unknown error occurred'));
+            return next.handle(request);
         }))
     }
 }

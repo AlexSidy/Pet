@@ -53,13 +53,13 @@ namespace ScanPerson.Unit.Tests
 
 			// Act
 			var response = await _cut.GetScanPersonInfoAsync(personRequest);
-			var result = (ScanPersonResultResponse<PersonInfoItem[]>)response;
+			var result = (ScanPersonResultResponse<PersonInfoItem>)response;
 
 			// Assert
 			Assert.IsNotNull(result);
 			Assert.IsNotNull(result.Result);
 			Assert.IsTrue(result.IsSuccess);
-			AssertHelper.AssertPersonInfo(expectedResult.Result, result.Result[0]);
+			AssertHelper.AssertPersonInfo(expectedResult.Result, result.Result);
 		}
 
 		[TestMethod]

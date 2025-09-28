@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID  } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 
 import { ScanPersonResponseBase } from '../models/responses/scan.person.response.base';
 import { ScanPersonResultResponse } from '../models/responses/scan.person.result.response';
@@ -17,10 +18,15 @@ export class AuthService {
 
   private readonly api: string = "/" + AuthApi + '/Auth';
 
+  private isBrowser: boolean;
+
   constructor(
     private readonly httpClient: HttpClient,
     private readonly router: Router,
-    private readonly jwtHelper: JwtHelperService) {}
+    @Inject(PLATFORM_ID)private readonly platformId: Object,
+    private readonly jwtHelper: JwtHelperService) {
+      this.isBrowser = isPlatformBrowser(platformId);
+    }
 
   register(email: string, password: string) {
     let request = new RegisterRequest(password, email);
@@ -49,7 +55,7 @@ export class AuthService {
       .post<ScanPersonResultResponse<string>>(this.api + '/LoginAsync', request)
       .subscribe({
         next: (response) => {
-          if (response.isSuccess && this.isBrowser()) {
+          if (response.isSuccess && this.isBrowser) {
             sessionStorage.setItem(ACCESS_TOKEN_KEY, response.result);
             alert('Login is success.');
             this.router.navigate(['']);
@@ -67,7 +73,7 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    if (this.isBrowser()) {
+    if (this.isBrowser) {
       const token = sessionStorage.getItem(ACCESS_TOKEN_KEY);
       return !!token && token != 'undefined' && !this.jwtHelper.isTokenExpired(token);
     }
@@ -75,13 +81,9 @@ export class AuthService {
   }
 
   logout(): void {
-    if (this.isBrowser()) {
+    if (this.isBrowser) {
       sessionStorage.removeItem(ACCESS_TOKEN_KEY);
     }
     this.router.navigate(['']);
-  }
-
-  private isBrowser(): boolean {
-    return typeof window !== 'undefined' && typeof window.sessionStorage !== 'undefined';
   }
 }
