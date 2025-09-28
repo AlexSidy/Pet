@@ -8,7 +8,8 @@ import { routes } from './app.routes';
 import { ACCESS_TOKEN_KEY } from './constants/constants';
 import { environment } from '../enviroments/enviroments';
 import { HttpJwtInterceptor } from '../app/interceptors/http.jwt.interceptor';
-import { HttpUnauthorizedInterceptor } from '../app/interceptors/http.unauthorized.interceptor';
+import { HttpUnauthorizedInterceptor } from './interceptors/http.unauthorized.interceptor';
+import { ValidationInterceptor } from './interceptors/http.validation.interceptor';
 
 export function tokenGetter() {
   return sessionStorage.getItem(ACCESS_TOKEN_KEY);
@@ -28,7 +29,12 @@ export const appConfig: ApplicationConfig = {
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpUnauthorizedInterceptor,
-      multi: true // Указывает, что это может быть не единственный перехватчик
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ValidationInterceptor,
+      multi: true
     },
     importProvidersFrom(
       JwtModule.forRoot({

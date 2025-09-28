@@ -38,14 +38,6 @@ namespace ScanPerson.Common.Tests
 		}
 
 		/// <summary>
-		/// Gets a successful aggregated response from the service.
-		/// </summary>
-		/// <returns>The result containing an array of person information.</returns>
-		public static ScanPersonResultResponse<PersonInfoItem[]> GetPersonsResponse()
-			=> new ScanPersonResultResponse<PersonInfoItem[]>(
-				[GetPerson()]);
-
-		/// <summary>
 		/// Gets a successful response from the service.
 		/// </summary>
 		/// <returns>The result containing an person information.</returns>
@@ -81,7 +73,7 @@ namespace ScanPerson.Common.Tests
 		/// </summary>
 		/// <param name="personResponse">The result received from the service.</param>
 		/// <returns>A Task representing the result of the operation.</returns>
-		public static Task<ScanPersonResponseBase> GetTaskResponse(ScanPersonResultResponse<PersonInfoItem[]> personResponses)
+		public static Task<ScanPersonResponseBase> GetTaskResponse(ScanPersonResultResponse<PersonInfoItem> personResponses)
 		{
 			return Task.FromResult<ScanPersonResponseBase>(personResponses);
 		}

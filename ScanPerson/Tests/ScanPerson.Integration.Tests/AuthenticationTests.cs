@@ -94,10 +94,10 @@ namespace ScanPerson.Integration.Tests
 			// Arrange
 			var data = JsonConvert.SerializeObject(new PersonInfoRequest
 			{
-				PhoneNumber = "123456789"
+				PhoneNumber = "9995556677"
 			});
-			var personResponses = CreationHelper.GetPersonsResponse();
-			var taskResponse = Task.FromResult<ScanPersonResponseBase>(personResponses);
+			var personResponse = CreationHelper.GetPersonResponse();
+			var taskResponse = Task.FromResult<ScanPersonResponseBase>(personResponse);
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
 			_personInfoServicesAggregator!.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Returns(taskResponse!);
 			var token = GenerateJwtToken("testuser");
@@ -115,10 +115,10 @@ namespace ScanPerson.Integration.Tests
 			response.EnsureSuccessStatusCode();
 			Assert.IsNotNull(response.Content.Headers.ContentType);
 			Assert.AreEqual("application/json; charset=utf-8", response.Content.Headers.ContentType.ToString());
-			var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<PersonInfoItem[]>>(
+			var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<PersonInfoItem>>(
 				TestContext.CancellationTokenSource.Token);
 			Assert.IsNotNull(result);
-			AssertHelper.AssertResult(personResponses, result);
+			AssertHelper.AssertResult(personResponse, result);
 		}
 
 		[TestMethod]
@@ -128,9 +128,9 @@ namespace ScanPerson.Integration.Tests
 			HttpClient!.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "invalid-token");
 			var data = JsonConvert.SerializeObject(new PersonInfoRequest
 			{
-				PhoneNumber = "123456789"
+				PhoneNumber = "9995556677"
 			});
-			var personResponses = CreationHelper.GetPersonsResponse();
+			var personResponses = CreationHelper.GetPersonResponse();
 			var taskResponse = CreationHelper.GetTaskResponse(personResponses);
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
 

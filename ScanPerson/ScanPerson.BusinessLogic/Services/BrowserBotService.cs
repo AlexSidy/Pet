@@ -28,15 +28,15 @@ namespace ScanPerson.BusinessLogic.Services
 		{
 			// Due to the problem of using a single profile on the service and accessing profile data in a single
 			// process, you need to connect to the BrowserBotService sequentially.
-			var namePersonResult = await GetNamePersonInfoAsync(request);
-			var namesPersonResult = await GetNamesPersonInfoAsync(request);
+			var namePersonResult = await GetNamesByServiceMethodAsync<string>(request, "GetNameByPhoneNumberAsync");
+			var namesPersonResult = await GetNamesByServiceMethodAsync<string[]>(request, "GetNamesByPhoneNumberAsync");
 
-			var names = GetConcationationValues(namePersonResult, namesPersonResult);
+			var (names, errors) = GetConcationationResult(namePersonResult, namesPersonResult);
 			Logger.LogInformation(Messages.OperationResult, JsonSerializer.Serialize(names));
 
 			return names.Length != 0
-				? GetSuccess(new PersonInfoItem { Names = names })
-				: GetFail(namePersonResult.Error ?? namesPersonResult.Error);
+				? GetSuccess(new PersonInfoItem { Names = names }, errors)
+				: GetFail(errors);
 		}
 
 		/// <summary>
@@ -45,7 +45,7 @@ namespace ScanPerson.BusinessLogic.Services
 		/// <param name="nameResult">Result with name.</param>
 		/// <param name="namesResult">Result with names.</param>
 		/// <returns>Array of names.</returns>
-		private static string[] GetConcationationValues(
+		private static (string[] names, string[] errors) GetConcationationResult(
 			ScanPersonResultResponse<string> nameResult,
 			ScanPersonResultResponse<string[]> namesResult)
 		{
@@ -53,7 +53,11 @@ namespace ScanPerson.BusinessLogic.Services
 				.. nameResult.IsSuccess ? new[] { nameResult.Result } : [],
 				.. namesResult.IsSuccess ? namesResult.Result : [] ];
 
-			return [.. result.Distinct()];
+			string[] errors = [
+				.. nameResult.IsSuccess ? [] : new[] { nameResult.Error },
+				.. namesResult.IsSuccess ? [] : new[] { namesResult.Error } ];
+
+			return ([.. result.Distinct()], [.. errors.Distinct()]);
 
 		}
 
@@ -66,50 +70,32 @@ namespace ScanPerson.BusinessLogic.Services
 		{
 			return new Dictionary<string, string>
 			{
-				["phoneNumber"] = request.PhoneNumber,
+				["phoneNumber"] = request.PhoneNumber
 			};
-		}
-
-		/// <summary>
-		/// Get name person info from BrowserBotService.
-		/// </summary>
-		/// <param name="request">Request object.</param>
-		/// <returns>Result operation as response wrapper with string result.</returns>
-		private async Task<ScanPersonResultResponse<string>> GetNamePersonInfoAsync(PersonInfoRequest request)
-		{
-			var response = await SendRequestAndCheckSuccess(request, "GetNameByPhoneNumberAsync");
-			var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<string>>();
-			Logger.LogInformation(Messages.OperationResult, JsonSerializer.Serialize(result));
-
-			return result!;
 		}
 
 		/// <summary>
 		/// Get names person info from BrowserBotService.
 		/// </summary>
-		/// <param name="request"></param>
-		/// <returns>Result operation as response wrapper with string[] result.</returns>
-		private async Task<ScanPersonResultResponse<string[]>> GetNamesPersonInfoAsync(PersonInfoRequest request)
-		{
-			var response = await SendRequestAndCheckSuccess(request, "GetNamesByPhoneNumberAsync");
-			var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<string[]>>();
-			Logger.LogInformation(Messages.OperationResult, JsonSerializer.Serialize(result));
-
-			return result!;
-		}
-
-		/// <summary>
-		/// Send request and check if success.
-		/// </summary>
 		/// <param name="request">Request object.</param>
-		/// <exception cref="HttpRequestException">Thrown if request is not success.</exception>
-		/// <returns>Response from http request</returns>
-		private async Task<HttpResponseMessage> SendRequestAndCheckSuccess(PersonInfoRequest request, string methodName)
+		/// <returns>Result operation as response wrapper with string[] result.</returns>
+		private async Task<ScanPersonResultResponse<T>>
+			GetNamesByServiceMethodAsync<T>(PersonInfoRequest request, string methodName)
+			where T : class
 		{
 			var response = await HttpClient.GetAsync(GetRequestByMethodName(request, methodName));
-			response.EnsureSuccessStatusCode();
+			if (response.IsSuccessStatusCode)
+			{
+				var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<T>>();
+				Logger.LogInformation(Messages.OperationResult, JsonSerializer.Serialize(result));
+				return result!;
+			}
 
-			return response;
+			string errorContent = await response.Content.ReadAsStringAsync();
+			return (ScanPersonResultResponse<T>)GetFail<T>(
+					$"Response status code does not indicate success:" +
+					$"{(int)response.StatusCode} ({response.ReasonPhrase}). " +
+					$"Content: {errorContent}");
 		}
 
 		/// <summary>

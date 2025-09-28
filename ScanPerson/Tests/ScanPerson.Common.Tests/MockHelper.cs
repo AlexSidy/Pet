@@ -4,6 +4,7 @@ using Moq;
 using Moq.Protected;
 
 using ScanPerson.Models.Items;
+using ScanPerson.Models.Requests;
 
 namespace ScanPerson.Common.Tests
 {
@@ -52,7 +53,8 @@ namespace ScanPerson.Common.Tests
 		public static void SetupAutoMapper(this Mock<IMapper> mapper)
 		{
 			mapper.Setup(x => x.Map<LocationItem>(It.IsAny<LocationDeserialized>()))
-				.Returns(CreationHelper.GetPersonsResponse().Result[0].Location);
+				.Returns(CreationHelper.GetPersonResponse().Result.Location);
+			mapper.Setup(x => x.Map<PersonInfoRequest>(It.IsAny<ServiceRequest>())).Returns(new PersonInfoRequest());
 		}
 	}
 }

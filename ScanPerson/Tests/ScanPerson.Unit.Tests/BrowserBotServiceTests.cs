@@ -6,7 +6,6 @@ using Moq;
 using Moq.Protected;
 
 using ScanPerson.BusinessLogic.Services;
-using ScanPerson.Common.Resources;
 using ScanPerson.Common.Tests;
 using ScanPerson.Models.Items;
 using ScanPerson.Models.Options;
@@ -109,6 +108,7 @@ namespace ScanPerson.Unit.Tests
 			var httpClient = new HttpClient(mockHttpMessageHandler.Object);
 
 			_httpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>())).Returns(httpClient);
+			_mapper.Setup(x => x.Map<PersonInfoRequest>(It.IsAny<ServiceRequest>())).Returns(personRequest);
 
 			// Act
 			var cut = new BrowserBotService(_logger.Object, _httpClientFactory.Object, _secrets, _servicesOptions, _mapper.Object);
@@ -126,6 +126,7 @@ namespace ScanPerson.Unit.Tests
 		{
 			// Arrange
 			var personRequest = new PersonInfoRequest();
+			_mapper.Setup(x => x.Map<PersonInfoRequest>(It.IsAny<ServiceRequest>())).Returns(personRequest);
 			_httpClientFactory.Reset();
 			_httpClientFactory.SetupHttpClientFactoryWithErrorResponse();
 
@@ -137,7 +138,7 @@ namespace ScanPerson.Unit.Tests
 			// Assert
 			Assert.IsNotNull(result);
 			Assert.IsFalse(result.IsSuccess);
-			Assert.AreEqual(Messages.ClientOperationError, result.Error);
+			Assert.Contains("Internal server error", result.Error);
 		}
 
 		[TestMethod]
