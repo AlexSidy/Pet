@@ -1,34 +1,69 @@
-<h2>Добро пожаловать в {{title}}!</h2>
-<label for="phoneNumber">Введите номер телефона:</label>
-<input [(ngModel)]="phoneNumber" id="phoneNumber"  placeholder="79991112233">
+<div *ngIf="isLoading" class="global-loading-overlay d-flex justify-content-center align-items-center">
+  <div class="spinner-border text-primary"
+    role="progressbar" 
+    aria-live="polite"
+    aria-valuemin="0"
+    aria-valuenow="50"
+    aria-valuemax="100"
+    aria-valuetext="Loading content...">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Идентификаторы</th>
-      <th>Почта</th>      
-      <th>Страна</th>
-      <th>Текущее расположение</th>
-      <th>Округ</th>
-      <th>Город регистрации</th>
-      <th>Оператор</th>
-      <th>Город оператора</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let item of items" class="table table-striped">
-      <td>{{item?.id}}</td>
-      <td>{{item?.names?.join(', ')}}</td>
-      <td>{{item?.mail}}</td>
-      <td>{{item?.location?.countryName}}</td>
-      <td>{{item?.location?.currentRegion}}</td>
-      <td>{{item?.location?.registrationOkrug}}</td>
-      <td>{{item?.location?.registrationCapital}}</td>
-      <td>{{item?.location?.operatorName}}</td>
-      <td>{{item?.location?.operatorCity}}</td>
-      <td>
-    </tr>
-  </tbody>
-</table>
-<button class="btn btn-sm btn-danger" (click)="postLoad()">post Load</button>
+<h2 class="display-6 mb-4">{{title}}</h2>
+
+<form class="row g-3 needs-validation col-md-6 p-4 border rounded shadow-sm" [formGroup]="personForm"
+  (ngSubmit)="postLoad()">
+
+  <div class="col-12">
+    <label class="form-label" for="phoneNumber">Введите номер телефона:</label>
+    <input formControlName="phoneNumber" id="phoneNumber" type="tel" placeholder="9991112233" class="form-control">
+    <div *ngIf="phoneNumberControl!.invalid && (phoneNumberControl!.dirty || phoneNumberControl!.touched)"
+      class="invalid-feedback d-block">
+
+      <div *ngIf="phoneNumberControl!.errors!['required']">
+        Номер телефона обязателен.
+      </div>
+      <div *ngIf="phoneNumberControl!.errors!['pattern']">
+        Неверный формат номера телефона. Ожидается 10 цифр, начиная с 9.
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 mt-3">
+    <button class="btn btn-primary" type="submit" [disabled]="personForm.invalid">Запросить данные</button>
+  </div>
+</form>
+
+<div class="table-responsive mt-5">
+  <table class="table table-striped table-hover table-sm border caption-top">
+    <caption>Результаты запроса</caption>
+    <thead>
+      <tr class="table-dark">
+        <th scope="col">ID</th>
+        <th scope="col">Идентификаторы</th>
+        <th scope="col">Почта</th>
+        <th scope="col">Страна</th>
+        <th scope="col">Текущее расположение</th>
+        <th scope="col">Округ</th>
+        <th scope="col">Город регистрации</th>
+        <th scope="col">Оператор</th>
+        <th scope="col">Город оператора</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of items" class="table table-striped">
+        <th scope="row">{{item?.id}}</th>
+        <td>{{item?.names?.join(', ')}}</td>
+        <td>{{item?.mail}}</td>
+        <td>{{item?.location?.countryName}}</td>
+        <td>{{item?.location?.currentRegion}}</td>
+        <td>{{item?.location?.registrationOkrug}}</td>
+        <td>{{item?.location?.registrationCapital}}</td>
+        <td>{{item?.location?.operatorName}}</td>
+        <td>{{item?.location?.operatorCity}}</td>
+        <td>
+      </tr>
+    </tbody>
+  </table>
+</div>

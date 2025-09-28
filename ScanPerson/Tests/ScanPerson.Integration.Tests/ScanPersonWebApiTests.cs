@@ -76,9 +76,9 @@ namespace ScanPerson.Integration.Tests
 			// Arrange
 			var data = JsonConvert.SerializeObject(new PersonInfoRequest
 			{
-				PhoneNumber = "123456789"
+				PhoneNumber = "9995556677"
 			});
-			var personResponse = CreationHelper.GetPersonsResponse();
+			var personResponse = CreationHelper.GetPersonResponse();
 			var taskResponse = CreationHelper.GetTaskResponse(personResponse);
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
 			_personInfoServicesAggregator!.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Returns(taskResponse);
@@ -94,7 +94,7 @@ namespace ScanPerson.Integration.Tests
 			response.EnsureSuccessStatusCode();
 			Assert.IsNotNull(response.Content.Headers.ContentType);
 			Assert.AreEqual("application/json; charset=utf-8", response.Content.Headers.ContentType.ToString());
-			var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<PersonInfoItem[]>>(
+			var result = await response!.Content.ReadFromJsonAsync<ScanPersonResultResponse<PersonInfoItem>>(
 				TestContext.CancellationTokenSource.Token);
 			Assert.IsNotNull(result);
 			AssertHelper.AssertResult(personResponse, result);
@@ -106,7 +106,7 @@ namespace ScanPerson.Integration.Tests
 			// Arrange
 			var data = JsonConvert.SerializeObject(new PersonInfoRequest
 			{
-				PhoneNumber = "123456789"
+				PhoneNumber = "9995556677"
 			});
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
 			_personInfoServicesAggregator!.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Throws<InvalidOperationException>();

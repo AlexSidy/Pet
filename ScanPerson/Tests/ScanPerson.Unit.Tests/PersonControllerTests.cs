@@ -45,7 +45,7 @@ namespace ScanPerson.Unit.Tests
 		{
 			// Arrange
 			var personRequest = new PersonInfoRequest { PhoneNumber = "12345" };
-			var personResponses = CreationHelper.GetPersonsResponse();
+			var personResponses = CreationHelper.GetPersonResponse();
 			var taskResponse = Task.FromResult<ScanPersonResponseBase>(personResponses);
 			_servicesAggregator.Setup(x => x.GetScanPersonInfoAsync(It.IsAny<PersonInfoRequest>())).Returns(taskResponse);
 
@@ -56,7 +56,7 @@ namespace ScanPerson.Unit.Tests
 			// Assert
 			Assert.IsNotNull(response);
 			Assert.AreEqual(StatusCodes.Status200OK, response.StatusCode);
-			var result = (ScanPersonResultResponse<PersonInfoItem[]>)response.Value!;
+			var result = (ScanPersonResultResponse<PersonInfoItem>)response.Value!;
 			Assert.IsNotNull(result);
 			Assert.IsTrue(result.IsSuccess);
 			Assert.IsNull(result.Error);

@@ -19,6 +19,7 @@ namespace ScanPerson.WebApi.Extensions
 			{
 				cfg.LicenseKey = EnviromentHelper.GetVariableByName("AUTO_MAPPER_LICENSE_KEY");
 				cfg.AddProfile<DisplayProfile>();
+				cfg.AddProfile<RequestProfile>();
 			});
 		}
 	}

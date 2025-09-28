@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Reflection;
+using System.Text.Json;
 
 using Microsoft.Extensions.Logging;
 
@@ -45,8 +46,59 @@ namespace ScanPerson.BusinessLogic.Services
 			{
 				_logger.LogError(ex, Messages.OperationError, GetType().Name);
 
-				return GetFail<PersonInfoItem[]>(Messages.ClientOperationError);
+				return GetFail<PersonInfoItem>(Messages.ClientOperationError);
 			}
+		}
+
+		private static ScanPersonResponseBase GetAggregatedResult<TResult>(TResult[] results) where TResult : ScanPersonResponseBase
+		{
+			var errors = results
+				.Where(x => !x.IsSuccess)
+				.Select(x => x.Error)
+				.Where(e => !string.IsNullOrEmpty(e));
+
+			if (results.Any(x => x.IsSuccess))
+			{
+				return GetSuccess(
+					results
+						.Where(x => x.IsSuccess)
+						.OfType<ScanPersonResultResponse<PersonInfoItem>>()
+						.Where(x => x != null)
+						.Select(x => x!.Result)
+						.ToHashSet()
+						.Aggregate((x, y) => GetAggregatePersons(x, y)),
+					errors);
+			}
+
+			return GetFail(errors);
+		}
+
+		/// <summary>
+		/// Method for aggregation of person info.
+		/// </summary>
+		/// <param name="current">Current person info.</param>
+		/// <param name="next">>Next person info.</param>
+		/// <returns>Person info.</returns>
+		private static PersonInfoItem GetAggregatePersons(PersonInfoItem current, PersonInfoItem next)
+		{
+			var properties = current.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+			foreach (var property in properties)
+			{
+				if (property.Name == nameof(PersonInfoItem.Id))
+				{
+					continue;
+				}
+
+				var nextValue = property.GetValue(next);
+				if (nextValue != null)
+				{
+					property.SetValue(current, property.GetValue(next));
+
+				}
+			}
+
+			return current;
 		}
 	}
 }

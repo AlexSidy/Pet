@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { AuthService } from '../services/auth.service';
@@ -14,10 +14,9 @@ export class HttpUnauthorizedInterceptor implements HttpInterceptor {
             if (err.status === 401) {
                 // auto logout if 401 response returned from api
                 this.authService.logout();
-                return next.handle(request);
             }
 
-            return throwError(() => new Error(err.message || 'An unknown error occurred'));
+            return next.handle(request);
         }))
     }
 }
