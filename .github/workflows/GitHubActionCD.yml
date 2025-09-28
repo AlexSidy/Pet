@@ -5,29 +5,14 @@ name: CD github action
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: [ CI github action ]
-    types: [completed]
+  push:
+    branches: [ "main" ]
 
 jobs:
   continuous-delivery:
     name: Prepare host, push and up dockers
     runs-on: ubuntu-latest
-    if: |
-        ${{
-          (github.event_name == 'workflow_run' &&
-           github.event.workflow_run.conclusion == 'success' &&
-           github.event.workflow_run.event == 'push')
-          ||
-          (github.event_name == 'workflow_dispatch')
-        }}
     steps:
-      - name: Debug event data
-        run: |
-          echo "Event name: ${{ github.event_name }}"
-          echo "Workflow run conclusion: ${{ github.event.workflow_run.conclusion }}"
-          echo "Workflow run event: ${{ github.event.workflow_run.event }}"
-
       - name: Checkout to the branch
         uses: actions/checkout@v4
 
