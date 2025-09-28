@@ -50,7 +50,7 @@ namespace ScanPerson.BusinessLogic.Services
 			}
 		}
 
-		private ScanPersonResponseBase GetAggregatedResult<TResult>(TResult[] results) where TResult : ScanPersonResponseBase
+		private static ScanPersonResponseBase GetAggregatedResult<TResult>(TResult[] results) where TResult : ScanPersonResponseBase
 		{
 			var errors = results
 				.Where(x => !x.IsSuccess)
@@ -59,6 +59,12 @@ namespace ScanPerson.BusinessLogic.Services
 
 			if (results.Any(x => x.IsSuccess))
 			{
+				var tte = results
+						.Where(x => x.IsSuccess)
+						.OfType<ScanPersonResultResponse<PersonInfoItem>>()
+						.Where(x => x != null)
+						.Select(x => x!.Result)
+						.ToHashSet();
 				return GetSuccess(
 					results
 						.Where(x => x.IsSuccess)
@@ -91,7 +97,6 @@ namespace ScanPerson.BusinessLogic.Services
 				}
 
 				var nextValue = property.GetValue(next);
-				var currentValue = property.GetValue(current);
 				if (nextValue != null)
 				{
 					property.SetValue(current, property.GetValue(next));

@@ -11,7 +11,6 @@ using ScanPerson.Common.Helpers;
 using ScanPerson.Models.Options;
 
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
-using SharpGrip.FluentValidation.AutoValidation.Mvc.Interceptors;
 
 namespace ScanPerson.BusinessLogic
 {

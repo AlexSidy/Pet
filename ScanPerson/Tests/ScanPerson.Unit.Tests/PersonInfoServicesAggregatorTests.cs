@@ -117,5 +117,53 @@ namespace ScanPerson.Unit.Tests
 			Assert.IsFalse(result.IsSuccess);
 			Assert.IsNotEmpty(result.Error);
 		}
+
+		[TestMethod]
+		public async Task TaskGetScanPersonInfoAsync_PersonRequestIsCorrectAndWorkTwoService_ReturnSuccessResult()
+		{
+			// Arrange
+			var personRequest = new PersonInfoRequest();
+			var expectedResult1 = CreationHelper.GetPersonResponse();
+			expectedResult1.Result.Location = null;
+			var taskResponse1 = Task.FromResult<ScanPersonResponseBase>(expectedResult1);
+			var expectedResult2 = CreationHelper.GetPersonResponse();
+			var taskResponse2 = Task.FromResult<ScanPersonResponseBase>(expectedResult2);
+			var geoService = new Mock<IPersonInfoService>();
+			_personInfoService.Setup(x => x.GetInfoAsync(It.IsAny<PersonInfoRequest>())).Returns(taskResponse1);
+			geoService.Setup(x => x.GetInfoAsync(It.IsAny<PersonInfoRequest>())).Returns(taskResponse2);
+			geoService.Setup(x => x.CanAccept()).Returns(true);
+
+			var cut = new PersonInfoServicesAggregator(_logger.Object, [.. new IPersonInfoService[] { _personInfoService.Object, geoService.Object }]);
+
+			// Act
+			var response = await cut.GetScanPersonInfoAsync(personRequest);
+			var result = (ScanPersonResultResponse<PersonInfoItem>)response;
+
+			// Assert
+			Assert.IsNotNull(result);
+			Assert.IsNotNull(result.Result);
+			Assert.IsTrue(result.IsSuccess);
+			AssertHelper.AssertPersonInfo(expectedResult2.Result, result.Result);
+		}
+
+		[TestMethod]
+		public async Task TaskGetScanPersonInfoAsync_ServiceReturnFailResult_ReturnFailResult()
+		{
+			// Arrange
+			var personRequest = new PersonInfoRequest();
+			var expectedResult = new ScanPersonResponseBase("error");
+			var taskResponse = Task.FromResult(expectedResult);
+			_personInfoService.Setup(x => x.GetInfoAsync(It.IsAny<PersonInfoRequest>())).Returns(taskResponse);
+
+			var cut = new PersonInfoServicesAggregator(_logger.Object, [.. new IPersonInfoService[] { _personInfoService.Object }]);
+
+			// Act
+			var response = await _cut.GetScanPersonInfoAsync(personRequest);
+			var result = response;
+
+			// Assert
+			Assert.IsNotNull(result);
+			Assert.IsFalse(result.IsSuccess);
+		}
 	}
 }

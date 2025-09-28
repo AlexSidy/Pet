@@ -18,7 +18,7 @@ export class AuthService {
 
   private readonly api: string = "/" + AuthApi + '/Auth';
 
-  private isBrowser: boolean;
+  private readonly isBrowser: boolean;
 
   constructor(
     private readonly httpClient: HttpClient,

@@ -22,7 +22,7 @@ namespace ScanPerson.BusinessLogic.MapperProfiles
 		/// </summary>
 		/// <param name="request">Request object.</param>
 		/// <returns>Prepared value.</returns>
-		private string GetPreparedValueByTypeService(ServiceRequest request)
+		private static string GetPreparedValueByTypeService(ServiceRequest request)
 		{
 			switch (request.ServiceTytpe)
 			{

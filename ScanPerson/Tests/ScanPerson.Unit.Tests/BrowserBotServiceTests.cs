@@ -138,7 +138,7 @@ namespace ScanPerson.Unit.Tests
 			// Assert
 			Assert.IsNotNull(result);
 			Assert.IsFalse(result.IsSuccess);
-			Assert.IsTrue(result.Error.Contains("Internal server error"));
+			Assert.Contains("Internal server error", result.Error);
 		}
 
 		[TestMethod]

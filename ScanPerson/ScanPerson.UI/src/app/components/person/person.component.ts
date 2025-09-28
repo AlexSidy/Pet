@@ -39,7 +39,7 @@ export class PersonComponent {
       phoneNumber: ['', [
         Validators.required, 
         // должен начинаться с 9 и состоящий из 10 цифр.
-        // Validators.pattern('^9[0-9]{9}$') 
+        Validators.pattern('^9[0-9]{9}$') 
       ]]
     });
    }

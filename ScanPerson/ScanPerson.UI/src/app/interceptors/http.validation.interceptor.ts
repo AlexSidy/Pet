@@ -6,12 +6,12 @@ import { catchError } from 'rxjs/operators';
 @Injectable()
 export class ValidationInterceptor implements HttpInterceptor {
     constructor() { }
-    private unknownError: string = 'An unknown error occurred.';
-    private validationErros: string = 'validation errors';
+    private readonly unknownError: string = 'An unknown error occurred.';
+    private readonly validationErrorMessage: string = 'validation errors';
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).pipe(catchError(err => {
-            if (err.status === 400 && err.error.title.includes(this.validationErros)) {
+            if (err.status === 400 && err.error.title.includes(this.validationErrorMessage)) {
                 return throwError(() => new Error(this.aggregateValidationErrors(err.error?.errors)));
             }
 
@@ -24,7 +24,7 @@ export class ValidationInterceptor implements HttpInterceptor {
             return this.unknownError;
         }
 
-        let aggregatedMessage: string = this.validationErros + ' : ';
+        let aggregatedMessage: string = this.validationErrorMessage + ' : ';
         const fieldNames = Object.keys(validationErrors);
         fieldNames.forEach(fieldName => {
             aggregatedMessage += '\n' + fieldName + '\n' + validationErrors[fieldName].join(',');
