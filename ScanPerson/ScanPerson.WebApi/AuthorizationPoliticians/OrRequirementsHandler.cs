@@ -1,17 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-using ScanPerson.Models.Options;
-
-namespace ScanPerson.WebApi.Filters;
+namespace ScanPerson.WebApi.AuthorizationPoliticians;
 
 /// <summary>
 /// Handler to skip authorization for truted hosts (internaal docker network).
 /// </summary>
 /// <param name="logger">Logger.</param>
-/// <param name="options">Options with trusted hosts.</param>
 public class OrRequirementsHandler(
-	ILogger<OrRequirementsHandler> logger,
-	HostWhiteListOptions options) : AuthorizationHandler<IAuthorizationRequirement>
+	ILogger<OrRequirementsHandler> logger) : AuthorizationHandler<IAuthorizationRequirement>
 {
 	protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, IAuthorizationRequirement requirement)
 	{
@@ -26,12 +22,14 @@ public class OrRequirementsHandler(
 	{
 		if (context.PendingRequirements.Count() < context.Requirements.Count())
 		{
-			foreach(var requirement in context.Requirements) {
+			logger.LogInformation("One of the requirements is success");
+			foreach (var requirement in context.Requirements) {
 				context.Succeed(requirement);
 			}
 		}
 		else
 		{
+			logger.LogInformation("All requirements are not success");
 			context.Fail();
 		}
 

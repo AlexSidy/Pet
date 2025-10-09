@@ -44,6 +44,7 @@ namespace ScanPerson.Integration.Tests.Base
 			Environment.SetEnvironmentVariable("IS_CACHE_ENABLE", "false");
 			Environment.SetEnvironmentVariable("CACHE_EXPIRATION", "2");
 			Environment.SetEnvironmentVariable("ConnectionStrings__ScanPersonDb", _connectionString!);
+			Environment.SetEnvironmentVariable("UNAUTHORIZED_TRUSTED_HOSTS", "telegrambots");
 		}
 
 		protected static void RemoveFromServices(IServiceCollection services, IEnumerable<Type> types)

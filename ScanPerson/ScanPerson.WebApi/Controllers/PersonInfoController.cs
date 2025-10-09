@@ -5,7 +5,6 @@ using ScanPerson.BusinessLogic.Services.Interfaces;
 using ScanPerson.Common.Controllers;
 using ScanPerson.Common.Resources;
 using ScanPerson.Models.Requests;
-using ScanPerson.WebApi.Filters;
 
 namespace ScanPerson.WebApi.Controllers
 {

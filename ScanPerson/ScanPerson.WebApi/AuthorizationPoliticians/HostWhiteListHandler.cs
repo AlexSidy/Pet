@@ -3,9 +3,8 @@
 using Microsoft.AspNetCore.Authorization;
 
 using ScanPerson.Models.Options;
-using ScanPerson.WebApi.AuthorizationPoliticians;
 
-namespace ScanPerson.WebApi.Filters;
+namespace ScanPerson.WebApi.AuthorizationPoliticians;
 
 /// <summary>
 /// Handler to skip authorization for truted hosts (internaal docker network).
@@ -33,7 +32,7 @@ public class HostWhiteListHandler(
 		var allowedIps = options.WhiteHosts.SelectMany(x => Dns.GetHostEntry(x).AddressList);
 		if (remoteIp != null && allowedIps.Contains(remoteIp))
 		{
-			logger.LogInformation($"Authorization skipped for trusted IP: {remoteIp}");
+			logger.LogInformation("Authorization skipped for trusted IP: {RemoteIp}", new { RemoteIp = remoteIp });
 
 			context.Succeed(requirement);
 		}

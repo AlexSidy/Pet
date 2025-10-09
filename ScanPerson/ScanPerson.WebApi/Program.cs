@@ -13,7 +13,6 @@ using ScanPerson.Models.Options.Auth;
 using ScanPerson.Models.Responses;
 using ScanPerson.WebApi.AuthorizationPoliticians;
 using ScanPerson.WebApi.Extensions;
-using ScanPerson.WebApi.Filters;
 
 using Serilog;
 using Serilog.Sinks.Graylog;
@@ -84,15 +83,14 @@ builder.Services
 // Used "OR" logic, need to success one of the requirements
 builder.Services.AddSingleton<IAuthorizationHandler, HostWhiteListHandler>();
 builder.Services.AddSingleton<IAuthorizationHandler, OrRequirementsHandler>();
-builder.Services.AddAuthorization(options =>
-{
-	options.AddPolicy(AuthorizationPolicy, policy =>
+builder.Services
+	.AddAuthorizationBuilder()
+	.AddPolicy(AuthorizationPolicy, policy =>
 	{
 		// Used "OR" logic in OrRequirementsHandler, needed to success one of the requirements
 		policy.RequireAuthenticatedUser(); // Standart
 		policy.AddRequirements(new HostWhiteListRequirement());
 	});
-});
 builder.Services.AddHttpClient();
 builder.Services.AddScanPersonAutoMapper();
 builder.Services.AddStackExchangeRedisCache(options =>
