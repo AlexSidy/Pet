@@ -1,14 +1,19 @@
 ﻿using System.Text;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 
 using ScanPerson.BusinessLogic;
 using ScanPerson.Common.Helpers;
 using ScanPerson.Common.Resources;
 using ScanPerson.DAL;
+using ScanPerson.Models.Items;
 using ScanPerson.Models.Options.Auth;
+using ScanPerson.Models.Responses;
+using ScanPerson.WebApi.AuthorizationPoliticians;
 using ScanPerson.WebApi.Extensions;
+using ScanPerson.WebApi.Filters;
 
 using Serilog;
 using Serilog.Sinks.Graylog;
@@ -46,8 +51,7 @@ builder.Host.UseSerilog();
 builder.Services.AddDalServices(connectionString);
 builder.Services.AddBusinessLogicServices(builder.Configuration);
 
-var allowedHosts = builder.Configuration.GetValue<string>("ALLOWED_HOSTS")
-	?.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries) ?? [];
+var allowedHosts = EnviromentHelper.GetVariableArrayByName("ALLOWED_HOSTS");
 builder.Services.AddCors(options =>
 {
 	options.AddPolicy(CorsPolicy, builder =>
@@ -77,7 +81,18 @@ builder.Services
 			ValidateIssuerSigningKey = true
 		};
 	});
-builder.Services.AddAuthorizationBuilder();
+// Used "OR" logic, need to success one of the requirements
+builder.Services.AddSingleton<IAuthorizationHandler, HostWhiteListHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, OrRequirementsHandler>();
+builder.Services.AddAuthorization(options =>
+{
+	options.AddPolicy(AuthorizationPolicy, policy =>
+	{
+		// Used "OR" logic in OrRequirementsHandler, needed to success one of the requirements
+		policy.RequireAuthenticatedUser(); // Standart
+		policy.AddRequirements(new HostWhiteListRequirement());
+	});
+});
 builder.Services.AddHttpClient();
 builder.Services.AddScanPersonAutoMapper();
 builder.Services.AddStackExchangeRedisCache(options =>
@@ -119,5 +134,6 @@ public partial class Program
 	public const string RedisSection = "RedisConnection";
 	public const string RedisInstanceName = "ScanPersonRedisInstance";
 	public const string CorsPolicy = "MyTrustedHosts";
+	public const string AuthorizationPolicy = "TrustedHosts";
 }
 #pragma warning restore S1118

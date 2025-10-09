@@ -26,7 +26,10 @@ namespace ScanPerson.BusinessLogic
 		/// <param name="configuration">The configuration.</param>
 		public static void AddBusinessLogicServices(this IServiceCollection services, IConfiguration configuration)
 		{
-			var serviceOptions = configuration.GetSection(ServicesOptions.AppSettingsSection).Get<ServicesOptions>() ?? new ServicesOptions();
+			var serviceOptions = configuration
+				.GetSection(ServicesOptions.AppSettingsSection)
+				.Get<ServicesOptions>()
+				?? new ServicesOptions();
 			services.AddSingleton(serviceOptions);
 			services.AddSecrets();
 			services.AddAllImplementations<IPersonInfoService>();
@@ -34,6 +37,8 @@ namespace ScanPerson.BusinessLogic
 			services.AddSingleton(EnviromentHelper.GetFilledFromEnvironment<CacheOptions>());
 			services.AddFluentValidationAutoValidation();
 			services.AddValidatorsFromAssemblyContaining<PersonInfoRequestValidator>();
+			var whiteHostoptions = new HostWhiteListOptions(EnviromentHelper.GetVariableArrayByName("UNAUTHORIZED_TRUSTED_HOSTS"));
+			services.AddSingleton(whiteHostoptions);
 		}
 
 		/// <summary>

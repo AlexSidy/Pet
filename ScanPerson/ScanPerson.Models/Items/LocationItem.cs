@@ -34,5 +34,15 @@
 		/// The city of the service provider.
 		/// </summary>
 		public string OperatorCity { get; set; }
+
+		public override string ToString()
+		{
+			return $"Country: {CountryName}," +
+				$"Region: {CurrentRegion}," +
+				$"Okrug: {RegistrationOkrug}," +
+				$"Capital: {RegistrationCapital}," +
+				$"Operator: {OperatorName}," +
+				$"City: {OperatorCity}";
+		}
 	}
 }

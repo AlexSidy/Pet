@@ -24,5 +24,12 @@
 		/// Location of the person.
 		/// </summary>
 		public LocationItem Location { get; set; }
+
+		public override string ToString()
+		{
+			return $"Names: {string.Join(", ", Names)}" +
+					$"Mail: {Mail}" +
+					$"Location: {Location?.ToString()}";
+		}
 	}
 }
