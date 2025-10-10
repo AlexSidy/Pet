@@ -8,7 +8,6 @@ using Telegram.Bot.Types;
 
 using TelegramBots.BusinessLogic.Options;
 using TelegramBots.BusinessLogic.Services;
-using TelegramBots.Unit.Tests;
 
 namespace TelegramBots.Unit.Tests;
 

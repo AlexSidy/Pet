@@ -37,8 +37,8 @@ namespace TelegramBots.BusinessLogic.Services
 				return;
 
 			var chatId = message.Chat.Id;
-			_logger.LogInformation("Message received '{MessageText}' in chat {chatId}.",
-				new { MessageText = messageText }, new  { ChatId = chatId });
+			_logger.LogInformation("Message received '{Message}' in chat {ChatId}.",
+				new { Message = messageText }, new  { ChatId = chatId });
 
 			string responseText = messageText.ToLower() switch
 			{

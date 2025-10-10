@@ -52,14 +52,12 @@ namespace TelegramBots.Unit.Tests
 		public async Task ExecuteAsync_WhenTokenIsCanceled_ExitsLoopGracefully()
 		{
 			// Arrange
-			var cts = TestContext.CancellationTokenSource;
-
 			_mockBotService
 				.Setup(x => x.StartReceiving(It.IsAny<CancellationToken>()))
-				.Callback(() => cts.Cancel());
+				.Callback(() => TestContext.CancellationTokenSource.Cancel());
 
 			// Act
-			await _cut.StartAsync(cts.Token);
+			await _cut.StartAsync(TestContext.CancellationToken);
 
 			// Assert
 			VerifyLog(_mockLogger, LogLevel.Debug, Times.Never(), "Worker is active...");
@@ -77,7 +75,7 @@ namespace TelegramBots.Unit.Tests
 
 			// Act
 			var task = _cut.StartAsync(token);
-			await Task.Delay(100);
+			await Task.Delay(100, TestContext.CancellationToken);
 			await _cut.StopAsync(token);
 
 			// Assert
@@ -90,13 +88,12 @@ namespace TelegramBots.Unit.Tests
 		public async Task ExecuteAsync_TokenCancelled_CallsLogsStoped()
 		{
 			// Arrange
-			var cts = TestContext.CancellationTokenSource;
-			cts.Cancel();
+			TestContext.CancellationTokenSource.Cancel();
 			_mockBotService
-				.Setup(x => x.StartReceiving(cts.Token));
+				.Setup(x => x.StartReceiving(TestContext.CancellationToken));
 
 			// Act
-			await _cut.StartAsync(cts.Token);
+			await _cut.StartAsync(TestContext.CancellationToken);
 
 			// Assert
 			_mockBotService.Verify(
