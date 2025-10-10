@@ -10,18 +10,14 @@ using TelegramBots.BusinessLogic.Options;
 using TelegramBots.BusinessLogic.Services;
 using TelegramBots.Unit.Tests;
 
+namespace TelegramBots.Unit.Tests;
+
 [TestClass]
 public class ScanPersonBotServiceTests: UnitTestsBase
 {
-	// Class under test.
-	private readonly ScanPersonBotService _cut;
-
 	private readonly Mock<ITelegramBotClient> _mockBotClient;
 	private readonly Mock<ILogger<ScanPersonBotService>> _mockLogger;
 	private readonly Mock<ScanPersonWebApiService> _mockWebApiService;
-
-	// Переменная для хранения перехваченного приватного обработчика ошибок
-	private Func<ITelegramBotClient, Exception, CancellationToken, Task>? _capturedErrorHandler;
 
 	public ScanPersonBotServiceTests()
 	{
@@ -46,12 +42,6 @@ public class ScanPersonBotServiceTests: UnitTestsBase
 			 new HttpClient(),
 			 options
 		);
-
-		_cut = new ScanPersonBotService(
-			_mockBotClient.Object,
-			_mockLogger.Object,
-			_mockWebApiService.Object
-		);	
 	}
 
 	[TestMethod]

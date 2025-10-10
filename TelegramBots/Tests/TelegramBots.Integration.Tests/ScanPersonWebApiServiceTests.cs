@@ -13,6 +13,7 @@ using ScanPerson.Models.Items;
 using ScanPerson.Models.Responses;
 
 using TelegramBots.BusinessLogic.Services;
+using TelegramBots.Integration.Tests.Base;
 
 namespace TelegramBots.Integration.Tests;
 

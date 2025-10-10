@@ -12,7 +12,9 @@ using Telegram.Bot;
 using TelegramBots.BusinessLogic.Services;
 using TelegramBots.BusinessLogic.Workers;
 
-public class IntegrationTestsBase : IDisposable
+namespace TelegramBots.Integration.Tests.Base;
+
+public class IntegrationTestsBase
 {
 	public required TestContext TestContext { get; set; }
 
@@ -67,10 +69,5 @@ public class IntegrationTestsBase : IDisposable
 	protected static void SetTestEnvironment()
 	{
 		Environment.SetEnvironmentVariable("SCAN_PERSON_BOT_TOKEN", "7123456789:AAAAABB0C1DDD22asdfghYFkpChjklg-0");
-	}
-
-	public void Dispose()
-	{
-		Factory.Dispose();
 	}
 }

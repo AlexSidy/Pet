@@ -28,12 +28,12 @@ namespace TelegramBots.Unit.Tests
 		public async Task ExecuteAsync_OnStart_CallsStartReceivingAndLogsStart()
 		{
 			// Arrange
-			var cts = TestContext.CancellationTokenSource;
+			var token = TestContext.CancellationToken;
 			_mockBotService
-				.Setup(x => x.StartReceiving(cts.Token));
+				.Setup(x => x.StartReceiving(token));
 
 			// Act
-			await _cut.StartAsync(cts.Token);
+			await _cut.StartAsync(token);
 
 			// Assert
 			_mockBotService.Verify(
@@ -70,15 +70,15 @@ namespace TelegramBots.Unit.Tests
 		public async Task ExecuteAsync_WhileActive_CallsLogsActive()
 		{
 			// Arrange
-			var cts = TestContext.CancellationTokenSource;
+			var token = TestContext.CancellationToken;
 			_mockBotService
-				.Setup(x => x.StartReceiving(It.IsAny<CancellationToken>()))
+				.Setup(x => x.StartReceiving(token))
 				.Verifiable();
 
 			// Act
-			var task = _cut.StartAsync(cts.Token);
+			var task = _cut.StartAsync(token);
 			await Task.Delay(100);
-			await _cut.StopAsync(cts.Token);
+			await _cut.StopAsync(token);
 
 			// Assert
 			VerifyLog(_mockLogger, LogLevel.Debug, Times.AtLeastOnce(), "Worker is active...");

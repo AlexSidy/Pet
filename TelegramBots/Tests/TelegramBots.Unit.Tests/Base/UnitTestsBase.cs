@@ -4,8 +4,7 @@ using Moq;
 
 namespace TelegramBots.Unit.Tests
 {
-	[TestClass]
-	public class UnitTestsBase
+	public abstract class UnitTestsBase
 	{
 		public required TestContext TestContext { get; set; }
 
