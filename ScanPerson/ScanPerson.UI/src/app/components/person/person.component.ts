@@ -38,7 +38,7 @@ export class PersonComponent {
        this.personForm = this.fb.group({
       phoneNumber: ['', [
         Validators.required, 
-        // должен начинаться с 9 и состоящий из 10 цифр.
+        // Номер телефона должен начинаться с 9 и состоять из 10 цифр.
         Validators.pattern('^9[0-9]{9}$') 
       ]]
     });

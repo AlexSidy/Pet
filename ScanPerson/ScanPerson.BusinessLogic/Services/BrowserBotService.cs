@@ -28,37 +28,12 @@ namespace ScanPerson.BusinessLogic.Services
 		{
 			// Due to the problem of using a single profile on the service and accessing profile data in a single
 			// process, you need to connect to the BrowserBotService sequentially.
-			var namePersonResult = await GetNamesByServiceMethodAsync<string>(request, "GetNameByPhoneNumberAsync");
-			var namesPersonResult = await GetNamesByServiceMethodAsync<string[]>(request, "GetNamesByPhoneNumberAsync");
+			var namesPersonResult = await GetNamesByServiceMethodAsync<string[]>(request, "GetPossibleNamesByPhoneNumberAsync");
+			Logger.LogInformation(Messages.OperationResult, JsonSerializer.Serialize(namesPersonResult));
 
-			var (names, errors) = GetConcationationResult(namePersonResult, namesPersonResult);
-			Logger.LogInformation(Messages.OperationResult, JsonSerializer.Serialize(names));
-
-			return names.Length != 0
-				? GetSuccess(new PersonInfoItem { Names = names }, errors)
-				: GetFail(errors);
-		}
-
-		/// <summary>
-		/// Get concatenation values from two results.
-		/// </summary>
-		/// <param name="nameResult">Result with name.</param>
-		/// <param name="namesResult">Result with names.</param>
-		/// <returns>Array of names.</returns>
-		private static (string[] names, string[] errors) GetConcationationResult(
-			ScanPersonResultResponse<string> nameResult,
-			ScanPersonResultResponse<string[]> namesResult)
-		{
-			string[] result = [
-				.. nameResult.IsSuccess ? new[] { nameResult.Result } : [],
-				.. namesResult.IsSuccess ? namesResult.Result : [] ];
-
-			string[] errors = [
-				.. nameResult.IsSuccess ? [] : new[] { nameResult.Error },
-				.. namesResult.IsSuccess ? [] : new[] { namesResult.Error } ];
-
-			return ([.. result.Distinct()], [.. errors.Distinct()]);
-
+			return namesPersonResult.IsSuccess
+				? GetSuccess(new PersonInfoItem { Names = namesPersonResult.Result })
+				: GetFail(namesPersonResult.Error);
 		}
 
 		/// <summary>

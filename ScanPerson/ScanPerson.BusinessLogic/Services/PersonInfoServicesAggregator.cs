@@ -38,7 +38,9 @@ namespace ScanPerson.BusinessLogic.Services
 				_logger.LogInformation(Messages.OperationResult, JsonSerializer.Serialize(results));
 
 				var aggregatedResult = GetAggregatedResult(results);
-				_logger.LogInformation(Messages.OperationResult, JsonSerializer.Serialize(aggregatedResult));
+				_logger.LogInformation("Result before agregation: {Before}, result after agregation: {After}", 
+					new { Before = JsonSerializer.Serialize(results) },
+					new { After = JsonSerializer.Serialize(aggregatedResult) });
 
 				return aggregatedResult;
 			}
