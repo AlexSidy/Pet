@@ -21,6 +21,7 @@ services:
         - HOST_HTTPS_PATH=${HOST_HTTPS_PATH}
         - IS_CACHE_ENABLE=${IS_CACHE_ENABLE}
         - CACHE_EXPIRATION=${CACHE_EXPIRATION}
+        - UNAUTHORIZED_TRUSTED_HOSTS=${UNAUTHORIZED_TRUSTED_HOSTS}
 
   scanpersondb:
     environment:

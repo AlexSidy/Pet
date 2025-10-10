@@ -1,0 +1,5 @@
+services:
+  telegrambots:
+    environment:
+        - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+        - SCAN_PERSON_BOT_TOKEN=${SCAN_PERSON_BOT_TOKEN}

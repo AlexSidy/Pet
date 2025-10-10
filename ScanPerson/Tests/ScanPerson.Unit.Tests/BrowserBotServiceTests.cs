@@ -76,7 +76,7 @@ namespace ScanPerson.Unit.Tests
 			_httpClientFactory.Reset();
 			var response1 = @"
 			{
-			  ""result"": ""Test name1"",
+			  ""result"": [ ""Test name1"", ""Test name2"" ],
 			  ""isSuccess"": true,
 			  ""error"": null
 			}";
@@ -85,25 +85,9 @@ namespace ScanPerson.Unit.Tests
 				.Protected()
 				.Setup<Task<HttpResponseMessage>>(
 					"SendAsync",
-					ItExpr.Is<HttpRequestMessage>(x => x.RequestUri != null && x.RequestUri.ToString().Contains("GetNameByPhoneNumberAsync")),
+					ItExpr.Is<HttpRequestMessage>(x => x.RequestUri != null && x.RequestUri.ToString().Contains("GetPossibleNamesByPhoneNumberAsync")),
 					ItExpr.IsAny<CancellationToken>())
 				.ReturnsAsync(CreationHelper.GetSuccessHttpMessage(response1));
-
-			var response2 = @"
-			{
-			  ""result"": [
-			    ""Test name2""
-			  ],
-			  ""isSuccess"": true,
-			  ""error"": null
-			}";
-			mockHttpMessageHandler
-				.Protected()
-				.Setup<Task<HttpResponseMessage>>(
-					"SendAsync",
-					ItExpr.Is<HttpRequestMessage>(x => x.RequestUri != null && x.RequestUri!.ToString().Contains("GetNamesByPhoneNumberAsync")),
-					ItExpr.IsAny<CancellationToken>())
-				.ReturnsAsync(CreationHelper.GetSuccessHttpMessage(response2));
 
 			var httpClient = new HttpClient(mockHttpMessageHandler.Object);
 

@@ -1,0 +1,17 @@
+services:
+  telegrambots:
+    container_name: telegrambots
+    image: telegrambots
+    build:
+      context: .
+      dockerfile: TelegramBots.WorkerServices/Dockerfile
+    environment:
+        - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+        - SCAN_PERSON_BOT_TOKEN=${SCAN_PERSON_BOT_TOKEN}
+    networks:
+        - scanperson-network
+
+networks:
+  scanperson-network:
+    external: true
+    driver: bridge

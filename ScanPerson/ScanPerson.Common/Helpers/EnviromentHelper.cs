@@ -26,6 +26,18 @@ namespace ScanPerson.Common.Helpers
 		}
 
 		/// <summary>
+		/// Get environment variable array by name.
+		/// </summary>
+		/// <param name="variableName">Variable name.</param>
+		/// <returns>Array of variables.</returns>
+		public static string[] GetVariableArrayByName(string variableName)
+		{
+			return Environment.GetEnvironmentVariable(variableName)?
+				.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+				?? [];
+		}
+
+		/// <summary>
 		/// Get host options by section name.
 		/// </summary>
 		/// <param name="serviceName">Service name.</param>

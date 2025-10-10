@@ -20,7 +20,7 @@ namespace ScanPerson.WebApi.Controllers
 		/// </summary>
 		/// <param name="request">The request containing the input data.</param>
 		/// <returns>An <see cref="IResult"/> containing the retrieved person information.</returns>
-		[Authorize]
+		[Authorize(Policy = Program.AuthorizationPolicy)]
 		[HttpPost(nameof(GetScanPersonInfoAsync))]
 		public async Task<IResult> GetScanPersonInfoAsync([FromBody] PersonInfoRequest request)
 		{

@@ -53,16 +53,21 @@ jobs:
       run: |
         dotnet restore ./ScanPerson/ScanPerson.sln
         dotnet restore ./Identity/Identity.sln
+        dotnet restore ./Shared/Shared.sln
+        dotnet restore ./TelegramBots/TelegramBots.sln
           
     - name: Build
       run: |
         dotnet build --no-restore ./ScanPerson/ScanPerson.sln
         dotnet build --no-restore ./Identity/Identity.sln
+        dotnet build --no-restore ./Shared/Shared.sln
+        dotnet build --no-restore ./TelegramBots/TelegramBots.sln
 
     - name: Run Tests and Generate Coverage
       run: |
         dotnet test ./ScanPerson/ScanPerson.sln --no-build --verbosity normal --collect "XPlat Code Coverage" --results-directory "./TestResults"
         dotnet test ./Identity/Identity.sln --no-build --verbosity normal --collect "XPlat Code Coverage" --results-directory "./TestResults"
+        dotnet test ./TelegramBots/TelegramBots.sln --no-build --verbosity normal --collect "XPlat Code Coverage" --results-directory "./TestResults"
           
     - name: Merge Coverage Reports
       run: |
