@@ -22,4 +22,5 @@ RUN dotnet publish "./TelegramBots.WorkerServices.csproj" -c Release -o /app/pub
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+USER $APP_UID
 ENTRYPOINT ["dotnet", "TelegramBots.WorkerServices.dll"]

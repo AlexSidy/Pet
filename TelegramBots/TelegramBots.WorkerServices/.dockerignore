@@ -1,0 +1,23 @@
+# Скрытые директории
+**/.git
+**/.svn
+**/.vscode
+**/.vs
+**/node_modules
+
+# Файлы и папки сборки .NET
+**/bin/
+**/obj/
+*.bak
+*.suo
+*.user
+*.pdb
+*.orig
+
+# Тестовые и временные файлы
+**/TestResults/
+.dockerignore
+Dockerfile
+
+# Чувствительные файлы
+*.env # Если храните в .env

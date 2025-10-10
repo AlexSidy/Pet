@@ -27,8 +27,8 @@
 
 		public override string ToString()
 		{
-			return $"Names: {string.Join(", ", Names)}" +
-					$"Mail: {Mail}" +
+			return $"Names: {string.Join(", ", Names)}," +
+					$"Mail: {Mail}," +
 					$"Location: {Location?.ToString()}";
 		}
 	}

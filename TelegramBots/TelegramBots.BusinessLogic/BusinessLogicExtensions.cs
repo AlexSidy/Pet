@@ -7,6 +7,7 @@ using Telegram.Bot;
 
 using TelegramBots.BusinessLogic.Options;
 using TelegramBots.BusinessLogic.Services;
+using TelegramBots.BusinessLogic.Services.Interfaces;
 using TelegramBots.BusinessLogic.Workers;
 
 
@@ -30,17 +31,19 @@ namespace TelegramBots.BusinessLogic
 			var serviceOptions = configuration.GetSection(ServicesOptions.AppSettingsSection).Get<ServicesOptions>() ?? new ServicesOptions();
 
 			services.AddSingleton(serviceOptions);
-			services.AddSingleton<ScanPersonBotService>();
+			services.AddSingleton<IBotService, ScanPersonBotService>();
 			services.AddHostedService<ScanPersonBotPollingWorker>();
 
 			services.AddHttpClient<ScanPersonWebApiService>()
 				.ConfigurePrimaryHttpMessageHandler(() =>
 			{
 				// TODO: remove in task #22.
+				#pragma warning disable S2325
 				var handler = new HttpClientHandler
 				{
 					ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
 				};
+				#pragma warning disable S2325
 				return handler;
 			});
 		}

@@ -5,12 +5,14 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
+using TelegramBots.BusinessLogic.Services.Interfaces;
+
 namespace TelegramBots.BusinessLogic.Services
 {
 	/// <summary>
-	/// Telegram bot service fro scan person.
+	/// Telegram bot service for scan person.
 	/// </summary>
-	public class ScanPersonBotService
+	public class ScanPersonBotService: IBotService
 	{
 		private readonly ITelegramBotClient _botClient;
 		private readonly ILogger<ScanPersonBotService> _logger;
@@ -29,13 +31,14 @@ namespace TelegramBots.BusinessLogic.Services
 		/// <param name="botClient">Telegram bot client.<</param>
 		/// <param name="update"></param>
 		/// <param name="cancellationToken"></param>
-		private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+		public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
 		{
 			if (update.Message is not { } message || message.Text is not { } messageText)
 				return;
 
 			var chatId = message.Chat.Id;
-			_logger.LogInformation($"Message received '{messageText}' in chat {chatId}.");
+			_logger.LogInformation("Message received '{MessageText}' in chat {chatId}.",
+				new { MessageText = messageText }, new  { ChatId = chatId });
 
 			string responseText = messageText.ToLower() switch
 			{
@@ -68,11 +71,6 @@ namespace TelegramBots.BusinessLogic.Services
 			return Task.CompletedTask;
 		}
 
-
-		/// <summary>
-		/// Method starts Long Polling
-		/// </summary>
-		/// <param name="cancellationToken">Cancelation token.</param>
 		public void StartReceiving(CancellationToken cancellationToken)
 		{
 			var receiverOptions = new ReceiverOptions

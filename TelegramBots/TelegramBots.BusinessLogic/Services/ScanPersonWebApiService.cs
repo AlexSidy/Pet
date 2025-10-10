@@ -28,12 +28,18 @@ namespace TelegramBots.BusinessLogic.Services
 		private readonly HttpClient _httpClient;
 		private readonly ILogger<ScanPersonWebApiService> _logger;
 
+		private static readonly Regex PhoneNumberRegex = new(
+			PhoneNumberRule,
+			RegexOptions.Compiled,
+			TimeSpan.FromSeconds(1) // Устанавливаем таймаут, например, 1 секунда
+		);
+
 		public ScanPersonWebApiService(ILogger<ScanPersonWebApiService> logger, HttpClient httpClient, ServicesOptions options)
 		{
 			_logger = logger;
 			_httpClient = httpClient;
 			var serviceHostOptions = options.ScanPersonWebApiServiceOptions.ServiceHostOptions;
-			_httpClient.BaseAddress = GetBaseUrl(options.ScanPersonWebApiServiceOptions.ServiceHostOptions!);
+			_httpClient.BaseAddress = GetBaseUrl(serviceHostOptions!);
 		}
 
 		public async Task<string?> GetDataAsync(string? phoneNumber, CancellationToken cancellationToken)
@@ -41,7 +47,7 @@ namespace TelegramBots.BusinessLogic.Services
 			try
 			{
 				_logger.LogInformation(Messages.StartedMethodWithParameters, nameof(GetDataAsync), phoneNumber);
-				if (!Regex.IsMatch(phoneNumber!, PhoneNumberRule))
+				if (!PhoneNumberRegex.IsMatch(phoneNumber!))
 				{
 					return ValidationError;
 				}
@@ -74,7 +80,7 @@ namespace TelegramBots.BusinessLogic.Services
 		/// Get base url.
 		/// </summary>
 		/// <returns>Base url.</returns>
-		private Uri GetBaseUrl(ServiceHostOptions options)
+		private static Uri GetBaseUrl(ServiceHostOptions options)
 		{
 			return new Uri(
 				$"{options.Host}" +
