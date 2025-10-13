@@ -1,0 +1,33 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "ScanPerson.Common.GrpcServices";
+
+service GrpcPersonInfo {
+  rpc GetGrpcScanPersonInfo (GrpcPersonInfoRequest) returns (GrpcScanPersonResponse);
+}
+
+message GrpcPersonInfoRequest {
+  string phoneNumber = 1;
+}
+
+message GrpcScanPersonResponse {
+  bool isSuccess = 1;
+  optional string error = 2;
+  optional GrpcPersonInfoItem result = 3;
+}
+
+message GrpcPersonInfoItem {
+  optional int64 id = 1;
+  repeated string names = 2;
+  optional string mail = 3;
+  optional GrpcLocationItem location = 4;
+}
+
+message GrpcLocationItem {
+	optional string countryName = 1;
+	optional string currentRegion = 2;
+	optional string registrationOkrug = 3;
+	optional string registrationCapital = 4;
+	optional string operatorName = 5;
+	optional string operatorCity = 6;
+}

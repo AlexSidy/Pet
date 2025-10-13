@@ -22,7 +22,7 @@ var builder = Host.CreateDefaultBuilder(args)
 	.ConfigureServices((hostContext, services) =>
 	{
 		var configuration = hostContext.Configuration;
-		var graylogOptions = EnviromentHelper.GetHostOptionsBySectionByName("Graylog", configuration);
+		var graylogOptions = EnviromentHelper.GetHostOptionsBySectionName("Graylog", configuration);
 		Log.Logger = new LoggerConfiguration()
 			.WriteTo.Graylog(new GraylogSinkOptions
 			{

@@ -3,6 +3,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using ScanPerson.BusinessLogic.Managers;
 using ScanPerson.BusinessLogic.Services;
 using ScanPerson.BusinessLogic.Services.Interfaces;
 using ScanPerson.BusinessLogic.Validators;
@@ -31,6 +32,7 @@ namespace ScanPerson.BusinessLogic
 				.Get<ServicesOptions>()
 				?? new ServicesOptions();
 			services.AddSingleton(serviceOptions);
+			services.AddSingleton<HttpContextManager>();
 			services.AddSecrets();
 			services.AddAllImplementations<IPersonInfoService>();
 			services.AddSingleton<IPersonInfoServicesAggregator, PersonInfoServicesAggregator>();

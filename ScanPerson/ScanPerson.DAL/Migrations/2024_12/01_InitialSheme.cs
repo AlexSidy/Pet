@@ -1,4 +1,6 @@
-﻿using FluentMigrator;
+﻿using System.Diagnostics.CodeAnalysis;
+
+using FluentMigrator;
 
 namespace ScanPerson.DAL.Migrations._2024_12
 {
@@ -12,6 +14,7 @@ namespace ScanPerson.DAL.Migrations._2024_12
 			Create.Schema(WebAppSchema);
 		}
 
+		[ExcludeFromCodeCoverage]
 		public override void Down()
 		{
 			Delete.Schema(WebAppSchema);

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 using Moq;
 
@@ -13,7 +14,7 @@ using ScanPerson.Models.Responses;
 namespace ScanPerson.Unit.Tests
 {
 	[TestClass]
-	public sealed class PersonInfoServicesAggregatorTests
+	public class PersonInfoServicesAggregatorTests
 	{
 		// class under tests
 		private readonly PersonInfoServicesAggregator _cut;
@@ -23,6 +24,7 @@ namespace ScanPerson.Unit.Tests
 
 		public PersonInfoServicesAggregatorTests()
 		{
+			Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", Environments.Staging);
 			_logger = new Mock<ILogger<PersonInfoServicesAggregator>>();
 			_personInfoService = new Mock<IPersonInfoService>();
 			_personInfoService.Setup(x => x.CanAccept()).Returns(true);
@@ -60,6 +62,26 @@ namespace ScanPerson.Unit.Tests
 			Assert.IsNotNull(result.Result);
 			Assert.IsTrue(result.IsSuccess);
 			AssertHelper.AssertPersonInfo(expectedResult.Result, result.Result);
+		}
+
+		[TestMethod]
+		public async Task TaskGetScanPersonInfoAsync_EnviromentIsDevelopment_ReturnSuccessResult()
+		{
+			// Arrange
+			Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", Environments.Development);
+			var personRequest = new PersonInfoRequest();
+			var expectedResult = CreationHelper.GetPersonResponse();
+			var taskResponse = Task.FromResult<ScanPersonResponseBase>(expectedResult);
+			_personInfoService.Setup(x => x.GetInfoAsync(It.IsAny<PersonInfoRequest>())).Returns(taskResponse);
+
+			// Act
+			var response = await _cut.GetScanPersonInfoAsync(personRequest);
+			var result = (ScanPersonResultResponse<PersonInfoItem>)response;
+
+			// Assert
+			Assert.IsNotNull(result);
+			Assert.IsNotNull(result.Result);
+			Assert.IsTrue(result.IsSuccess);
 		}
 
 		[TestMethod]

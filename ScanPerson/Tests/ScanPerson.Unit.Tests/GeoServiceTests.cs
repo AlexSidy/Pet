@@ -15,7 +15,7 @@ using ScanPerson.Models.Responses;
 namespace ScanPerson.Unit.Tests
 {
 	[TestClass]
-	public sealed class GeoServiceTests
+	public class GeoServiceTests
 	{
 		// class under tests
 		private readonly GeoService _cut;
