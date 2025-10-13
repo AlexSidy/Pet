@@ -170,7 +170,7 @@ jobs:
             POSTGRES_PASSWORD="${{ env.POSTGRES_PASSWORD }}" \
             ALLOWED_HOSTS="${{ env.IDENTITY_ALLOWED_HOSTS }}" \
             ConnectionStrings__IdentityDb="${{ env.ConnectionStrings__IdentityDb }}" \
-            IDENTITY_POSTGRES_DB="${{ env.IDENTITY_POSTGRES_DB }}" \
+            POSTGRES_DB="${{ env.IDENTITY_POSTGRES_DB }}" \
             PGDATA="${{ env.IDENTITY_PGDATA }}" \
             HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
             docker compose up -d --build
