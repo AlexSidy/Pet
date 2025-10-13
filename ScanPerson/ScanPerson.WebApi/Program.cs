@@ -2,17 +2,17 @@
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.IdentityModel.Tokens;
 
 using ScanPerson.BusinessLogic;
 using ScanPerson.Common.Helpers;
 using ScanPerson.Common.Resources;
 using ScanPerson.DAL;
-using ScanPerson.Models.Items;
 using ScanPerson.Models.Options.Auth;
-using ScanPerson.Models.Responses;
 using ScanPerson.WebApi.AuthorizationPoliticians;
 using ScanPerson.WebApi.Extensions;
+using ScanPerson.WebApi.GrpcServices;
 
 using Serilog;
 using Serilog.Sinks.Graylog;
@@ -32,7 +32,7 @@ var jwtOptins = builder.Configuration.GetSection(JwtOptions.AppSettingsSection).
 jwtOptins.SecretKey = EnviromentHelper.GetVariableByName("JWT_OPTIONS_SECRET_KEY");
 
 // Setup Serilog
-var graylogOptions = EnviromentHelper.GetHostOptionsBySectionByName("Graylog", builder.Configuration);
+var graylogOptions = EnviromentHelper.GetHostOptionsBySectionName("Graylog", builder.Configuration);
 Log.Logger = new LoggerConfiguration()
 	.WriteTo.Graylog(new GraylogSinkOptions
 	{
@@ -44,6 +44,13 @@ Log.Logger = new LoggerConfiguration()
 	})
 	.CreateLogger();
 builder.Host.UseSerilog();
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+	serverOptions.ListenAnyIP(GrpcPort, listenOptions =>
+	{
+		listenOptions.Protocols = HttpProtocols.Http2;
+	});
+});
 
 // Add services to the container.
 #region [Addition services]
@@ -80,7 +87,6 @@ builder.Services
 			ValidateIssuerSigningKey = true
 		};
 	});
-// Used "OR" logic, need to success one of the requirements
 builder.Services.AddSingleton<IAuthorizationHandler, HostWhiteListHandler>();
 builder.Services.AddSingleton<IAuthorizationHandler, OrRequirementsHandler>();
 builder.Services
@@ -99,6 +105,11 @@ builder.Services.AddStackExchangeRedisCache(options =>
 		throw new InvalidOperationException(string.Format(Messages.SectionNotFound, RedisSection));
 	options.InstanceName = RedisInstanceName;
 });
+builder.Services.AddGrpc(options =>
+{
+	options.EnableDetailedErrors = true;
+
+});
 #endregion [Add services]
 
 var app = builder.Build();
@@ -112,12 +123,12 @@ if (!app.Environment.IsProduction())
 }
 
 app.UseScanPersonMiddlewares();
-app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseCors(CorsPolicy);
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapGrpcService<GrpcPersonInfoService>();
 app.MapControllers();
 #endregion [Use services]
 
@@ -133,5 +144,6 @@ public partial class Program
 	public const string RedisInstanceName = "ScanPersonRedisInstance";
 	public const string CorsPolicy = "MyTrustedHosts";
 	public const string AuthorizationPolicy = "TrustedHosts";
+	public const int GrpcPort = 5001;
 }
 #pragma warning restore S1118

@@ -23,7 +23,8 @@ namespace ScanPerson.WebApi.Middlewares
 		public async Task Invoke(HttpContext context)
 		{
 			var url = context.Request.GetDisplayUrl();
-			if (!cacheOptions.IsEnable || !url.Contains(Program.WebApi))
+			var port = context.Request.Host.Port;
+			if (!cacheOptions.IsEnable || (!url.Contains(Program.WebApi) && port != Program.GrpcPort))
 			{
 				await next(context);
 				return;

@@ -2,10 +2,10 @@
 
 using ScanPerson.Models.Items;
 
-namespace ScanPerson.BusinessLogic.MapperProfiles
+namespace ScanPerson.Common.MapperProfiles
 {
 	/// <summary>
-	/// Профиль маппинга контрактов, предназначенных для отображения на стороне клиента.
+	/// A mapping profile for contracts intended for client-side rendering.
 	/// </summary>
 	public class DisplayProfile : Profile
 	{

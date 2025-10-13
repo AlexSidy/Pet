@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using ScanPerson.Common.GrpcServices;
 using ScanPerson.Common.Helpers;
+using ScanPerson.Common.MapperProfiles;
 
 using Telegram.Bot;
 
@@ -29,23 +31,21 @@ namespace TelegramBots.BusinessLogic
 			services.AddSingleton<ITelegramBotClient>(new TelegramBotClient(scanPersonBotToken));
 
 			var serviceOptions = configuration.GetSection(ServicesOptions.AppSettingsSection).Get<ServicesOptions>() ?? new ServicesOptions();
+			var grpcOptions = serviceOptions.ScanPersonWebApiServiceOptions.ServiceHostOptions;
+			services.AddGrpcClient<GrpcPersonInfo.GrpcPersonInfoClient>(options =>
+			{
+				options.Address = new Uri($"{grpcOptions!.Host}:{grpcOptions!.Port}");
+			});
 
-			services.AddSingleton(serviceOptions);
 			services.AddSingleton<IBotService, ScanPersonBotService>();
 			services.AddHostedService<ScanPersonBotPollingWorker>();
-
-			services.AddHttpClient<ScanPersonWebApiService>()
-				.ConfigurePrimaryHttpMessageHandler(() =>
+			services.AddTransient<IApiService, ScanPersonWebApiService>();
+			services.AddAutoMapper(cfg =>
 			{
-				// TODO: remove in task #22.
-				#pragma warning disable S2325
-				var handler = new HttpClientHandler
-				{
-					ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-				};
-				#pragma warning disable S2325
-				return handler;
+				cfg.LicenseKey = EnviromentHelper.GetVariableByName("AUTO_MAPPER_LICENSE_KEY");
+				cfg.AddProfile<GrpcProfile>();
 			});
+
 		}
 	}
 }

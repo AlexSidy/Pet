@@ -2,12 +2,14 @@ services:
   telegrambots:
     container_name: telegrambots
     image: telegrambots
+    restart: always
     build:
       context: .
       dockerfile: TelegramBots.WorkerServices/Dockerfile
     environment:
         - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
         - SCAN_PERSON_BOT_TOKEN=${SCAN_PERSON_BOT_TOKEN}
+        - AUTO_MAPPER_LICENSE_KEY=${AUTO_MAPPER_LICENSE_KEY}
     networks:
         - scanperson-network
 

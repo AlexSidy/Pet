@@ -44,7 +44,7 @@ namespace ScanPerson.Common.Helpers
 		/// <param name="configuration">App configuration.</param>
 		/// <returns>Host options.</returns>
 		/// <exception cref="InvalidOperationException">Throws when section not found.</exception>
-		public static ServiceHostOptions GetHostOptionsBySectionByName(string serviceName, IConfiguration configuration)
+		public static ServiceHostOptions GetHostOptionsBySectionName(string serviceName, IConfiguration configuration)
 		{
 			var hostOptions = configuration.GetSection(serviceName).Get<ServiceHostOptions>()
 				?? throw new InvalidOperationException(string.Format(Messages.SectionNotFound, serviceName));
@@ -68,12 +68,7 @@ namespace ScanPerson.Common.Helpers
 			foreach (var prop in properties)
 			{
 				var attribute = prop.GetCustomAttribute<EnvironmentVariableAttribute>();
-				if (attribute == null)
-				{
-					continue;
-				}
-
-				var envValue = GetVariableByName(attribute.Name);
+				var envValue = GetVariableByName(attribute!.Name);
 
 				try
 				{

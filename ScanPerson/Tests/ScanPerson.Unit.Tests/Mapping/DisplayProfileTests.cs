@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 using Moq;
 
-using ScanPerson.BusinessLogic.MapperProfiles;
+using ScanPerson.Common.MapperProfiles;
 using ScanPerson.Models.Items;
 
 namespace ScanPerson.Unit.Tests.Mapping

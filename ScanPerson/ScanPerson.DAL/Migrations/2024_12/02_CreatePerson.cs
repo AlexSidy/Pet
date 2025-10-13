@@ -1,4 +1,6 @@
-﻿using FluentMigrator;
+﻿using System.Diagnostics.CodeAnalysis;
+
+using FluentMigrator;
 
 namespace ScanPerson.DAL.Migrations._2024_12
 {
@@ -16,6 +18,7 @@ namespace ScanPerson.DAL.Migrations._2024_12
 				.WithColumn("Mail").AsString();
 		}
 
+		[ExcludeFromCodeCoverage]
 		public override void Down()
 		{
 			Delete.Table(TableName).InSchema(InitialSheme.WebAppSchema);

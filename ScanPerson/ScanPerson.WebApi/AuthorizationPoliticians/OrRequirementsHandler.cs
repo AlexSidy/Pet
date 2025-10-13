@@ -23,7 +23,8 @@ public class OrRequirementsHandler(
 		if (context.PendingRequirements.Count() < context.Requirements.Count())
 		{
 			logger.LogInformation("One of the requirements is success");
-			foreach (var requirement in context.Requirements) {
+			foreach (var requirement in context.Requirements)
+			{
 				context.Succeed(requirement);
 			}
 		}
@@ -33,6 +34,6 @@ public class OrRequirementsHandler(
 			context.Fail();
 		}
 
-			return Task.CompletedTask;
+		return Task.CompletedTask;
 	}
 }

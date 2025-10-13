@@ -15,7 +15,7 @@ using ScanPerson.Models.Responses;
 namespace ScanPerson.Unit.Tests
 {
 	[TestClass]
-	public sealed class GeoServiceTests
+	public class GeoServiceTests
 	{
 		// class under tests
 		private readonly GeoService _cut;
@@ -37,7 +37,7 @@ namespace ScanPerson.Unit.Tests
 				UnUsingServices = ["TestUnusedService", "TestService"],
 				GeoServiceOptions = new GeoServiceOptions
 				{
-					BaseUrl = "https://test.ru/geo"
+					BaseUrl = "https://GrpcPersonInfoService.ru/geo"
 				}
 			};
 			_mapper = new Mock<IMapper>();

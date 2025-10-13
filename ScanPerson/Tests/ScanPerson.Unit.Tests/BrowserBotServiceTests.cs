@@ -15,7 +15,7 @@ using ScanPerson.Models.Responses;
 namespace ScanPerson.Unit.Tests
 {
 	[TestClass]
-	public sealed class BrowserBotServiceTests
+	public class BrowserBotServiceTests
 	{
 		// class under tests
 		private readonly BrowserBotService _cut;
@@ -37,7 +37,7 @@ namespace ScanPerson.Unit.Tests
 				UnUsingServices = ["TestUnusedService", "TestService"],
 				GeoServiceOptions = new GeoServiceOptions
 				{
-					BaseUrl = "https://test.ru/geo"
+					BaseUrl = "https://GrpcPersonInfoService.ru/geo"
 				},
 				BrowserBotServiceOptions = new BrowserBotServiceOptions
 				{

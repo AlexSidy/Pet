@@ -151,6 +151,44 @@ namespace ScanPerson.Unit.Tests
 			Assert.AreEqual(cachedContent, responseText, "Response body should contain the cached content.");
 		}
 
+
+		[TestMethod]
+		public async Task InvokeAsync_CacheEnableAndPoprtIsGprc_ReturnsCachedResponseAndDoesNotCallNext()
+		{
+			// Arrange
+			var requestUrl = $"http://example.com:{Program.GrpcPort}/data";
+			var requestBody = "{\"key\":\"value\"}";
+			var httpContext = CreateHttpContext(requestUrl, requestBody);
+
+			var cachedContent = "{\"data\":\"cached_content\"}";
+			var cachedByteContent = Encoding.UTF8.GetBytes(cachedContent);
+
+			// Имитируем, что в кеше есть данные
+			_mockDistributedCache!.Setup(d => d.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+								.ReturnsAsync(cachedByteContent)
+								.Verifiable();
+			var responseStream = new MemoryStream();
+			httpContext.Response.Body = responseStream;
+
+			// Act
+			await _cut!.Invoke(httpContext);
+
+			// Assert
+			_mockDistributedCache!.Verify(x => x.GetAsync(It.IsAny<string>(),
+				It.IsAny<CancellationToken>()), Times.Once, "Should attempt to get from cache.");
+			_mockNext!.Verify(x => x(It.IsAny<HttpContext>()), Times.Never, "Next delegate should NOT be called on cache hit.");
+			_mockDistributedCache!.Verify(x =>
+				x.SetAsync(It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<DistributedCacheEntryOptions>(), It.IsAny<CancellationToken>()),
+				Times.Never, "Should NOT set the cache on cache hit.");
+
+			// Проверяем, что ответ был записан в Response.Body
+			responseStream.Seek(0, SeekOrigin.Begin);
+			using var reader = new StreamReader(responseStream);
+			var responseText = await reader.ReadToEndAsync(TestContext.CancellationTokenSource.Token);
+
+			Assert.AreEqual(cachedContent, responseText, "Response body should contain the cached content.");
+		}
+
 		[TestMethod]
 		public async Task InvokeAsync_GetRequest_DoesNotReadRequestBodyAndContinues()
 		{
