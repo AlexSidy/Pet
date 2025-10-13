@@ -45,6 +45,9 @@ namespace ScanPerson.Integration.Tests.Base
 			Environment.SetEnvironmentVariable("CACHE_EXPIRATION", "2");
 			Environment.SetEnvironmentVariable("ConnectionStrings__ScanPersonDb", _connectionString!);
 			Environment.SetEnvironmentVariable("UNAUTHORIZED_TRUSTED_HOSTS", "telegrambots");
+			Environment.SetEnvironmentVariable("ASPNETCORE_HTTP_PORTS", "1111");
+			Environment.SetEnvironmentVariable("ASPNETCORE_HTTPS_PORTS", "2222");
+			Environment.SetEnvironmentVariable("GRPC_PORTS", "3333");
 		}
 
 		protected static void RemoveFromServices(IServiceCollection services, IEnumerable<Type> types)

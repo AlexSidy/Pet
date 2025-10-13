@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-	<Version>1.0.6</Version>
+	<Version>1.0.9</Version>
 	<PackageId>ScanPerson.Common.Sdk</PackageId>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -15,6 +15,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="15.0.1" />
+    <PackageReference Include="Google.Protobuf" Version="3.32.1" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.72.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.0" />
@@ -38,7 +45,14 @@
   </ItemGroup>
 	
   <ItemGroup>
+	  <None Update="Protos\webapi.proto">
+	    <GrpcServices>Both</GrpcServices>
+	  </None>
 	  <None Update="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+	
+  <ItemGroup>
+  	<Protobuf Include="Protos\webapi.proto" GrpcServices="Both" />
   </ItemGroup>
 
 	<ItemGroup>

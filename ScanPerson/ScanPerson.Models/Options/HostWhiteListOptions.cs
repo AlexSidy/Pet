@@ -1,7 +1,7 @@
 ﻿namespace ScanPerson.Models.Options
 {
 	/// <summary>
-	/// Settings for used the cache.
+	/// Settings for host from white list.
 	/// </summary>
 	public class HostWhiteListOptions
 	{

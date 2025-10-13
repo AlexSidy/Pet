@@ -1,9 +1,11 @@
 ﻿using System.Reflection;
 using System.Text.Json;
 
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using ScanPerson.BusinessLogic.Services.Interfaces;
+using ScanPerson.Common.Helpers;
 using ScanPerson.Common.Operations.Base;
 using ScanPerson.Common.Resources;
 using ScanPerson.Models.Items;
@@ -34,11 +36,21 @@ namespace ScanPerson.BusinessLogic.Services
 			try
 			{
 				_logger.LogInformation(Messages.StartedMethodWithParameters, nameof(GetScanPersonInfoAsync), JsonSerializer.Serialize(request));
-				var results = await Task.WhenAll(_personInfoServices.Select(x => x.GetInfoAsync(request)));
+				ScanPersonResponseBase[] results;
+				var env = EnviromentHelper.GetVariableByName("ASPNETCORE_ENVIRONMENT");
+				if (env == Environments.Development)
+				{
+					results = [new ScanPersonResultResponse<PersonInfoItem>(
+					new PersonInfoItem { Names = ["Test1"], Location = new LocationItem() } )];
+				}
+				else
+				{
+					results = await Task.WhenAll(_personInfoServices.Select(x => x.GetInfoAsync(request)));
+				}
 				_logger.LogInformation(Messages.OperationResult, JsonSerializer.Serialize(results));
 
 				var aggregatedResult = GetAggregatedResult(results);
-				_logger.LogInformation("Result before agregation: {Before}, result after agregation: {After}", 
+				_logger.LogInformation("Result before agregation: {Before}, result after agregation: {After}",
 					new { Before = JsonSerializer.Serialize(results) },
 					new { After = JsonSerializer.Serialize(aggregatedResult) });
 

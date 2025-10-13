@@ -7,6 +7,8 @@ using Microsoft.Extensions.Options;
 
 using Moq;
 
+using ScanPerson.Common.GrpcServices;
+
 using Telegram.Bot;
 
 using TelegramBots.BusinessLogic.Services;
@@ -22,14 +24,15 @@ public class IntegrationTestsBase
 	protected readonly Mock<ITelegramBotClient> MockBotClient;
 	protected readonly Mock<ILogger<ScanPersonWebApiService>> MockWebApiLogger;
 	protected readonly Mock<ILogger<ScanPersonBotPollingWorker>> MockWorkerLogger;
-	protected readonly Mock<HttpMessageHandler> MockHttpMessageHandler;
+	protected readonly Mock<GrpcPersonInfo.GrpcPersonInfoClient> MockGrpcClient;
 
 	public IntegrationTestsBase()
 	{
 		MockBotClient = new Mock<ITelegramBotClient>();
-		MockHttpMessageHandler = new Mock<HttpMessageHandler>();
 		MockWebApiLogger = new Mock<ILogger<ScanPersonWebApiService>>();
 		MockWorkerLogger = new Mock<ILogger<ScanPersonBotPollingWorker>>();
+		MockGrpcClient = new Mock<GrpcPersonInfo.GrpcPersonInfoClient>();
+
 		Factory = new WebApplicationFactory<Program>()
 			.WithWebHostBuilder(builder =>
 			{
@@ -41,7 +44,8 @@ public class IntegrationTestsBase
 					{
 						typeof(IHostedService),
 						typeof(ITelegramBotClient),
-						typeof(IConfigureOptions<LoggerFilterOptions>)
+						typeof(IConfigureOptions<LoggerFilterOptions>),
+						typeof(GrpcPersonInfo.GrpcPersonInfoClient)
 					};
 					var implementationToRemove = new List<Type>
 					{
@@ -59,9 +63,7 @@ public class IntegrationTestsBase
 
 					services.AddSingleton(MockBotClient.Object);
 					services.AddSingleton(MockWebApiLogger.Object);
-					services.AddTransient<ScanPersonWebApiService>();
-					services.AddHttpClient<ScanPersonWebApiService>()
-						.ConfigurePrimaryHttpMessageHandler(() => MockHttpMessageHandler.Object);
+					services.AddSingleton(MockGrpcClient.Object);
 				});
 			});
 	}
@@ -69,5 +71,6 @@ public class IntegrationTestsBase
 	protected static void SetTestEnvironment()
 	{
 		Environment.SetEnvironmentVariable("SCAN_PERSON_BOT_TOKEN", "7123456789:AAAAABB0C1DDD22asdfghYFkpChjklg-0");
+		Environment.SetEnvironmentVariable("AUTO_MAPPER_LICENSE_KEY", "mapper:AAAAABB0C1DDD22asdfghYFkpChjklg-0");
 	}
 }

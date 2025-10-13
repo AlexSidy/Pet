@@ -1,5 +1,6 @@
 ﻿using ScanPerson.BusinessLogic.MapperProfiles;
 using ScanPerson.Common.Helpers;
+using ScanPerson.Common.MapperProfiles;
 
 namespace ScanPerson.WebApi.Extensions
 {
@@ -11,7 +12,6 @@ namespace ScanPerson.WebApi.Extensions
 		/// <summary>
 		/// Add AutoMapper config.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
 		/// <param name="services"></param>
 		public static void AddScanPersonAutoMapper(this IServiceCollection services)
 		{
@@ -20,6 +20,7 @@ namespace ScanPerson.WebApi.Extensions
 				cfg.LicenseKey = EnviromentHelper.GetVariableByName("AUTO_MAPPER_LICENSE_KEY");
 				cfg.AddProfile<DisplayProfile>();
 				cfg.AddProfile<RequestProfile>();
+				cfg.AddProfile<GrpcProfile>();
 			});
 		}
 	}

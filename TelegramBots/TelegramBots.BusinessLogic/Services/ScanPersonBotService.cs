@@ -12,19 +12,11 @@ namespace TelegramBots.BusinessLogic.Services
 	/// <summary>
 	/// Telegram bot service for scan person.
 	/// </summary>
-	public class ScanPersonBotService: IBotService
+	public class ScanPersonBotService(
+		ITelegramBotClient botClient,
+		ILogger<ScanPersonBotService> logger,
+		IApiService apiService) : IBotService
 	{
-		private readonly ITelegramBotClient _botClient;
-		private readonly ILogger<ScanPersonBotService> _logger;
-		private readonly ScanPersonWebApiService _scanPersonWebApiService;
-
-		public ScanPersonBotService(ITelegramBotClient botClient, ILogger<ScanPersonBotService> logger, ScanPersonWebApiService scanPersonWebApiService)
-		{
-			_botClient = botClient;
-			_logger = logger;
-			_scanPersonWebApiService = scanPersonWebApiService;
-		}
-
 		/// <summary>
 		/// Handler for updates.
 		/// </summary>
@@ -37,8 +29,8 @@ namespace TelegramBots.BusinessLogic.Services
 				return;
 
 			var chatId = message.Chat.Id;
-			_logger.LogInformation("Message received '{Message}' in chat {ChatId}.",
-				new { Message = messageText }, new  { ChatId = chatId });
+			logger.LogInformation("Message received '{Message}' in chat {ChatId}.",
+				new { Message = messageText }, new { ChatId = chatId });
 
 			string responseText = messageText.ToLower() switch
 			{
@@ -49,7 +41,7 @@ namespace TelegramBots.BusinessLogic.Services
 										💾 введите номер телефона в формате 9991112233 (без + 7, без 8, без пробелов и -),
 										чтобы узнать информацию о пользователе.",
 				"/time" => $"Текущее время на сервере: {DateTime.Now:HH:mm:ss}",
-				_ => await _scanPersonWebApiService.GetDataAsync(messageText, cancellationToken) ?? "👻 Пользователь не найден.",
+				_ => await apiService.GetDataAsync(messageText, cancellationToken) ?? "👻 Пользователь не найден.",
 			};
 
 			await botClient.SendMessage(
@@ -67,7 +59,7 @@ namespace TelegramBots.BusinessLogic.Services
 		/// <returns>Completed task.</returns>
 		private Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
 		{
-			_logger.LogError(exception, "Error occurred during Long Polling.");
+			logger.LogError(exception, "Error occurred during Long Polling.");
 			return Task.CompletedTask;
 		}
 
@@ -78,13 +70,13 @@ namespace TelegramBots.BusinessLogic.Services
 				AllowedUpdates = Array.Empty<UpdateType>() // Get all update types
 			};
 
-			_botClient.StartReceiving(
+			botClient.StartReceiving(
 				updateHandler: HandleUpdateAsync,
 				errorHandler: HandlePollingErrorAsync,
 				receiverOptions: receiverOptions,
 				cancellationToken: cancellationToken
 			);
-			_logger.LogInformation("The bot has started receiving messages.");
+			logger.LogInformation("The bot has started receiving messages.");
 		}
 	}
 }

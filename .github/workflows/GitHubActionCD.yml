@@ -24,12 +24,13 @@ jobs:
           VM_USER: ${{ secrets.VM_USER }}
           IS_REMOVE_IMAGE: ${{ vars.IS_REMOVE_IMAGE }}
           IS_REMOVE_VOLUMES: ${{ vars.IS_REMOVE_VOLUMES }}
-          EXCLUDE_SERVICE_NAMES: browserbotapi|redis|mongodb|pgadmin|graylog|elasticsearch
+          EXCLUDE_SERVICE_NAMES: ${{ vars.EXCLUDE_SERVICE_NAMES }} #example: browserbotapi|redis|mongodb|pgadmin|graylog|elasticsearch
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            echo "FOR_REMOVE_CONTAINERS_NAMES: ${{ env.EXCLUDE_SERVICE_NAMES }}"
             FOR_REMOVE_CONTAINERS=$(docker ps -qa | grep -E -v "$(docker ps -qa --filter name="^(${{ env.EXCLUDE_SERVICE_NAMES }})")")
             echo "FOR_REMOVE_CONTAINERS: $FOR_REMOVE_CONTAINERS"
     
@@ -124,6 +125,7 @@ jobs:
           HTMLWEBRU_API_KEY: ${{ secrets.HTMLWEBRU_API_KEY }}
           AUTO_MAPPER_LICENSE_KEY: ${{ secrets.AUTO_MAPPER_LICENSE_KEY }}
           SCANPERSON_PGDATA: ${{ vars.SCANPERSON_PGDATA }}
+          UNAUTHORIZED_TRUSTED_HOSTS: ${{ vars.UNAUTHORIZED_TRUSTED_HOSTS }}
 
           # Identity solution
           IDENTITY_ALLOWED_HOSTS: ${{ vars.IDENTITY_ALLOWED_HOSTS }}
@@ -194,6 +196,7 @@ jobs:
             HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
             IS_CACHE_ENABLE="${{ env.IS_CACHE_ENABLE }}" \
             CACHE_EXPIRATION="${{ env.CACHE_EXPIRATION }}" \
+            UNAUTHORIZED_TRUSTED_HOSTS="${{ env.UNAUTHORIZED_TRUSTED_HOSTS }}" \
             docker compose up -d --build
 
             # TelegramBots
@@ -202,4 +205,5 @@ jobs:
 
             ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
             SCAN_PERSON_BOT_TOKEN="${{ env.SCAN_PERSON_BOT_TOKEN }}" \
+            AUTO_MAPPER_LICENSE_KEY="${{ env.AUTO_MAPPER_LICENSE_KEY }}" \
             docker compose up -d --build
