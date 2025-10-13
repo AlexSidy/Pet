@@ -14,6 +14,7 @@ namespace ScanPerson.WebApi.Middlewares
 		ILogger<RedisCacheMiddleware> logger,
 		IDistributedCache cache,
 		CacheOptions cacheOptions,
+		PortsOptions portsOptions,
 		RequestDelegate next)
 	{
 		/// <summary>
@@ -24,7 +25,7 @@ namespace ScanPerson.WebApi.Middlewares
 		{
 			var url = context.Request.GetDisplayUrl();
 			var port = context.Request.Host.Port;
-			if (!cacheOptions.IsEnable || (!url.Contains(Program.WebApi) && port != Program.GrpcPort))
+			if (!cacheOptions.IsEnable || (!url.Contains(Program.WebApi) && port != portsOptions.GrpcPort))
 			{
 				await next(context);
 				return;

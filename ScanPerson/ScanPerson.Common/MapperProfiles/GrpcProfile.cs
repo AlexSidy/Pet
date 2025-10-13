@@ -14,22 +14,16 @@ namespace ScanPerson.Common.MapperProfiles
 	{
 		public GrpcProfile()
 		{
-			CreateMap<GrpcPersonInfoRequest, PersonInfoRequest>();
-			CreateMap<ScanPersonResponseBase, GrpcScanPersonResponse>()
-				.ForMember(dest => dest.Error, opt => opt.MapFrom(src => src.Error ?? string.Empty))
-				.ForMember(dest => dest.Result, opt => opt.Ignore());
-			CreateMap<ScanPersonResultResponse<PersonInfoItem>, GrpcScanPersonResponse>()
-				.ForMember(dest => dest.Error, opt => opt.MapFrom(src => src.Error ?? string.Empty));
-			CreateMap<PersonInfoItem, GrpcPersonInfoItem>()
-				.ForMember(dest => dest.Mail, opt => opt.MapFrom(src => src.Mail ?? string.Empty));
-			CreateMap<LocationItem, GrpcLocationItem>()
-				.ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.CountryName ?? string.Empty))
-				.ForMember(dest => dest.CurrentRegion, opt => opt.MapFrom(src => src.CurrentRegion ?? string.Empty))
-				.ForMember(dest => dest.RegistrationOkrug, opt => opt.MapFrom(src => src.RegistrationOkrug ?? string.Empty))
-				.ForMember(dest => dest.RegistrationCapital, opt => opt.MapFrom(src => src.RegistrationCapital ?? string.Empty))
-				.ForMember(dest => dest.OperatorCity, opt => opt.MapFrom(src => src.OperatorCity ?? string.Empty))
-				.ForMember(dest => dest.OperatorName, opt => opt.MapFrom(src => src.OperatorName ?? string.Empty));
+			SetupGprcToProjectModelsMapping();
+			SetupProjectModelsToGprcMapping();
+		}
 
+		/// <summary>
+		/// Configurate mapping project entities to gprc enttities.
+		/// </summary>
+		private void SetupProjectModelsToGprcMapping()
+		{
+			CreateMap<GrpcPersonInfoRequest, PersonInfoRequest>();
 			CreateMap<GrpcScanPersonResponse, ScanPersonResponseBase>()
 				.ForMember(dest => dest.Error, opt => opt.MapFrom(src => string.IsNullOrEmpty(src.Error) ? null : src.Error));
 			CreateMap<GrpcScanPersonResponse, ScanPersonResultResponse<PersonInfoItem>>()
@@ -43,6 +37,27 @@ namespace ScanPerson.Common.MapperProfiles
 				.ForMember(dest => dest.RegistrationCapital, opt => opt.MapFrom(src => string.IsNullOrEmpty(src.RegistrationCapital) ? null : src.RegistrationCapital))
 				.ForMember(dest => dest.OperatorCity, opt => opt.MapFrom(src => string.IsNullOrEmpty(src.OperatorCity) ? null : src.OperatorCity))
 				.ForMember(dest => dest.OperatorName, opt => opt.MapFrom(src => string.IsNullOrEmpty(src.OperatorName) ? null : src.OperatorName));
+		}
+
+		/// <summary>
+		/// Configurate mapping gprc enttities to project entities.
+		/// </summary>
+		private void SetupGprcToProjectModelsMapping()
+		{
+			CreateMap<ScanPersonResponseBase, GrpcScanPersonResponse>()
+							.ForMember(dest => dest.Error, opt => opt.MapFrom(src => src.Error ?? string.Empty))
+							.ForMember(dest => dest.Result, opt => opt.Ignore());
+			CreateMap<ScanPersonResultResponse<PersonInfoItem>, GrpcScanPersonResponse>()
+				.ForMember(dest => dest.Error, opt => opt.MapFrom(src => src.Error ?? string.Empty));
+			CreateMap<PersonInfoItem, GrpcPersonInfoItem>()
+				.ForMember(dest => dest.Mail, opt => opt.MapFrom(src => src.Mail ?? string.Empty));
+			CreateMap<LocationItem, GrpcLocationItem>()
+				.ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.CountryName ?? string.Empty))
+				.ForMember(dest => dest.CurrentRegion, opt => opt.MapFrom(src => src.CurrentRegion ?? string.Empty))
+				.ForMember(dest => dest.RegistrationOkrug, opt => opt.MapFrom(src => src.RegistrationOkrug ?? string.Empty))
+				.ForMember(dest => dest.RegistrationCapital, opt => opt.MapFrom(src => src.RegistrationCapital ?? string.Empty))
+				.ForMember(dest => dest.OperatorCity, opt => opt.MapFrom(src => src.OperatorCity ?? string.Empty))
+				.ForMember(dest => dest.OperatorName, opt => opt.MapFrom(src => src.OperatorName ?? string.Empty));
 		}
 	}
 }

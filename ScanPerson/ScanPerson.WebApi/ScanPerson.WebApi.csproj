@@ -35,10 +35,4 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
-  <!--<ItemGroup>
-    <None Update="Protos\webapi.proto" >
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>-->
-
 </Project>

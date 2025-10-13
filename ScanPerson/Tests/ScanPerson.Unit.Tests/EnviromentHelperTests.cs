@@ -52,7 +52,7 @@ namespace ScanPerson.Unit.Tests
 				catch (InvalidOperationException ex)
 				{
 					// Assert
-					StringAssert.Contains(ex.Message, TestVarName, "The exception must contain a variable name.");
+					Assert.Contains(TestVarName, ex.Message, "The exception must contain a variable name.");
 					throw;
 				}
 			});
@@ -142,7 +142,7 @@ namespace ScanPerson.Unit.Tests
 				catch (InvalidOperationException ex)
 				{
 					// Assert
-					StringAssert.Contains(expectedError, ex.Message, "The exception should be about a section not found.");
+					Assert.Contains(expectedError, ex.Message, "The exception should be about a section not found.");
 					throw;
 				}
 			});
@@ -198,7 +198,8 @@ namespace ScanPerson.Unit.Tests
 				catch (InvalidOperationException ex)
 				{
 					// Assert
-					StringAssert.Contains(ex.Message, "Could not convert environment variable 'TEST_ENV_INT'", "There must be a conversion error.");
+					Assert.AreEqual("Could not convert environment variable 'TEST_ENV_INT' to type 'Int32'.", ex.Message,
+						"There must be a conversion error.");
 					throw;
 				}
 			});
@@ -207,7 +208,7 @@ namespace ScanPerson.Unit.Tests
 		public class TestEnvOptions
 		{
 			[EnvironmentVariable("TEST_ENV_STRING")]
-			public string StringValue { get; set; }
+			public string? StringValue { get; set; }
 
 			[EnvironmentVariable("TEST_ENV_INT")]
 			public int IntValue { get; set; }
@@ -215,7 +216,7 @@ namespace ScanPerson.Unit.Tests
 			[EnvironmentVariable("TEST_ENV_BOOL")]
 			public bool BoolValue { get; set; }
 
-			public string NotMappedValue { get; set; }
+			public string? NotMappedValue { get; set; }
 		}
 	}
 }

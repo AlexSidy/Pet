@@ -37,7 +37,7 @@ namespace ScanPerson.Unit.Tests
 				UnUsingServices = ["TestUnusedService", "TestService"],
 				GeoServiceOptions = new GeoServiceOptions
 				{
-					BaseUrl = "https://GrpcPersonInfoService.ru/geo"
+					BaseUrl = "https://test.ru/geo"
 				},
 				BrowserBotServiceOptions = new BrowserBotServiceOptions
 				{

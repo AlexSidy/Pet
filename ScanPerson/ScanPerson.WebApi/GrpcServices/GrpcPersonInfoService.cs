@@ -13,6 +13,9 @@ using ScanPerson.Models.Requests;
 
 namespace ScanPerson.WebApi.GrpcServices
 {
+	/// <summary>
+	/// Gprc server service.
+	/// </summary>
 	public class GrpcPersonInfoService : GrpcPersonInfo.GrpcPersonInfoBase
 	{
 		private readonly ILogger<GrpcPersonInfoService> _logger;
@@ -29,15 +32,22 @@ namespace ScanPerson.WebApi.GrpcServices
 			_mapper = mapper;
 		}
 
+		/// <summary>
+		/// Method for get person info.
+		/// </summary>
+		/// <param name="request">The request containing the input data.</param>
+		/// <param name="context">Context for server-side.</param>
+		/// <returns>Response with person info.</returns>
 		[Authorize(Policy = Program.AuthorizationPolicy)]
 		public override async Task<GrpcScanPersonResponse> GetGrpcScanPersonInfo(
 			GrpcPersonInfoRequest request,
-			ServerCallContext context)
+			ServerCallContext? context)
 		{
 			_logger.LogInformation(Messages.StartedMethodWithParameters, nameof(GetGrpcScanPersonInfo), JsonSerializer.Serialize(request));
 			var mappedRequest = _mapper.Map<PersonInfoRequest>(request);
 			var result = await _service.GetScanPersonInfoAsync(mappedRequest);
 			var response = _mapper.Map<GrpcScanPersonResponse>(result);
+			_logger.LogInformation(Messages.OperationResult, JsonSerializer.Serialize(response));
 
 			return response;
 		}

@@ -37,7 +37,7 @@ namespace ScanPerson.BusinessLogic.Managers
 			}
 			var resolvedIpArrays = await Task.WhenAll(options.WhiteHosts.Select(host => GetIpAddressesSafeAsync(host)));
 			var allowedIps = resolvedIpArrays.SelectMany(ipArray => ipArray);
-			if (remoteIp != null && allowedIps.Contains(remoteIp))
+			if (allowedIps.Contains(remoteIp))
 			{
 				logger.LogInformation("Request is internal for trusted IP: {RemoteIp}", new { RemoteIp = remoteIp });
 				return true;

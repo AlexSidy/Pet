@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-	<Version>1.0.8</Version>
+	<Version>1.0.9</Version>
 	<PackageId>ScanPerson.Common.Sdk</PackageId>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -46,7 +46,7 @@
 	
   <ItemGroup>
 	  <None Update="Protos\webapi.proto">
-	    <GrpcServices>Server</GrpcServices>
+	    <GrpcServices>Both</GrpcServices>
 	  </None>
 	  <None Update="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>

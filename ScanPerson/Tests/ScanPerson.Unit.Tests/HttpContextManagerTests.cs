@@ -23,11 +23,10 @@ namespace ScanPerson.Unit.Tests
 		private const string PublicTestIp = "203.0.113.42";
 		private const string TrustedHostName = "localhost"; // IP: 127.0.0.1
 
-		private Mock<ILogger<HttpContextManager>> _mockLogger;
-		private HostWhiteListOptions _options;
+		private readonly Mock<ILogger<HttpContextManager>> _mockLogger;
+		private readonly HostWhiteListOptions _options;
 
-		[TestInitialize]
-		public void TestInitialize()
+		public HttpContextManagerTests()
 		{
 			_mockLogger = new Mock<ILogger<HttpContextManager>>();
 			_options = new HostWhiteListOptions([TrustedHostName]);
@@ -124,7 +123,6 @@ namespace ScanPerson.Unit.Tests
 			var result = await _cut!.IsInternalRequestAsync(httpContext);
 
 			// Assert
-			Assert.IsNotNull(result);
 			Assert.IsFalse(result);
 		}
 
@@ -142,16 +140,15 @@ namespace ScanPerson.Unit.Tests
 			var result = await _cut!.IsInternalRequestAsync(httpContext);
 
 			// Assert
-			Assert.IsNotNull(result);
 			Assert.IsFalse(result);
 
 			_mockLogger.Verify(
 				x => x.Log(
 					LogLevel.Error,
 					It.IsAny<EventId>(),
-					It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("DNS resolution error")),
+					It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("DNS resolution error")),
 					It.IsAny<SocketException>(),
-					It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+					It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
 				Times.Once);
 		}
 	}

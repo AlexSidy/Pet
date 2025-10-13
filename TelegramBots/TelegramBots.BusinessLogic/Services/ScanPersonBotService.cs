@@ -30,7 +30,7 @@ namespace TelegramBots.BusinessLogic.Services
 
 			var chatId = message.Chat.Id;
 			logger.LogInformation("Message received '{Message}' in chat {ChatId}.",
-				new { Message = messageText }, new  { ChatId = chatId });
+				new { Message = messageText }, new { ChatId = chatId });
 
 			string responseText = messageText.ToLower() switch
 			{
@@ -41,7 +41,7 @@ namespace TelegramBots.BusinessLogic.Services
 										💾 введите номер телефона в формате 9991112233 (без + 7, без 8, без пробелов и -),
 										чтобы узнать информацию о пользователе.",
 				"/time" => $"Текущее время на сервере: {DateTime.Now:HH:mm:ss}",
-				 _ => await apiService.GetDataAsync(messageText, cancellationToken) ?? "👻 Пользователь не найден.",
+				_ => await apiService.GetDataAsync(messageText, cancellationToken) ?? "👻 Пользователь не найден.",
 			};
 
 			await botClient.SendMessage(

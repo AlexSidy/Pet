@@ -9,6 +9,7 @@ using ScanPerson.BusinessLogic;
 using ScanPerson.Common.Helpers;
 using ScanPerson.Common.Resources;
 using ScanPerson.DAL;
+using ScanPerson.Models.Options;
 using ScanPerson.Models.Options.Auth;
 using ScanPerson.WebApi.AuthorizationPoliticians;
 using ScanPerson.WebApi.Extensions;
@@ -44,16 +45,27 @@ Log.Logger = new LoggerConfiguration()
 	})
 	.CreateLogger();
 builder.Host.UseSerilog();
+var ports = EnviromentHelper.GetFilledFromEnvironment<PortsOptions>();
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-	serverOptions.ListenAnyIP(GrpcPort, listenOptions =>
+	serverOptions.ListenAnyIP(ports.GrpcPort, listenOptions =>
 	{
 		listenOptions.Protocols = HttpProtocols.Http2;
+	});
+	serverOptions.ListenAnyIP(ports.HttpPort, listenOptions =>
+	{
+		listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+	});
+	serverOptions.ListenAnyIP(ports.HttpsPort, listenOptions =>
+	{
+		listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+		listenOptions.UseHttps();
 	});
 });
 
 // Add services to the container.
 #region [Addition services]
+builder.Services.AddSingleton(ports);
 builder.Services.AddDalServices(connectionString);
 builder.Services.AddBusinessLogicServices(builder.Configuration);
 
@@ -144,6 +156,5 @@ public partial class Program
 	public const string RedisInstanceName = "ScanPersonRedisInstance";
 	public const string CorsPolicy = "MyTrustedHosts";
 	public const string AuthorizationPolicy = "TrustedHosts";
-	public const int GrpcPort = 5001;
 }
 #pragma warning restore S1118

@@ -50,7 +50,7 @@ namespace ScanPerson.Unit.Tests
 			var grpcRequest = new GrpcRequest { PhoneNumber = "Test PhoneNumber" };
 			var mappedRequest = new PersonInfoRequest { PhoneNumber = "Test PhoneNumber" };
 			var serviceResult = CreationHelper.GetPersonResponse();
-			var expectedResponse = new GrpcResponse { IsSuccess = true, Result = new GrpcPersonInfoItem{ Id = serviceResult.Result.Id ?? 0 } };
+			var expectedResponse = new GrpcResponse { IsSuccess = true, Result = new GrpcPersonInfoItem { Id = serviceResult.Result.Id ?? 0 } };
 
 			_mockMapper
 				.Setup(m => m.Map<PersonInfoRequest>(It.Is<GrpcRequest>(r => r == grpcRequest)))
@@ -77,9 +77,9 @@ namespace ScanPerson.Unit.Tests
 				x => x.Log(
 					LogLevel.Information,
 					It.IsAny<EventId>(),
-					It.Is<It.IsAnyType>((v, t) => v.ToString().Contains(nameof(GrpcPersonInfoService.GetGrpcScanPersonInfo))),
+					It.Is<It.IsAnyType>((v, t) => v != null && v.ToString()!.Contains(nameof(GrpcPersonInfoService.GetGrpcScanPersonInfo))),
 					It.IsAny<Exception>(),
-					It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+					It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
 				Times.Once);
 		}
 

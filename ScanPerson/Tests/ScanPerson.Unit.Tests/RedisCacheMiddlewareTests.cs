@@ -21,13 +21,13 @@ namespace ScanPerson.Unit.Tests
 
 		public required TestContext TestContext { get; set; }
 
-		private Mock<ILogger<RedisCacheMiddleware>>? _mockLogger;
-		private Mock<IDistributedCache>? _mockDistributedCache;
-		private Mock<RequestDelegate>? _mockNext;
-		private CacheOptions? _cacheOptions;
+		private readonly Mock<ILogger<RedisCacheMiddleware>>? _mockLogger;
+		private readonly Mock<IDistributedCache>? _mockDistributedCache;
+		private readonly Mock<RequestDelegate>? _mockNext;
+		private readonly CacheOptions? _cacheOptions;
+		private readonly PortsOptions? _portsOptions;
 
-		[TestInitialize]
-		public void Setup()
+		public  RedisCacheMiddlewareTests()
 		{
 			_mockLogger = new Mock<ILogger<RedisCacheMiddleware>>();
 			_mockDistributedCache = new Mock<IDistributedCache>();
@@ -37,8 +37,9 @@ namespace ScanPerson.Unit.Tests
 				IsEnable = true,
 				CacheExpiration = 1
 			};
+			_portsOptions = new PortsOptions { HttpPort = 8080, GrpcPort = 8081 , HttpsPort	= 443 };
 
-			_cut = new RedisCacheMiddleware(_mockLogger!.Object, _mockDistributedCache!.Object, _cacheOptions, _mockNext!.Object);
+			_cut = new RedisCacheMiddleware(_mockLogger!.Object, _mockDistributedCache!.Object, _cacheOptions, _portsOptions, _mockNext!.Object);
 		}
 
 		[TestMethod]
@@ -156,7 +157,7 @@ namespace ScanPerson.Unit.Tests
 		public async Task InvokeAsync_CacheEnableAndPoprtIsGprc_ReturnsCachedResponseAndDoesNotCallNext()
 		{
 			// Arrange
-			var requestUrl = $"http://example.com:{Program.GrpcPort}/data";
+			var requestUrl = $"http://example.com:{_portsOptions!.GrpcPort}/data";
 			var requestBody = "{\"key\":\"value\"}";
 			var httpContext = CreateHttpContext(requestUrl, requestBody);
 

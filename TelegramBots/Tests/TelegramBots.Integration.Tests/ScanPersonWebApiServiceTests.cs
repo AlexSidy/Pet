@@ -38,7 +38,7 @@ namespace TelegramBots.Integration.Tests
 				IsSuccess = true,
 				Result = new GrpcPersonInfoItem { Id = 1, Location = new GrpcLocationItem { OperatorCity = "City", CountryName = "Country" } }
 			};
-			var asyncResponse = new AsyncUnaryCall<GrpcScanPersonResponse>(Task.FromResult(apiSuccessResponse), null, null, null, null);
+			var asyncResponse = new AsyncUnaryCall<GrpcScanPersonResponse>(Task.FromResult(apiSuccessResponse), null!, null!, null!, null!);
 			var token = TestContext.CancellationTokenSource.Token;
 			MockGrpcClient.Setup(x => x.GetGrpcScanPersonInfoAsync(request, It.IsAny<Metadata>(), It.IsAny<DateTime?>(), token))
 				.Returns(asyncResponse);
@@ -77,7 +77,7 @@ namespace TelegramBots.Integration.Tests
 				IsSuccess = false,
 				Error = "Error"
 			};
-			var asyncResponse = new AsyncUnaryCall<GrpcScanPersonResponse>(Task.FromResult(apiSuccessResponse), null, null, null, null);
+			var asyncResponse = new AsyncUnaryCall<GrpcScanPersonResponse>(Task.FromResult(apiSuccessResponse), null!, null!, null!, null!);
 			var token = TestContext.CancellationTokenSource.Token;
 			MockGrpcClient.Setup(x => x.GetGrpcScanPersonInfoAsync(request, It.IsAny<Metadata>(), It.IsAny<DateTime?>(), token))
 				.Returns(asyncResponse);
@@ -92,7 +92,7 @@ namespace TelegramBots.Integration.Tests
 				x => x.Log(
 					LogLevel.Information,
 					It.IsAny<EventId>(),
-					It.Is<It.IsAnyType>((v, t) => v.ToString().Contains(apiSuccessResponse.Error)),
+					It.Is<It.IsAnyType>((v, t) => v != null && v.ToString()!.Contains(apiSuccessResponse.Error)),
 					It.IsAny<Exception>(),
 					It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
 				Times.Once);
@@ -112,7 +112,7 @@ namespace TelegramBots.Integration.Tests
 			AsyncUnaryCall<GrpcScanPersonResponse>? asyncResponse = null;
 			var token = TestContext.CancellationTokenSource.Token;
 			MockGrpcClient.Setup(x => x.GetGrpcScanPersonInfoAsync(request, It.IsAny<Metadata>(), It.IsAny<DateTime?>(), token))
-				.Returns(asyncResponse);
+				.Returns(asyncResponse!);
 
 			// Act
 			var result = await _cut.GetDataAsync(expectedPhoneNumber, TestContext.CancellationTokenSource.Token);
