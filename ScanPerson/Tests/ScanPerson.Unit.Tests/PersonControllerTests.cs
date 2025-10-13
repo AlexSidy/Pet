@@ -13,7 +13,7 @@ using ScanPerson.WebApi.Controllers;
 namespace ScanPerson.Unit.Tests
 {
 	[TestClass]
-	public sealed class PersonControllerTests
+	public class PersonControllerTests
 	{
 		// class under tests
 		private readonly PersonInfoController _cut;

@@ -15,7 +15,7 @@ using ScanPerson.Models.Responses;
 namespace ScanPerson.Unit.Tests
 {
 	[TestClass]
-	public sealed class BrowserBotServiceTests
+	public class BrowserBotServiceTests
 	{
 		// class under tests
 		private readonly BrowserBotService _cut;

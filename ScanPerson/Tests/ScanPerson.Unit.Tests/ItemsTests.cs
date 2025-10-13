@@ -3,7 +3,7 @@
 namespace ScanPerson.Unit.Tests
 {
 	[TestClass]
-	public sealed class ItemsTests
+	public class ItemsTests
 	{
 		[TestMethod]
 		public void LocationItem_ToString_Success()
