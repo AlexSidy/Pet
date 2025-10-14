@@ -86,8 +86,6 @@ services:
       PGADMIN_CONFIG_SERVER_MODE: ${PGADMIN_CONFIG_SERVER_MODE}
     volumes:
         - pgadmin:/var/lib/pgadmin
-        - scanpersondbdata:/data/scanpersondb
-        - identitydbdata:/data/identitydb
     ports:
         - 8000:80
     networks:
@@ -100,8 +98,6 @@ volumes:
   graylog_journal:
   redis_data:
   pgadmin:
-  identitydbdata:
-  scanpersondbdata:
 
 networks:
   scanperson-network:
