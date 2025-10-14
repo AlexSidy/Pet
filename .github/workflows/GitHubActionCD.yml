@@ -97,7 +97,7 @@ jobs:
       - name: Deploy to VM and build containers
         uses: appleboy/ssh-action@3ca8a7c5359ac6ad91aa47f1946ece1c3b025004
         env:
-          #Common
+          #Shared
           VM_USER: ${{ secrets.VM_USER }}
           ASPNETCORE_ENVIRONMENT: ${{ vars.ASPNETCORE_ENVIRONMENT }}
           ASPNETCORE_Kestrel__Certificates__Default__Path: ${{ secrets.ASPNETCORE_KESTREL__CERTIFICATES__DEFAULT__PATH }}
@@ -108,6 +108,7 @@ jobs:
           HOST_HTTPS_PATH: ${{ vars.HOST_HTTPS_PATH }}
           IS_CACHE_ENABLE: ${{ vars.IS_CACHE_ENABLE }}
           CACHE_EXPIRATION: ${{ vars.CACHE_EXPIRATION }}
+          IS_SHARED_REBUILD: ${{ vars.IS_SHARED_REBUILD }}
 
           # Shared solution
           GRAYLOG_PASSWORD_SECRET: ${{ secrets.GRAYLOG_PASSWORD_SECRET }}
@@ -126,19 +127,24 @@ jobs:
           AUTO_MAPPER_LICENSE_KEY: ${{ secrets.AUTO_MAPPER_LICENSE_KEY }}
           SCANPERSON_PGDATA: ${{ vars.SCANPERSON_PGDATA }}
           UNAUTHORIZED_TRUSTED_HOSTS: ${{ vars.UNAUTHORIZED_TRUSTED_HOSTS }}
+          IS_SCANPERSON_REBUILD: ${{ vars.IS_SCANPERSON_REBUILD }}
 
           # Identity solution
           IDENTITY_ALLOWED_HOSTS: ${{ vars.IDENTITY_ALLOWED_HOSTS }}
           ConnectionStrings__IdentityDb: ${{ secrets.CONNECTIONSTRINGS__IDENTITYDB }}
           IDENTITY_POSTGRES_DB: ${{ vars.IDENTITY_POSTGRES_DB }}
           IDENTITY_PGDATA: ${{ vars.IDENTITY_PGDATA }}
+          IS_IDENTITY_REBUILD: ${{ vars.IS_IDENTITY_REBUILD }}
 
           # TelegramBots solution
+          IS_TELEGRAMBOTS_REBUILD: ${{ vars.IS_TELEGRAMBOTS_REBUILD }}
           SCAN_PERSON_BOT_TOKEN: ${{ secrets.SCAN_PERSON_BOT_TOKEN }}
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          timeout: 1200s
+          command_timeout: 20m
           script: |
             # Add step for clone repository for first deploy in task #50
             # Navigate to the project directory on the VM
@@ -147,63 +153,81 @@ jobs:
             # Rebuild and restart the Docker Compose services for all solutions.
             # The --build flag forces Docker Compose to rebuild the images locally.
 
-            # Graylog
-            echo "Shared build and up."
+            # Shared
+            echo "Shared build and up if need."
             cd Shared
-
-            GRAYLOG_PASSWORD_SECRET="${{ env.GRAYLOG_PASSWORD_SECRET }}" \
-            GRAYLOG_ROOT_PASSWORD_SHA2="${{ env.GRAYLOG_ROOT_PASSWORD_SHA2 }}" \
-            PGADMIN_DEFAULT_EMAIL="${{ env.PGADMIN_DEFAULT_EMAIL }}" \
-            PGADMIN_DEFAULT_PASSWORD="${{ env.PGADMIN_DEFAULT_PASSWORD }}" \
-            PGADMIN_CONFIG_SERVER_MODE="${{ env.PGADMIN_CONFIG_SERVER_MODE }}" \
-            docker compose up -d --build
+            if [ "${{ env.IS_SHARED_REBUILD }}" == 'true' ]; then
+                echo "Shared build and up.
+                GRAYLOG_PASSWORD_SECRET="${{ env.GRAYLOG_PASSWORD_SECRET }}" \
+                GRAYLOG_ROOT_PASSWORD_SHA2="${{ env.GRAYLOG_ROOT_PASSWORD_SHA2 }}" \
+                PGADMIN_DEFAULT_EMAIL="${{ env.PGADMIN_DEFAULT_EMAIL }}" \
+                PGADMIN_DEFAULT_PASSWORD="${{ env.PGADMIN_DEFAULT_PASSWORD }}" \
+                PGADMIN_CONFIG_SERVER_MODE="${{ env.PGADMIN_CONFIG_SERVER_MODE }}" \
+                docker compose up -d --build
+            else
+              echo "No rebuild and up Shared."
+            fi
             
             # Identity
-            echo "Identity build and up."
-            cd ../Identity
+            echo "Identity build and up if need."
+            if [ "${{ env.IS_IDENTITY_REBUILD }}" == 'true' ]; then
+                echo "Identity build and up."
+                cd ../Identity
 
-            ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
-            ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}" \
-            ASPNETCORE_Kestrel__Certificates__Default__Password="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}" \
-            JWT_OPTIONS_SECRET_KEY="${{ env.JWT_OPTIONS_SECRET_KEY }}" \
-            POSTGRES_USER="${{ env.POSTGRES_USER }}" \
-            POSTGRES_PASSWORD="${{ env.POSTGRES_PASSWORD }}" \
-            ALLOWED_HOSTS="${{ env.IDENTITY_ALLOWED_HOSTS }}" \
-            ConnectionStrings__IdentityDb="${{ env.ConnectionStrings__IdentityDb }}" \
-            POSTGRES_DB="${{ env.IDENTITY_POSTGRES_DB }}" \
-            PGDATA="${{ env.IDENTITY_PGDATA }}" \
-            HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
-            docker compose up -d --build
+                ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
+                ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}" \
+                ASPNETCORE_Kestrel__Certificates__Default__Password="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}" \
+                JWT_OPTIONS_SECRET_KEY="${{ env.JWT_OPTIONS_SECRET_KEY }}" \
+                POSTGRES_USER="${{ env.POSTGRES_USER }}" \
+                POSTGRES_PASSWORD="${{ env.POSTGRES_PASSWORD }}" \
+                ALLOWED_HOSTS="${{ env.IDENTITY_ALLOWED_HOSTS }}" \
+                ConnectionStrings__IdentityDb="${{ env.ConnectionStrings__IdentityDb }}" \
+                POSTGRES_DB="${{ env.IDENTITY_POSTGRES_DB }}" \
+                PGDATA="${{ env.IDENTITY_PGDATA }}" \
+                HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
+                docker compose up -d --build
+            else
+              echo "No rebuild and up Identity."
+            fi
 
             # ScanPerson
-            echo "ScanPerson build and up."
-            cd ../ScanPerson
+            echo "ScanPerson build and up if need."
+            if [ "${{ env.IS_SCANPERSON_REBUILD }}" == 'true' ]; then
+                echo "ScanPerson build and up."
+                cd ../ScanPerson
 
-            IDENTITY_API_DOMEN="${{ env.IDENTITY_API_DOMEN }}" \
-            SCANPERSON_WEBAPI_DOMEN="${{ env.SCANPERSON_WEBAPI_DOMEN }}" \
-            ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
-            ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}" \
-            ASPNETCORE_Kestrel__Certificates__Default__Password="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}" \
-            JWT_OPTIONS_SECRET_KEY="${{ env.JWT_OPTIONS_SECRET_KEY }}" \
-            POSTGRES_USER="${{ env.POSTGRES_USER }}" \
-            POSTGRES_PASSWORD="${{ env.POSTGRES_PASSWORD }}" \
-            ALLOWED_HOSTS="${{ env.SCANPERSON_ALLOWED_HOSTS }}" \
-            ConnectionStrings__ScanPersonDb="${{ env.ConnectionStrings__ScanPersonDb }}" \
-            POSTGRES_DB="${{ env.SCANPERSON_POSTGRES_DB }}" \
-            HTMLWEBRU_API_KEY="${{ env.HTMLWEBRU_API_KEY }}" \
-            AUTO_MAPPER_LICENSE_KEY="${{ env.AUTO_MAPPER_LICENSE_KEY }}" \
-            PGDATA="${{ env.SCANPERSON_PGDATA }}" \
-            HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
-            IS_CACHE_ENABLE="${{ env.IS_CACHE_ENABLE }}" \
-            CACHE_EXPIRATION="${{ env.CACHE_EXPIRATION }}" \
-            UNAUTHORIZED_TRUSTED_HOSTS="${{ env.UNAUTHORIZED_TRUSTED_HOSTS }}" \
-            docker compose up -d --build
+                IDENTITY_API_DOMEN="${{ env.IDENTITY_API_DOMEN }}" \
+                SCANPERSON_WEBAPI_DOMEN="${{ env.SCANPERSON_WEBAPI_DOMEN }}" \
+                ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
+                ASPNETCORE_Kestrel__Certificates__Default__Path="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Path }}" \
+                ASPNETCORE_Kestrel__Certificates__Default__Password="${{ env.ASPNETCORE_Kestrel__Certificates__Default__Password }}" \
+                JWT_OPTIONS_SECRET_KEY="${{ env.JWT_OPTIONS_SECRET_KEY }}" \
+                POSTGRES_USER="${{ env.POSTGRES_USER }}" \
+                POSTGRES_PASSWORD="${{ env.POSTGRES_PASSWORD }}" \
+                ALLOWED_HOSTS="${{ env.SCANPERSON_ALLOWED_HOSTS }}" \
+                ConnectionStrings__ScanPersonDb="${{ env.ConnectionStrings__ScanPersonDb }}" \
+                POSTGRES_DB="${{ env.SCANPERSON_POSTGRES_DB }}" \
+                HTMLWEBRU_API_KEY="${{ env.HTMLWEBRU_API_KEY }}" \
+                AUTO_MAPPER_LICENSE_KEY="${{ env.AUTO_MAPPER_LICENSE_KEY }}" \
+                PGDATA="${{ env.SCANPERSON_PGDATA }}" \
+                HOST_HTTPS_PATH="${{ env.HOST_HTTPS_PATH }}" \
+                IS_CACHE_ENABLE="${{ env.IS_CACHE_ENABLE }}" \
+                CACHE_EXPIRATION="${{ env.CACHE_EXPIRATION }}" \
+                UNAUTHORIZED_TRUSTED_HOSTS="${{ env.UNAUTHORIZED_TRUSTED_HOSTS }}" \
+                docker compose up -d --build
+            else
+              echo "No rebuild and up Identity."
+            fi
 
             # TelegramBots
-            echo "TelegramBots build and up."
-            cd ../TelegramBots
-
-            ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
-            SCAN_PERSON_BOT_TOKEN="${{ env.SCAN_PERSON_BOT_TOKEN }}" \
-            AUTO_MAPPER_LICENSE_KEY="${{ env.AUTO_MAPPER_LICENSE_KEY }}" \
-            docker compose up -d --build
+            echo "TelegramBots build and up if need."
+            if [ "${{ env.IS_TELEGRAMBOTS_REBUILD }}" == 'true' ]; then
+                echo "TelegramBots build and up."
+                cd ../TelegramBots
+                ASPNETCORE_ENVIRONMENT="${{ env.ASPNETCORE_ENVIRONMENT }}" \
+                SCAN_PERSON_BOT_TOKEN="${{ env.SCAN_PERSON_BOT_TOKEN }}" \
+                AUTO_MAPPER_LICENSE_KEY="${{ env.AUTO_MAPPER_LICENSE_KEY }}" \
+                docker compose up -d --build
+            else
+              echo "No rebuild and up TelegramBots."
+            fi
