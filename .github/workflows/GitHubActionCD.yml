@@ -157,7 +157,7 @@ jobs:
             echo "Shared build and up if need."
             cd Shared
             if [ "${{ env.IS_SHARED_REBUILD }}" == 'true' ]; then
-                echo "Shared build and up.
+                echo "Shared build and up."
                 GRAYLOG_PASSWORD_SECRET="${{ env.GRAYLOG_PASSWORD_SECRET }}" \
                 GRAYLOG_ROOT_PASSWORD_SHA2="${{ env.GRAYLOG_ROOT_PASSWORD_SHA2 }}" \
                 PGADMIN_DEFAULT_EMAIL="${{ env.PGADMIN_DEFAULT_EMAIL }}" \
