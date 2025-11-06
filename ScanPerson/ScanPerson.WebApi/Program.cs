@@ -23,7 +23,7 @@ var builder = WebApplication.CreateBuilder(args);
 var environmentName = builder.Environment.EnvironmentName;
 var configPath = Path.Combine(AppContext.BaseDirectory, $"appsettings.{environmentName}.json");
 builder.Configuration
-	.AddJsonFile(configPath)
+	.AddJsonFile(configPath, optional: true, reloadOnChange: true)
 	.AddEnvironmentVariables();
 
 var connectionString = builder.Configuration.GetConnectionString(DbSection) ??

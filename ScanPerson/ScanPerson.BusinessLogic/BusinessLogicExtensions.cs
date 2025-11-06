@@ -1,11 +1,15 @@
 ﻿using FluentValidation;
 
+using LD.Sber.GigaChatSDK;
+using LD.Sber.GigaChatSDK.Interfaces;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using ScanPerson.BusinessLogic.Managers;
 using ScanPerson.BusinessLogic.Services;
 using ScanPerson.BusinessLogic.Services.Interfaces;
+using ScanPerson.BusinessLogic.Services.Orchestration;
 using ScanPerson.BusinessLogic.Validators;
 using ScanPerson.Common.Extensions;
 using ScanPerson.Common.Helpers;
@@ -39,8 +43,9 @@ namespace ScanPerson.BusinessLogic
 			services.AddSingleton(EnviromentHelper.GetFilledFromEnvironment<CacheOptions>());
 			services.AddFluentValidationAutoValidation();
 			services.AddValidatorsFromAssemblyContaining<PersonInfoRequestValidator>();
-			var whiteHostoptions = new HostWhiteListOptions(EnviromentHelper.GetVariableArrayByName("UNAUTHORIZED_TRUSTED_HOSTS"));
-			services.AddSingleton(whiteHostoptions);
+			var whiteHostOptions = new HostWhiteListOptions(EnviromentHelper.GetVariableArrayByName("UNAUTHORIZED_TRUSTED_HOSTS"));
+			services.AddSingleton(whiteHostOptions);
+			services.AddGigaChat();
 		}
 
 		/// <summary>
@@ -50,6 +55,20 @@ namespace ScanPerson.BusinessLogic
 		private static void AddSecrets(this IServiceCollection services)
 		{
 			services.AddSingleton(EnviromentHelper.GetFilledFromEnvironment<ScanPersonSecrets>());
+		}
+
+		/// <summary>
+		/// Adds secrets.
+		/// </summary>
+		/// <param name="services">The services.</param>
+		private static void AddGigaChat(this IServiceCollection services)
+		{
+			var key = EnviromentHelper.GetVariableByName("GIGA_CHAT_API_KEY");
+			var httpService = new HttpService(true);
+			var tokenService = new TokenService(httpService, key, false);
+			var gigaChat = new GigaChat(tokenService, httpService, false);
+			services.AddSingleton<IGigaChat>(gigaChat);
+			services.AddSingleton<IChatAIService, GigaChatService>();
 		}
 	}
 }

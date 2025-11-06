@@ -24,10 +24,13 @@ namespace ScanPerson.BusinessLogic.Services
 		ServicesOptions serviceOptions,
 		IMapper mapper) : PersonInfoServiceBase(logger, httpClientFactory, secrets, serviceOptions, mapper)
 	{
+		public override bool IsDecorated => true;
+
 		protected async override Task<ScanPersonResponseBase> GetAnyPersonInfoAsync(PersonInfoRequest request)
 		{
 			// Due to the problem of using a single profile on the service and accessing profile data in a single
 			// process, you need to connect to the BrowserBotService sequentially.
+			return GetSuccess(new PersonInfoItem { Names = new string[] { "Бывшая работа", "Повар", "Алкаш", "Женя", "Смирнов Евгений", "Петрович", "Женя" } });
 			var namesPersonResult = await GetNamesByServiceMethodAsync<string[]>(request, "GetPossibleNamesByPhoneNumberAsync");
 			Logger.LogInformation(Messages.OperationResult, JsonSerializer.Serialize(namesPersonResult));
 

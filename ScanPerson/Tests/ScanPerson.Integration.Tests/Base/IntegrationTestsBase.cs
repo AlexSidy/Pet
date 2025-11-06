@@ -3,12 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Testcontainers.PostgreSql;
 
-using Xunit;
-
-
 namespace ScanPerson.Integration.Tests.Base
 {
-	public abstract class IntegrationTestsBase : IAsyncLifetime
+	public abstract class IntegrationTestsBase
 	{
 		protected const string PersonInfoControllerName = "PersonInfo";
 

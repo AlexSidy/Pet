@@ -9,6 +9,16 @@ namespace ScanPerson.BusinessLogic.Services.Interfaces
 	public interface IPersonInfoService
 	{
 		/// <summary>
+		/// Semaphore to allow access to a service from only one thread at a time.
+		/// </summary>
+		SemaphoreSlim Semaphore { get; }
+
+		/// <summary>
+		/// True if the service is a decorated.
+		/// </summary>
+		bool IsDecorated { get; }
+
+		/// <summary>
 		/// Getting information about a person.
 		/// </summary>
 		/// <param name="request">Request with input data.</param>

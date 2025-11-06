@@ -21,7 +21,9 @@ namespace ScanPerson.Common.Extensions
 
 			foreach (var implementation in implementations)
 			{
-				services.AddTransient(typeof(T), implementation);
+				string key = implementation.Name;
+				services.AddKeyedScoped(typeof(T), key, implementation);
+				services.AddScoped(typeof(T), implementation);
 			}
 		}
 	}

@@ -11,7 +11,7 @@
 		public long? Id { get; set; }
 
 		/// <summary>
-		/// Name of the person.
+		/// Possible names of the person.
 		/// </summary>	
 		public string[] Names { get; set; }
 

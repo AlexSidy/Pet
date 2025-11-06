@@ -16,6 +16,10 @@ namespace ScanPerson.BusinessLogic.Services
 {
 	public abstract class PersonInfoServiceBase : OperationBase, IPersonInfoService
 	{
+		public SemaphoreSlim Semaphore => new(1, 1);
+
+		public virtual bool IsDecorated => false;
+
 		/// <summary>
 		/// Logger.
 		/// </summary>
@@ -89,7 +93,7 @@ namespace ScanPerson.BusinessLogic.Services
 		/// <returns>True if the service can be used.</returns>
 		public virtual bool CanAccept()
 		{
-			return !ServicesOptions.UnUsingServices.Contains(GetType().Name);
+			return !ServicesOptions.UnUsingServices.Contains(GetType().Name) && !IsDecorated;
 		}
 
 		/// <summary>

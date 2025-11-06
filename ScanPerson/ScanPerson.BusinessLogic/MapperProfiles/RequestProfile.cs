@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 
 using ScanPerson.BusinessLogic.Services;
+using ScanPerson.Models.Items;
 using ScanPerson.Models.Requests;
 
 
@@ -15,6 +16,9 @@ namespace ScanPerson.BusinessLogic.MapperProfiles
 		{
 			CreateMap<ServiceRequest, PersonInfoRequest>()
 				.ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => GetPreparedValueByTypeService(src)));
+
+			CreateMap<PersonIdentificationItem, PersonInfoRequest>()
+				.ForMember(dest => dest.PhoneNumber, opt => opt.Ignore());
 		}
 
 		/// <summary>

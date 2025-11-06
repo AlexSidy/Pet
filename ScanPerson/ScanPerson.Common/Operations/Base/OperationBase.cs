@@ -19,6 +19,13 @@ namespace ScanPerson.Common.Operations.Base
 			return new ScanPersonResultResponse<TResult>(result, warnings);
 		}
 
+		protected static TResult GetSuccess<TItem, TResult>(TItem item, IEnumerable<string>? warnings = null)
+			where TItem : class
+			where TResult : ScanPersonResultResponse<TItem>
+		{
+			return (TResult)new ScanPersonResultResponse<TItem>(item, warnings);
+		}
+
 		protected static ScanPersonResponseBase GetFail(string error = ErrorDefault)
 		{
 			return new ScanPersonResponseBase(error);
@@ -27,6 +34,13 @@ namespace ScanPerson.Common.Operations.Base
 		protected static ScanPersonResponseBase GetFail<TResult>(string error = ErrorDefault) where TResult : class
 		{
 			return new ScanPersonResultResponse<TResult>(error);
+		}
+
+		protected static TResult GetFail<TItem, TResult>(string error = ErrorDefault)
+			where TItem : class
+			where TResult : ScanPersonResultResponse<TItem>
+		{
+			return (TResult)new ScanPersonResultResponse<TItem>(error);
 		}
 
 		protected static ScanPersonResponseBase GetFail(IEnumerable<string> errors)

@@ -27,7 +27,7 @@ namespace ScanPerson.Unit.Tests
 		private readonly CacheOptions? _cacheOptions;
 		private readonly PortsOptions? _portsOptions;
 
-		public  RedisCacheMiddlewareTests()
+		public RedisCacheMiddlewareTests()
 		{
 			_mockLogger = new Mock<ILogger<RedisCacheMiddleware>>();
 			_mockDistributedCache = new Mock<IDistributedCache>();
@@ -37,7 +37,7 @@ namespace ScanPerson.Unit.Tests
 				IsEnable = true,
 				CacheExpiration = 1
 			};
-			_portsOptions = new PortsOptions { HttpPort = 8080, GrpcPort = 8081 , HttpsPort	= 443 };
+			_portsOptions = new PortsOptions { HttpPort = 8080, GrpcPort = 8081, HttpsPort = 443 };
 
 			_cut = new RedisCacheMiddleware(_mockLogger!.Object, _mockDistributedCache!.Object, _cacheOptions, _portsOptions, _mockNext!.Object);
 		}

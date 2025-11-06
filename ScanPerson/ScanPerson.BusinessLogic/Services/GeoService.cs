@@ -24,6 +24,7 @@ namespace ScanPerson.BusinessLogic.Services
 	{
 		protected async override Task<ScanPersonResponseBase> GetAnyPersonInfoAsync(PersonInfoRequest request)
 		{
+			return GetSuccess(new PersonInfoItem { Location = new LocationItem() });
 			var parameters = new Dictionary<string, string>
 			{
 				["json"] = "",
