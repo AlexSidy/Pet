@@ -11,7 +11,7 @@ export class ValidationInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).pipe(catchError(err => {
-            if (err.status === 400 && err.error.title.includes(this.validationErrorMessage)) {
+            if (err.status === 400 && err.error.title?.includes(this.validationErrorMessage)) {
                 return throwError(() => new Error(this.aggregateValidationErrors(err.error?.errors)));
             }
 

@@ -9,6 +9,7 @@ import { ScanPersonResultResponse } from '../models/responses/scan.person.result
 import { ACCESS_TOKEN_KEY, AuthApi } from '../constants/constants';
 import { LoginRequest } from '../models/requests/login.request';
 import { RegisterRequest } from '../models/requests/register.request';
+import { VkService } from './vk.service';
 
 
 @Injectable({
@@ -24,7 +25,8 @@ export class AuthService {
     private readonly httpClient: HttpClient,
     private readonly router: Router,
     @Inject(PLATFORM_ID)private readonly platformId: Object,
-    private readonly jwtHelper: JwtHelperService) {
+    private readonly jwtHelper: JwtHelperService,
+    private readonly vkService: VkService) {
       this.isBrowser = isPlatformBrowser(platformId);
     }
 
@@ -70,6 +72,12 @@ export class AuthService {
         },
         complete: () => {}
       });
+  }
+
+  vkIdLogin() {
+    let result = this.vkService.login();
+    debugger;
+    return result;
   }
 
   isAuthenticated(): boolean {

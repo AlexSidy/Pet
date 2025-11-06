@@ -20,7 +20,6 @@ import { ScanPersonResultResponse } from '../../models/responses/scan.person.res
 })
 export class PersonComponent {
 
-  public readonly title = 'Добро пожаловать в мой PET-проект';
   public items: PersonInfoItem[] = [];
   public personForm: FormGroup;
   public isLoading: boolean = false; 

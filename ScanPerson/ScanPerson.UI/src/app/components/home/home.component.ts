@@ -8,5 +8,6 @@ import { Component } from '@angular/core';
   styleUrl: './home.component.sass'
 })
 export class HomeComponent {
+    public readonly title = 'Добро пожаловать в мой PET-проект';
 }
 

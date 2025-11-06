@@ -22,6 +22,10 @@ export class AuthComponent {
     this.authService.login(this.email, this.password);
   }
 
+  vkIdLogin() {
+    this.authService.vkIdLogin();
+  }
+
   register() {
     this.authService.register(this.email, this.password);
   }
