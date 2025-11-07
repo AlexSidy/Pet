@@ -7,8 +7,6 @@ ScanPerson — это исследовательский проект для о�
 
 В будущем проект может трансформироваться в полезный инструмент для личного использования или даже стать основой для коммерческого сервиса.
 
-На данный момент приложение развернуто на сервисе [cloud.ru](https://cloud.ru/), но из-за активной разработки и тестирования его работоспособность не гарантируется [ссылка на приложение](http://176.108.246.81:4200/), 
-
 ## Цель проекта:
 Разработка "под ключ": Демонстрация всех этапов создания приложения, от идеи до развертывания.
 
@@ -27,7 +25,10 @@ CI/CD и автоматизация: Интеграция GitHub Actions для 
 - Возможность использовать WebApi из других приложений (в будущем планируется разработка мобильного приложение с использованием методов этого приложения).
 
 ## Архитектурные особенности:
-🚀 Backend: Разработан на .NET Core 9 Web API.
+
+![Архитектурные особенности](png/ArchitectureDiagram.drawio.png)
+
+🚀 Backend: Разработан на .NET Core 9 Web API и gRPC API.
 
 💻 Frontend: Реализован с использованием Angular 17.
 
@@ -42,6 +43,7 @@ CI/CD и автоматизация: Интеграция GitHub Actions для 
 - Identity Service: Реализован как отдельное решение для управления аутентификацией и авторизацией. В будущем планируется оздание HTTP-клиента для взаимодействия с ним.
 - Shared Services: Сервисы общего назначения, такие как PgAdmin (для управления базами данных), Redis, RabbitMQ будут cобраны в отдельный "Shared" решение.
 - Базы данных: Используются отдельные экземпляры баз данных для каждого сервиса (например, PostgreSQL для сервисов данных).
+- TelegramBots WorkerServices: Добавлены для альтернативного подключения к ScanPerson Service.
 
 ## Цели в будущем:
 Превратить проект в полезный инструмент для личного использования. А так же изучить возможности мобильной разработки использовать и добавить мобильное приложение, которое будет взаимодействовать с основными сервисами проекта.
@@ -101,18 +103,11 @@ powershell
 
   или для каждого решения по отдельности docker compose up -d --build
 
--d: Запускает контейнеры в фоновом режиме.
-
---build: Пересобирает образы перед запуском.
-
-Проверьте статус сервисов:
-
-    docker ps
-
 ### Доступ к приложениям:
 Frontend (Angular): http://localhost:4200 (или настроенный порт)
 
-Backend API (ScanPerson Web API): http://localhost:8080 (HTTP), https://localhost:8081 (HTTPS)
+Backend ScanPerson API : Web API: http://localhost:8080 (HTTP), https://localhost:8081 (HTTPS);
+gRPC API: https://localhost:5001 (Http2)
 
 Identity API (identity API): http://localhost:8090 (HTTP), https://localhost:8091 (HTTPS)
 
@@ -120,12 +115,12 @@ PgAdmin: http://localhost:8000 (или настроенный порт)
 
 Graylog: http://localhost:9000 (или настроенный порт)
 
-На данный момент сервисы развернуты и к ним можно подключится по ссылке http://176.108.246.81:4200
+TelegramBots: @ScanPersonUserBot
 
 ## CI/CD и Автоматизация ⚙️
 Проект интегрирован с GitHub Actions для автоматизации процессов.
 
-### CI Pipeline [CI github action](https://github.com/AlexSidy/Pet/blob/main/.github/workflows/GitHubActionCI.yml):
+### CI Pipeline [CI github action](.github/workflows/GitHubActionCI.yml):
 Запускается при создании Pull Request в ветки dev или main, а также при Push в main.
 
 Шаги выполнения:
@@ -139,12 +134,12 @@ Graylog: http://localhost:9000 (или настроенный порт)
 Слияние отчетов о покрытии.
 Завершающий анализ SonarQube (dotnet sonarscanner end).
 
-### CD Pipeline [CD github action](https://github.com/AlexSidy/Pet/blob/main/.github/workflows/GitHubActionCD.yml):
+### CD Pipeline [CD github action](.github/workflows/GitHubActionCD.yml):
 
 Запускается после успешного завершения CI Pipeline при пуше в ветку main.
 
 Выполняет развертывание на виртуальную машину:
-Остановка и удаление предыдущих контейнеров.
+Остановка и удаление предыдущих контейнеров, а так же образов и томов (настраивается через переменные репозитория).
 Создание Docker сети (scanperson-network), если не была создана.
 Смена прав доступа к директориям на VM.
 Копирование файлов проекта на VM.
@@ -154,34 +149,32 @@ Graylog: http://localhost:9000 (или настроенный порт)
 
 ### Структура проекта 🌐
 
-    .
-    ├── Graylog/                  # Docker Compose для Graylog
-    |   ├── .env
-    |   ├── docker-compose.override.yml
-    │   └── docker-compose.yml
-    ├── Identity/                 # Docker Compose для Identity Service
-    │   ├── Identity.Api/Dockerfile
-    |   ├── .env
-    |   ├── docker-compose.override.yml
-    │   └── docker-compose.yml
-    ├── ScanPerson/            
-    |   ├── .env
-    │   ├── docker-compose.yml
-    |   ├── docker-compose.override.yml
-    │   ├── /ScanPerson.UI/Dockerfile # Frontend (Angular)
-    │   └── /ScanPerson.WebApi/Dockerfile # Backend API (Core Web API)
-    ├── .github/
-    │   └── workflows/  # GitHub Actions
-    │       ├── GitHubActionCD.yml  # CI/CD пайплайн
-    │       └── GitHubActionCI.yml   # CI с анализом SonarQube
-    ├── README.md
-    └── ... # Другие файлы проекта
+     Pet/
+     ├── Identity/              # Identity Service
+     │   ├── Identity.Api/
+     │   └── Tests/
+     ├── ScanPerson/            # Main Service
+     │   ├── ScanPerson.WebApi/
+     │   ├── ScanPerson.BusinessLogic/
+     │   ├── ScanPerson.DAL/
+     │   ├── ScanPerson.Models/
+     │   ├── ScanPerson.Common/
+     │   ├── ScanPerson.UI/     # Angular Frontend
+     │   └── Tests/
+     ├── TelegramBots/          # Telegram Bots Service
+     │   ├── TelegramBots.WorkerServices/
+     │   ├── TelegramBots.BusinessLogic/
+     │   └── Tests/
+     ├── Shared/                # Shared Infrastructure
+     │   └── docker-compose.yml # Graylog, Redis, PgAdmin
+     └── .github/
+         └── workflows/         # CI/CD pipelines
 
 ### Расширение функционала 🏗️
-Для расширение функционала обработки и получения дополнительной информации подразумевается добавление нового класса по пути ScanPerson.BusinessLogic\Services, унаследованного от [IPersonInfoService](https://github.com/AlexSidy/Pet/blob/%2355_add_documentation/ScanPerson/ScanPerson.BusinessLogic/Services/Interfaces/IPersonInfoService.cs) , а так же покрытие этого класса тестами (см. пример классов [GeoService](https://github.com/AlexSidy/Pet/blob/%2355_add_documentation/ScanPerson/ScanPerson.BusinessLogic/Services/GeoService.cs) и [GeoServiceTests](https://github.com/AlexSidy/Pet/blob/%2355_add_documentation/ScanPerson/Tests/ScanPerson.Unit.Tests/GeoServiceTests.cs))
+Для расширения функционала обработки и получения дополнительной информации подразумевается добавление нового класса по пути ScanPerson.BusinessLogic\Services, унаследованного от [IPersonInfoService](ScanPerson.BusinessLogic/Services/Interfaces/IPersonInfoService.cs) , а так же покрытие этого класса тестами (см. пример классов [GeoService](ScanPerson/ScanPerson.BusinessLogic/Services/GeoService.cs) и [GeoServiceTests](ScanPerson/Tests/ScanPerson.Unit.Tests/GeoServiceTests.cs))
 
 ### Вклад и помощь 👋
-Если вы хотите внести свой вклад в этот проект, пожалуйста, ознакомьтесь с [CONTRIBUTING.md](https://github.com/AlexSidy/Pet/blob/dev/CONTRIBUTING.md) или свяжитесь с автором.
+Если вы хотите внести свой вклад в этот проект, пожалуйста, ознакомьтесь с [CONTRIBUTING.md](CONTRIBUTING.md) или свяжитесь с автором.
 
 ### Лицензия 📜
-Этот проект распространяется под лицензией MIT. Подробнее см. файл [LICENSE](https://github.com/AlexSidy/Pet/blob/dev/LICENSE).
+Этот проект распространяется под лицензией MIT. Подробнее см. файл [LICENSE](LICENSE).
