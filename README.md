@@ -26,7 +26,7 @@ CI/CD и автоматизация: Интеграция GitHub Actions для 
 
 ## Архитектурные особенности:
 
-[Архитектурные особенности](png/ArchitectureDiagram.drawio.png)
+![Архитектурные особенности](png/ArchitectureDiagram.drawio.png)
 
 🚀 Backend: Разработан на .NET Core 9 Web API и gRPC API.
 
@@ -171,7 +171,7 @@ TelegramBots: @ScanPersonUserBot
          └── workflows/         # CI/CD pipelines
 
 ### Расширение функционала 🏗️
-Для расширение функционала обработки и получения дополнительной информации подразумевается добавление нового класса по пути ScanPerson.BusinessLogic\Services, унаследованного от [IPersonInfoService](ScanPerson.BusinessLogic/Services/Interfaces/IPersonInfoService.cs) , а так же покрытие этого класса тестами (см. пример классов [GeoService](ScanPerson/ScanPerson.BusinessLogic/Services/GeoService.cs) и [GeoServiceTests](ScanPerson/Tests/ScanPerson.Unit.Tests/GeoServiceTests.cs))
+Для расширения функционала обработки и получения дополнительной информации подразумевается добавление нового класса по пути ScanPerson.BusinessLogic\Services, унаследованного от [IPersonInfoService](ScanPerson.BusinessLogic/Services/Interfaces/IPersonInfoService.cs) , а так же покрытие этого класса тестами (см. пример классов [GeoService](ScanPerson/ScanPerson.BusinessLogic/Services/GeoService.cs) и [GeoServiceTests](ScanPerson/Tests/ScanPerson.Unit.Tests/GeoServiceTests.cs))
 
 ### Вклад и помощь 👋
 Если вы хотите внести свой вклад в этот проект, пожалуйста, ознакомьтесь с [CONTRIBUTING.md](CONTRIBUTING.md) или свяжитесь с автором.
