@@ -26,9 +26,9 @@ CI/CD и автоматизация: Интеграция GitHub Actions для 
 
 ## Архитектурные особенности:
 
-[Архитектурные особенности](https://github.com/AlexSidy/Pet/png/ArchitectureDiagram.drawio.png)
+![Архитектурные особенности](png/ArchitectureDiagram.drawio.png)
 
-🚀 Backend: Разработан на .NET Core 9 Web API.
+🚀 Backend: Разработан на .NET Core 9 Web API и gRPC API.
 
 💻 Frontend: Реализован с использованием Angular 17.
 
@@ -43,6 +43,7 @@ CI/CD и автоматизация: Интеграция GitHub Actions для 
 - Identity Service: Реализован как отдельное решение для управления аутентификацией и авторизацией. В будущем планируется оздание HTTP-клиента для взаимодействия с ним.
 - Shared Services: Сервисы общего назначения, такие как PgAdmin (для управления базами данных), Redis, RabbitMQ будут cобраны в отдельный "Shared" решение.
 - Базы данных: Используются отдельные экземпляры баз данных для каждого сервиса (например, PostgreSQL для сервисов данных).
+- TelegramBots WorkerServices: Добавлены для альтернативного подключения к ScanPerson Service.
 
 ## Цели в будущем:
 Превратить проект в полезный инструмент для личного использования. А так же изучить возможности мобильной разработки использовать и добавить мобильное приложение, которое будет взаимодействовать с основными сервисами проекта.
@@ -102,18 +103,11 @@ powershell
 
   или для каждого решения по отдельности docker compose up -d --build
 
--d: Запускает контейнеры в фоновом режиме.
-
---build: Пересобирает образы перед запуском.
-
-Проверьте статус сервисов:
-
-    docker ps
-
 ### Доступ к приложениям:
 Frontend (Angular): http://localhost:4200 (или настроенный порт)
 
-Backend API (ScanPerson Web API): http://localhost:8080 (HTTP), https://localhost:8081 (HTTPS)
+Backend ScanPerson API : Web API: http://localhost:8080 (HTTP), https://localhost:8081 (HTTPS);
+gRPC API: https://localhost:5001 (Http2)
 
 Identity API (identity API): http://localhost:8090 (HTTP), https://localhost:8091 (HTTPS)
 
@@ -121,12 +115,12 @@ PgAdmin: http://localhost:8000 (или настроенный порт)
 
 Graylog: http://localhost:9000 (или настроенный порт)
 
-На данный момент сервисы развернуты и к ним можно подключится по ссылке http://176.108.246.81:4200
+TelegramBots: @ScanPersonUserBot
 
 ## CI/CD и Автоматизация ⚙️
 Проект интегрирован с GitHub Actions для автоматизации процессов.
 
-### CI Pipeline [CI github action](https://github.com/AlexSidy/Pet/blob/main/.github/workflows/GitHubActionCI.yml):
+### CI Pipeline [CI github action](.github/workflows/GitHubActionCI.yml):
 Запускается при создании Pull Request в ветки dev или main, а также при Push в main.
 
 Шаги выполнения:
@@ -140,12 +134,12 @@ Graylog: http://localhost:9000 (или настроенный порт)
 Слияние отчетов о покрытии.
 Завершающий анализ SonarQube (dotnet sonarscanner end).
 
-### CD Pipeline [CD github action](https://github.com/AlexSidy/Pet/blob/main/.github/workflows/GitHubActionCD.yml):
+### CD Pipeline [CD github action](.github/workflows/GitHubActionCD.yml):
 
 Запускается после успешного завершения CI Pipeline при пуше в ветку main.
 
 Выполняет развертывание на виртуальную машину:
-Остановка и удаление предыдущих контейнеров.
+Остановка и удаление предыдущих контейнеров, а так же образов и томов (настраивается через переменные репозитория).
 Создание Docker сети (scanperson-network), если не была создана.
 Смена прав доступа к директориям на VM.
 Копирование файлов проекта на VM.
@@ -167,7 +161,7 @@ Graylog: http://localhost:9000 (или настроенный порт)
      │   ├── ScanPerson.Common/
      │   ├── ScanPerson.UI/     # Angular Frontend
      │   └── Tests/
-     ├── TelegramBots/          # Telegram Bot Service
+     ├── TelegramBots/          # Telegram Bots Service
      │   ├── TelegramBots.WorkerServices/
      │   ├── TelegramBots.BusinessLogic/
      │   └── Tests/
@@ -177,10 +171,10 @@ Graylog: http://localhost:9000 (или настроенный порт)
          └── workflows/         # CI/CD pipelines
 
 ### Расширение функционала 🏗️
-Для расширение функционала обработки и получения дополнительной информации подразумевается добавление нового класса по пути ScanPerson.BusinessLogic\Services, унаследованного от [IPersonInfoService](https://github.com/AlexSidy/Pet/blob/%2355_add_documentation/ScanPerson/ScanPerson.BusinessLogic/Services/Interfaces/IPersonInfoService.cs) , а так же покрытие этого класса тестами (см. пример классов [GeoService](https://github.com/AlexSidy/Pet/blob/%2355_add_documentation/ScanPerson/ScanPerson.BusinessLogic/Services/GeoService.cs) и [GeoServiceTests](https://github.com/AlexSidy/Pet/blob/%2355_add_documentation/ScanPerson/Tests/ScanPerson.Unit.Tests/GeoServiceTests.cs))
+Для расширения функционала обработки и получения дополнительной информации подразумевается добавление нового класса по пути ScanPerson.BusinessLogic\Services, унаследованного от [IPersonInfoService](ScanPerson.BusinessLogic/Services/Interfaces/IPersonInfoService.cs) , а так же покрытие этого класса тестами (см. пример классов [GeoService](ScanPerson/ScanPerson.BusinessLogic/Services/GeoService.cs) и [GeoServiceTests](ScanPerson/Tests/ScanPerson.Unit.Tests/GeoServiceTests.cs))
 
 ### Вклад и помощь 👋
-Если вы хотите внести свой вклад в этот проект, пожалуйста, ознакомьтесь с [CONTRIBUTING.md](https://github.com/AlexSidy/Pet/blob/dev/CONTRIBUTING.md) или свяжитесь с автором.
+Если вы хотите внести свой вклад в этот проект, пожалуйста, ознакомьтесь с [CONTRIBUTING.md](CONTRIBUTING.md) или свяжитесь с автором.
 
 ### Лицензия 📜
-Этот проект распространяется под лицензией MIT. Подробнее см. файл [LICENSE](https://github.com/AlexSidy/Pet/blob/dev/LICENSE).
+Этот проект распространяется под лицензией MIT. Подробнее см. файл [LICENSE](LICENSE).
