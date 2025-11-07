@@ -74,10 +74,21 @@ export class AuthService {
       });
   }
 
-  vkIdLogin() {
-    let result = this.vkService.login();
-    debugger;
-    return result;
+  async vkIdLogin() {
+    try {
+      const result = await this.vkService.login();
+      debugger;
+      if (result && result.token) {
+        // TODO: Отправить токен на backend для аутентификации
+        console.log('VK ID login successful, token:', result.token);
+        // Здесь можно вызвать метод для отправки токена на backend
+        // Например: this.vkIdCallback(result.token);
+      }
+      return result;
+    } catch (error) {
+      console.error('VK ID login error:', error);
+      return null;
+    }
   }
 
   isAuthenticated(): boolean {

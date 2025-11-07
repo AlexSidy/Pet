@@ -18,7 +18,10 @@ services:
     volumes:
         - ./ScanPerson.UI:/app
         - /app/node_modules
-    command: ng serve --host 0.0.0.0 --poll 2000 --proxy-config proxy.conf.json
+        # Exclude ssl directory from volume mount to allow certificate generation in container
+        - /app/ssl
+    # command: ng serve --host 0.0.0.0 --poll 2000 --proxy-config proxy.conf.json
+    command: ng serve --host 0.0.0.0 --poll 2000 --configuration https --proxy-config proxy.conf.json
     networks:
         - scanperson-network
       

@@ -74,6 +74,12 @@
             },
             "development": {
               "buildTarget": "ScanPerson.UI:build:development"
+            },
+            "https": {
+              "buildTarget": "ScanPerson.UI:build:development",
+              "ssl": true,
+              "sslKey": "ssl/server.key",
+              "sslCert": "ssl/server.crt"
             }
           },
           "defaultConfiguration": "development",

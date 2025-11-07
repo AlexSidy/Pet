@@ -40,3 +40,11 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# SSL certificates (generated locally or in Docker)
+/ssl
+ssl/
+*.key
+*.crt
+*.pem
+*.pfx
