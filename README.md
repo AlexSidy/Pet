@@ -26,7 +26,7 @@ CI/CD и автоматизация: Интеграция GitHub Actions для 
 
 ## Архитектурные особенности:
 
-![Архитектурные особенности](png/ArchitectureDiagram.drawio.png)
+![architecture](png/ArchitectureDiagram.drawio.png)
 
 🚀 Backend: Разработан на .NET Core 9 Web API и gRPC API.
 
